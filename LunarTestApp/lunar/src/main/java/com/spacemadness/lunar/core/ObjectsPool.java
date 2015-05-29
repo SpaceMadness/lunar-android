@@ -1,47 +1,54 @@
 package com.spacemadness.lunar.core;
 
 import com.spacemadness.lunar.debug.Assert;
-import com.spacemadness.lunar.utils.ClassUtils;
 
-public class ObjectsPool<T extends ObjectsPoolEntry> extends FastList<ObjectsPoolEntry> implements IObjectsPool, IDestroyable
+/**
+ * Created by weee on 5/28/15.
+ */
+public class ObjectsPool<T extends ObjectsPoolEntry> extends FastList<ObjectsPoolEntry>
+        implements IObjectsPool, IDestroyable
 {
-    private Class<? extends T> cls;
-
-    public ObjectsPool(Class<? extends T> cls)
+    public ObjectsPool()
     {
-        if (cls == null)
-        {
-            throw new NullPointerException("Class is null");
-        }
-        this.cls = cls;
     }
 
-    @SuppressWarnings("unchecked")
+    public T NextAutoRecycleObject()
+    {
+        return (T)NextObject().AutoRecycle();
+    }
+
     public T NextObject()
     {
         ObjectsPoolEntry first = RemoveFirstItem();
         if (first == null)
         {
-            first = ClassUtils.tryNewInstance(cls);
+            first = CreateObject();
         }
 
         first.pool = this;
-        return (T) first;
+        first.recycled = false;
+
+        return (T)first;
     }
 
     public void Recycle(ObjectsPoolEntry e)
     {
-        Assert.True(cls.isInstance(e));
-        Assert.True(e.pool == this);
+        Assert.IsInstanceOfType<T>(e);
+        Assert.AreSame(this, e.pool);
 
         AddLastItem(e);
     }
 
+    protected T CreateObject()
+    {
+        return new T();
+    }
+
     //////////////////////////////////////////////////////////////////////////////
+    // Destroyable
 
     public void Destroy()
     {
         Clear();
     }
-
 }

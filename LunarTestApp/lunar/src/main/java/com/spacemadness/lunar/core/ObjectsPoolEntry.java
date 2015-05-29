@@ -1,27 +1,35 @@
 package com.spacemadness.lunar.core;
 
-import com.spacemadness.lunar.utils.NotImplementedException;
+import com.spacemadness.lunar.debug.Assert;
 
+/**
+ * Created by weee on 5/28/15.
+ */
 public class ObjectsPoolEntry extends FastListNode
 {
-    protected IObjectsPool pool;
+    IObjectsPool pool;
+    bool recycled;
 
-    public void recycle()
+    public ObjectsPoolEntry AutoRecycle()
+    {
+        TimerManager.ScheduleTimer(Recycle);
+        return this;
+    }
+
+    public void Recycle()
     {
         if (pool != null)
         {
+            Assert.IsFalse(recycled);
+            recycled = true;
+
             pool.Recycle(this);
         }
 
-        onRecycleObject();
+        OnRecycleObject();
     }
 
-    public void AutoRecycle()
-    {
-        throw new NotImplementedException();
-    }
-
-    protected void onRecycleObject()
+    protected void OnRecycleObject()
     {
     }
 }

@@ -1,33 +1,34 @@
 package com.spacemadness.lunar.core;
 
-import com.lunar.debug.Assert;
-import com.lunar.util.ClassUtils;
-
 /**
- * Created by alementuev on 1/11/15.
+ * Created by weee on 5/28/15.
  */
 public class ObjectsPoolConcurrent<T extends ObjectsPoolEntry> extends ObjectsPool<T>
 {
-    public ObjectsPoolConcurrent(Class<? extends T> cls)
+    @Override
+    public T NextObject()
     {
-        super(cls);
+        synchronized (this)
+        {
+            return super.NextObject();
+        }
     }
 
     @Override
-    public synchronized T NextObject()
+    public void Recycle(ObjectsPoolEntry e)
     {
-        return super.NextObject();
+        synchronized (this)
+        {
+            super.Recycle(e);
+        }
     }
 
     @Override
-    public synchronized void Recycle(ObjectsPoolEntry e)
+    public void Destroy()
     {
-        super.Recycle(e);
-    }
-
-    @Override
-    public synchronized void Destroy()
-    {
-        super.Destroy();
+        synchronized (this)
+        {
+            super.Destroy();
+        }
     }
 }

@@ -1,9 +1,14 @@
-package com.spacemadness.lunar.core;
+package com.spacemadness.lunar.utils;
 
+import com.spacemadness.lunar.debug.Assert;
+
+/**
+ * Created by weee on 5/29/15.
+ */
 public class FastList<T extends FastListNode> implements IFastList
 {
-    protected FastListNode m_listFirst;
-    protected FastListNode m_listLast;
+    T m_listFirst;
+    T m_listLast;
 
     private int m_size;
 
@@ -29,8 +34,11 @@ public class FastList<T extends FastListNode> implements IFastList
 
     public void RemoveItem(T item)
     {
-        FastListNode prev = item.m_listPrev;
-        FastListNode next = item.m_listNext;
+        Assert.Greater(m_size, 0);
+        Assert.AreSame(this, item.m_list);
+
+        T prev = item.m_listPrev;
+        T next = item.m_listNext;
 
         if (prev != null)
         {
@@ -68,7 +76,7 @@ public class FastList<T extends FastListNode> implements IFastList
 
     public T RemoveLastItem()
     {
-        T node = ListLast();
+        T node = ListLast;
         if (node != null)
         {
             RemoveItem(node);
@@ -77,14 +85,14 @@ public class FastList<T extends FastListNode> implements IFastList
         return node;
     }
 
-    public boolean ContainsItem(FastListNode item)
+    public bool ContainsItem(T item)
     {
         if (item.m_list != this)
         {
             return false;
         }
 
-        for (FastListNode t = m_listFirst; t != null; t = t.m_listNext)
+        for (T t = m_listFirst; t != null; t = t.m_listNext)
         {
             if (t == item)
             {
@@ -95,8 +103,10 @@ public class FastList<T extends FastListNode> implements IFastList
         return false;
     }
 
-    private void InsertItem(FastListNode item, FastListNode prev, FastListNode next)
+    protected void InsertItem(T item, T prev, T next)
     {
+        Assert.IsNull(item.m_list);
+
         if (next != null)
         {
             next.m_listPrev = item;
@@ -135,30 +145,28 @@ public class FastList<T extends FastListNode> implements IFastList
         m_size = 0;
     }
 
-    public int Count() // TODO: java naming conversions
+    public int Count()
     {
         return m_size;
     }
 
-    @SuppressWarnings("unchecked")
-	public T ListFirst()
+    public T ListFirst()
     {
-        return (T)m_listFirst;
-    }
-    
-    protected void ListFirst(T value)
-    {
-        m_listFirst = value;
+        return m_listFirst;
     }
 
-    @SuppressWarnings("unchecked")
-	public T ListLast()
+    protected void ListFirst(T item)
     {
-        return (T)m_listLast;
+        m_listFirst = item;
     }
-    
-    protected void ListLast(T value)
+
+    public T ListLast()
     {
-        m_listLast = value;
+        return m_listLast;
+    }
+
+    protected void ListLast(T item)
+    {
+        m_listLast = item;
     }
 }
