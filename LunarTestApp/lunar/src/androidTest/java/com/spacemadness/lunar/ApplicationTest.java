@@ -1,4 +1,4 @@
-package spacemadness.com.lunar;
+package com.spacemadness.lunar;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;
