@@ -33,7 +33,7 @@ public class FastConcurrentList<T extends FastListNode> extends FastList<T>
     }
 
     @Override
-    public boolean ContainsItem(FastListNode item)
+    public boolean ContainsItem(T item)
     {
         synchronized (this)
         {
@@ -42,7 +42,7 @@ public class FastConcurrentList<T extends FastListNode> extends FastList<T>
     }
 
     @Override
-    protected void InsertItem(FastListNode item, FastListNode prev, FastListNode next)
+    protected void InsertItem(T item, T prev, T next)
     {
         synchronized (this)
         {

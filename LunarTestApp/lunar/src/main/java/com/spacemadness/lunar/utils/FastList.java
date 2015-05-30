@@ -12,33 +12,33 @@ public class FastList<T extends FastListNode> implements IFastList
 
     private int m_size;
 
-    public void AddFirstItem(T item)
+    public void AddFirstItem(T item) // FIXME: rename
     {
         InsertItem(item, null, m_listFirst);
     }
 
-    public void AddLastItem(T item)
+    public void AddLastItem(T item) // FIXME: rename
     {
         InsertItem(item, m_listLast, null);
     }
 
-    public void InsertBeforeItem(T node, T item)
+    public void InsertBeforeItem(T node, T item) // FIXME: rename
     {
-        InsertItem(item, node != null ? node.m_listPrev : null, node);
+        InsertItem(item, node != null ? (T) node.m_listPrev : null, node);
     }
 
-    public void InsertAfterItem(T node, T item)
+    public void InsertAfterItem(T node, T item) // FIXME: rename
     {
-        InsertItem(item, node, node != null ? node.m_listNext : null);
+        InsertItem(item, node, node != null ? (T) node.m_listNext : null);
     }
 
-    public void RemoveItem(T item)
+    public void RemoveItem(T item) // FIXME: rename
     {
         Assert.Greater(m_size, 0);
         Assert.AreSame(this, item.m_list);
 
-        T prev = item.m_listPrev;
-        T next = item.m_listNext;
+        T prev = (T) item.m_listPrev;
+        T next = (T) item.m_listNext;
 
         if (prev != null)
         {
@@ -63,7 +63,7 @@ public class FastList<T extends FastListNode> implements IFastList
         --m_size;
     }
 
-    public T RemoveFirstItem()
+    public T RemoveFirstItem() // FIXME: rename
     {
         T node = ListFirst();
         if (node != null)
@@ -74,9 +74,9 @@ public class FastList<T extends FastListNode> implements IFastList
         return node;
     }
 
-    public T RemoveLastItem()
+    public T RemoveLastItem() // FIXME: rename
     {
-        T node = ListLast;
+        T node = ListLast();
         if (node != null)
         {
             RemoveItem(node);
@@ -85,14 +85,14 @@ public class FastList<T extends FastListNode> implements IFastList
         return node;
     }
 
-    public boolean ContainsItem(T item)
+    public boolean ContainsItem(T item) // FIXME: rename
     {
         if (item.m_list != this)
         {
             return false;
         }
 
-        for (T t = m_listFirst; t != null; t = t.m_listNext)
+        for (FastListNode t = m_listFirst; t != null; t = t.m_listNext)
         {
             if (t == item)
             {
@@ -103,7 +103,7 @@ public class FastList<T extends FastListNode> implements IFastList
         return false;
     }
 
-    protected void InsertItem(T item, T prev, T next)
+    protected void InsertItem(T item, T prev, T next) // FIXME: rename
     {
         Assert.IsNull(item.m_list);
 
@@ -131,7 +131,7 @@ public class FastList<T extends FastListNode> implements IFastList
         ++m_size;
     }
 
-    public void Clear()
+    public void Clear() // FIXME: rename
     {
         for (FastListNode t = m_listFirst; t != null; )
         {
@@ -145,27 +145,27 @@ public class FastList<T extends FastListNode> implements IFastList
         m_size = 0;
     }
 
-    public int Count()
+    public int Count() // FIXME: rename
     {
         return m_size;
     }
 
-    public T ListFirst()
+    public T ListFirst() // FIXME: rename
     {
         return m_listFirst;
     }
 
-    protected void ListFirst(T item)
+    protected void ListFirst(T item) // FIXME: rename
     {
         m_listFirst = item;
     }
 
-    public T ListLast()
+    public T ListLast() // FIXME: rename
     {
         return m_listLast;
     }
 
-    protected void ListLast(T item)
+    protected void ListLast(T item) // FIXME: rename
     {
         m_listLast = item;
     }

@@ -9,18 +9,18 @@ public class FastListNode<T extends FastListNode>
     T m_listNext;
     IFastList m_list;
 
-    protected T ListNodePrev()
+    protected T ListNodePrev() // FIXME: rename
     {
         return m_listPrev;
     }
 
-    protected T ListNodeNext()
+    protected T ListNodeNext() // FIXME: rename
     {
         return m_listNext;
     }
 
     /* For Unit testing */
-    protected void DetachFromList()
+    protected void DetachFromList() // FIXME: rename
     {
         m_list = null;
         m_listPrev = m_listNext = null;

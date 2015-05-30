@@ -31,14 +31,14 @@ public class BaseList<T> implements IBaseCollection<T>
         this.nullElement = nullElement;
     }
 
-    public boolean Add(T e)
+    public boolean Add(T e) // FIXME: rename
     {
         Assert.NotContains(e, list);
         list.add(e);
         return true;
     }
 
-    public boolean Remove(T e)
+    public boolean Remove(T e) // FIXME: rename
     {
         int index = list.indexOf(e);
         if (index != -1)
@@ -50,12 +50,12 @@ public class BaseList<T> implements IBaseCollection<T>
         return false;
     }
 
-    public T Get(int index)
+    public T Get(int index) // FIXME: rename
     {
         return list.get(index);
     }
 
-    public int IndexOf(T e)
+    public int IndexOf(T e) // FIXME: rename
     {
         return list.indexOf(e);
     }
@@ -66,22 +66,22 @@ public class BaseList<T> implements IBaseCollection<T>
         list.set(index, nullElement);
     }
 
-    public void Clear()
+    public void Clear() // FIXME: rename
     {
         list.clear();
     }
 
-    public boolean Contains(T e)
+    public boolean Contains(T e) // FIXME: rename
     {
         return list.contains(e);
     }
 
-    public boolean IsNull()
+    public boolean IsNull() // FIXME: rename
     {
         return false;
     }
 
-    protected void ClearRemoved()
+    protected void ClearRemoved() // FIXME: rename
     {
         for (int i = list.size() - 1; removedCount > 0 && i >= 0; --i)
         {
@@ -93,7 +93,7 @@ public class BaseList<T> implements IBaseCollection<T>
         }
     }
 
-    public int Count()
+    public int Count() // FIXME: rename
     {
         return list.size() - removedCount;
     }
