@@ -34,8 +34,8 @@ public class FastList<T extends FastListNode> implements IFastList
 
     public void RemoveItem(T item) // FIXME: rename
     {
-        Assert.Greater(m_size, 0);
-        Assert.AreSame(this, item.m_list);
+        Assert.assertTrue(m_size > 0);
+        Assert.assertSame(this, item.m_list);
 
         T prev = (T) item.m_listPrev;
         T next = (T) item.m_listNext;
@@ -105,7 +105,7 @@ public class FastList<T extends FastListNode> implements IFastList
 
     protected void InsertItem(T item, T prev, T next) // FIXME: rename
     {
-        Assert.IsNull(item.m_list);
+        Assert.assertNull(item.m_list);
 
         if (next != null)
         {
