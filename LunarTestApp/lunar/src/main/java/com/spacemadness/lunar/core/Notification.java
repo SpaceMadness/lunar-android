@@ -5,9 +5,9 @@ package com.spacemadness.lunar.core;
  */
 class Notification : ObjectsPoolEntry
 {
-    private IDictionary<string, object> m_dictionary;
+    private IDictionary<String, Object> m_dictionary;
     
-    internal void Init(Object sender, string name, params object[] pairs)
+    internal void Init(Object sender, String name, params Object[] pairs)
     {
         Sender = sender;
         Name = name;
@@ -15,16 +15,16 @@ class Notification : ObjectsPoolEntry
         Assert.IsTrue(pairs.Length % 2 == 0);
         for (int i = 0; i < pairs.Length;)
         {
-            string key = ClassUtils.Cast<string>(pairs [i++]);
-            object value = pairs [i++];
+            String key = ClassUtils.Cast<String>(pairs [i++]);
+            Object value = pairs [i++];
 
             this.Set(key, value);
         }
     }
 
-    public T Get<T>(string key)
+    public T Get<T>(String key)
     {
-        object value = Get(key);
+        Object value = Get(key);
         if (value is T)
         {
             return (T)value;
@@ -32,9 +32,9 @@ class Notification : ObjectsPoolEntry
         return default(T);
     }
 
-    public object Get(string key)
+    public Object Get(String key)
     {
-        object value;
+        Object value;
         if (m_dictionary != null && m_dictionary.TryGetValue(key, out value))
         {
             return value;
@@ -43,11 +43,11 @@ class Notification : ObjectsPoolEntry
         return null;
     }
 
-    internal void Set(string key, object value)
+    internal void Set(String key, Object value)
     {
         if (m_dictionary == null)
         {
-            m_dictionary = new Dictionary<string, object>(1);
+            m_dictionary = new Dictionary<String, Object>(1);
         }
         m_dictionary [key] = value;
     }
@@ -63,6 +63,6 @@ class Notification : ObjectsPoolEntry
         }
     }
     
-    public string Name { get; private set; }
-    public object Sender { get; private set; }
+    public String Name { get; private set; }
+    public Object Sender { get; private set; }
 }

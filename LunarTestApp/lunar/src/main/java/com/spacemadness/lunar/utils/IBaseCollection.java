@@ -5,9 +5,9 @@ package com.spacemadness.lunar.utils;
  */
 public interface IBaseCollection<T>
 {
-    bool Add(T t);
-    bool Remove(T t);
-    bool Contains(T t);
+    boolean Add(T t);
+    boolean Remove(T t);
+    boolean Contains(T t);
     void Clear();
     int Count();
 }

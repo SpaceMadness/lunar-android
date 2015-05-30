@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.List;
 
+import com.spacemadness.lunar.utils.ClassUtils;
 import com.spacemadness.lunar.utils.ReusableList;
 import com.spacemadness.lunar.utils.ReusableLists;
 import com.spacemadness.lunar.utils.StringUtils;
@@ -35,7 +36,7 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
 
         if (name == null)
         {
-            throw new ArgumentNullException("Name is null");
+            throw new NullPointerException("Name is null");
         }
         this.Name = name;
     }
@@ -453,7 +454,7 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
     {
         if (filter == null)
         {
-            throw new NullReferenceException("Filter is null");
+            throw new NullPointerException("Filter is null");
         }
 
         if (m_optionsLookup != null)
@@ -482,30 +483,21 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
 
     private Option FindOption(String name)
     {
-        if (name.length == 0)
+        if (name.length() == 0)
         {
             return null;
         }
 
-        Option option;
-        if (m_optionsLookup != null)
-        {
-            if (m_optionsLookup.TryGetValue(name, out option))
-            {
-                return option;
-            }
-        }
-
-        return null;
+        return m_optionsLookup != null ? m_optionsLookup.get(name) : null;
     }
 
     private void ResetOptions()
     {
         if (m_options != null)
         {
-            for (int i = 0; i < m_options.Count; ++i)
+            for (int i = 0; i < m_options.size(); ++i)
             {
-                Option opt = m_options[i];
+                Option opt = m_options.get(i);
                 if (opt.IsHandled)
                 {
                     ResetOption(opt);

@@ -8,7 +8,7 @@ class NotificationCenter : IDestroyable
     private static NotificationCenter s_sharedInstance;
 
     private TimerManager m_timerManager;
-    private IDictionary<string, NotificationDelegateList> m_registerMap;
+    private IDictionary<String, NotificationDelegateList> m_registerMap;
     private ObjectsPool<Notification> m_notificatoinsPool;
 
     static NotificationCenter()
@@ -19,13 +19,13 @@ class NotificationCenter : IDestroyable
     public NotificationCenter(TimerManager timerManager)
     {
         m_timerManager = timerManager;
-        m_registerMap = new Dictionary<string, NotificationDelegateList>();
+        m_registerMap = new Dictionary<String, NotificationDelegateList>();
         m_notificatoinsPool = new ObjectsPool<Notification>();
     }
 
     #region Shared instance
 
-    public static void RegisterNotification(string name, NotificationDelegate del)
+    public static void RegisterNotification(String name, NotificationDelegate del)
     {
         s_sharedInstance.Register(name, del);
     }
@@ -35,7 +35,7 @@ class NotificationCenter : IDestroyable
         s_sharedInstance.Register(list);
     }
 
-    public static void UnregisterNotification(string name, NotificationDelegate del)
+    public static void UnregisterNotification(String name, NotificationDelegate del)
     {
         s_sharedInstance.Unregister(name, del);
     }
@@ -45,7 +45,7 @@ class NotificationCenter : IDestroyable
         s_sharedInstance.Unregister(list);
     }
 
-    public static void UnregisterNotifications(object target)
+    public static void UnregisterNotifications(Object target)
     {
         s_sharedInstance.UnregisterAll(target);
     }
@@ -55,12 +55,12 @@ class NotificationCenter : IDestroyable
         s_sharedInstance.UnregisterAll(del);
     }
 
-    public static void PostNotification(object sender, string name, params object[] data)
+    public static void PostNotification(Object sender, String name, params Object[] data)
     {
         s_sharedInstance.Post(sender, name, data);
     }
 
-    public static void PostNotificationImmediately(object sender, string name, params object[] data)
+    public static void PostNotificationImmediately(Object sender, String name, params Object[] data)
     {
         s_sharedInstance.PostImmediately(sender, name, data);
     }
@@ -77,16 +77,16 @@ class NotificationCenter : IDestroyable
         CancelScheduledPosts();
     }
     
-    public void Register(string name, NotificationDelegate del)
+    public void Register(String name, NotificationDelegate del)
     {
         if (name == null)
         {
-            throw new ArgumentNullException("Name is null");
+            throw new NullPointerException("Name is null");
         }
 
         if (del == null)
         {
-            throw new NullReferenceException("Delegate is null");
+            throw new NullPointerException("Delegate is null");
         }
         
         NotificationDelegateList list = FindList(name);
@@ -107,7 +107,7 @@ class NotificationCenter : IDestroyable
         }
     }
     
-    public bool Unregister(string name, NotificationDelegate del)
+    public boolean Unregister(String name, NotificationDelegate del)
     {
         NotificationDelegateList list = FindList(name);
         if (list != null)
@@ -126,10 +126,10 @@ class NotificationCenter : IDestroyable
         }
     }
     
-    public bool UnregisterAll(NotificationDelegate del)
+    public boolean UnregisterAll(NotificationDelegate del)
     {
-        bool removed = false;
-        foreach (KeyValuePair<string, NotificationDelegateList> e in m_registerMap)
+        boolean removed = false;
+        foreach (KeyValuePair<String, NotificationDelegateList> e in m_registerMap)
         {   
             NotificationDelegateList list = e.Value;
             removed |= list.Remove(del);
@@ -137,10 +137,10 @@ class NotificationCenter : IDestroyable
         return removed;
     }
     
-    public bool UnregisterAll(Object target)
+    public boolean UnregisterAll(Object target)
     {
-        bool removed = false;
-        foreach (KeyValuePair<string, NotificationDelegateList> e in m_registerMap)
+        boolean removed = false;
+        foreach (KeyValuePair<String, NotificationDelegateList> e in m_registerMap)
         {
             NotificationDelegateList list = e.Value;
             removed |= list.RemoveAll(target);
@@ -148,7 +148,7 @@ class NotificationCenter : IDestroyable
         return removed;
     }
     
-    public void Post(Object sender, string name, params object[] data)
+    public void Post(Object sender, String name, params Object[] data)
     {
         NotificationDelegateList list = FindList(name);
         if (list != null && list.Count > 0)
@@ -160,7 +160,7 @@ class NotificationCenter : IDestroyable
         }
     }
     
-    public void PostImmediately(Object sender, string name, params object[] data)
+    public void PostImmediately(Object sender, String name, params Object[] data)
     {   
         NotificationDelegateList list = FindList(name);
         if (list != null && list.Count > 0)
@@ -175,7 +175,7 @@ class NotificationCenter : IDestroyable
     
     public void PostImmediately(Notification notification)
     {
-        string name = notification.Name;
+        String name = notification.Name;
         NotificationDelegateList list = FindList(name);
         if (list != null)
         {
@@ -184,7 +184,7 @@ class NotificationCenter : IDestroyable
         notification.Recycle();
     }
     
-    private NotificationDelegateList FindList(string name)
+    private NotificationDelegateList FindList(String name)
     {
         NotificationDelegateList list;
         if (m_registerMap.TryGetValue(name, out list))
@@ -216,7 +216,7 @@ class NotificationCenter : IDestroyable
 
     #if LUNAR_DEVELOPMENT
 
-    public IDictionary<string, NotificationDelegateList> RegistryMap
+    public IDictionary<String, NotificationDelegateList> RegistryMap
     {
         get { return m_registerMap; }
     }

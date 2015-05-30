@@ -12,7 +12,7 @@ public class Timer
 
     static Timer freeRoot;
 
-    bool cancelled;
+    boolean cancelled;
 
     Action callback1;
     Action<Timer> callback2;
@@ -31,7 +31,7 @@ public class Timer
     double fireTime;
     double scheduleTime;
 
-    public string name;
+    public String name;
     public Object userData;
 
     public void Cancel()
@@ -85,7 +85,7 @@ public class Timer
         return ClassUtils.Cast<T>(userData);
     }
 
-    public bool IsRepeated()
+    public boolean IsRepeated()
     {
         return numRepeats != 1;
     }
@@ -111,10 +111,10 @@ public class Timer
     }
 
     @Override
-    public string toString()
+    public String toString()
     {
         Delegate callback = callback2 != DefaultTimerCallback ? (Delegate)callback2 : (Delegate)callback1;
-        return string.Format("[Target={0}, Method={1}, IsRepeated={2}, Timeout={3}, Elapsed={4}]",
+        return String.Format("[Target={0}, Method={1}, IsRepeated={2}, Timeout={3}, Elapsed={4}]",
             callback != null ? callback.Target : null,
             callback != null ? callback.Method : null,
             this.IsRepeated, 

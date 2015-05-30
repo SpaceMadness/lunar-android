@@ -5,10 +5,10 @@ package com.spacemadness.lunar.core;
  */
 public class NotificationInfo
 {
-    public string name;
+    public String name;
     public NotificationDelegate del;
 
-    public NotificationInfo(string name, NotificationDelegate del)
+    public NotificationInfo(String name, NotificationDelegate del)
     {
         this.name = name;
         this.del = del;

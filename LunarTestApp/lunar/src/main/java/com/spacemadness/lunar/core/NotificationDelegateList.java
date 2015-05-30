@@ -22,15 +22,15 @@ class NotificationDelegateList extends BaseList<NotificationDelegate>
     }
 
     @Override
-    public bool Add(NotificationDelegate del)
+    public boolean Add(NotificationDelegate del)
     {
         Assert.IsFalse(Contains(del));
         return super.Add(del);
     }
     
-    public bool RemoveAll(Object target)
+    public boolean RemoveAll(Object target)
     {
-        bool removed = false;
+        boolean removed = false;
         for (int i = 0; i < list.size(); ++i)
         {
             NotificationDelegate del = list.get(i);

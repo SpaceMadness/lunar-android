@@ -32,22 +32,22 @@ public class TimerManager implements ITimerManager
         s_sharedInstance = new TimerManager();
     }
 
-    public static Timer ScheduleTimer(Action callback, float delay = 0.0f, bool repeated = false, string name = null)
+    public static Timer ScheduleTimer(Action callback, float delay = 0.0f, boolean repeated = false, String name = null)
     {
         return s_sharedInstance.Schedule(callback, delay, repeated, name);
     }
 
-    public static Timer ScheduleTimer(Action<Timer> callback, float delay = 0.0f, bool repeated = false, string name = null)
+    public static Timer ScheduleTimer(Action<Timer> callback, float delay = 0.0f, boolean repeated = false, String name = null)
     {
         return s_sharedInstance.Schedule(callback, delay, repeated, name);
     }
 
-    public static Timer ScheduleTimerOnce(Action callback, float delay = 0.0f, bool repeated = false, string name = null)
+    public static Timer ScheduleTimerOnce(Action callback, float delay = 0.0f, boolean repeated = false, String name = null)
     {
         return s_sharedInstance.ScheduleOnce(callback, delay, repeated, name);
     }
 
-    public static Timer ScheduleTimerOnce(Action<Timer> callback, float delay = 0.0f, bool repeated = false, string name = null)
+    public static Timer ScheduleTimerOnce(Action<Timer> callback, float delay = 0.0f, boolean repeated = false, String name = null)
     {
         return s_sharedInstance.ScheduleOnce(callback, delay, repeated, name);
     }
@@ -62,7 +62,7 @@ public class TimerManager implements ITimerManager
         s_sharedInstance.Cancel(callback);
     }
 
-    public static void CancelTimers(object target)
+    public static void CancelTimers(Object target)
     {
         s_sharedInstance.CancelAll(target);
     }
@@ -136,18 +136,18 @@ public class TimerManager implements ITimerManager
     // Schedule
 
     @Override
-    public Timer Schedule(Action callback, float delay, int numRepeats, string name = null)
+    public Timer Schedule(Action callback, float delay, int numRepeats, String name = null)
     {
         return Schedule(callback, Timer.DefaultTimerCallback, delay, numRepeats, name);
     }
 
     @Override
-    public Timer Schedule(Action<Timer> callback, float delay, int numRepeats, string name = null)
+    public Timer Schedule(Action<Timer> callback, float delay, int numRepeats, String name = null)
     {
         return Schedule(null, callback, delay, numRepeats, name);
     }
 
-    private Timer Schedule(Action callback1, Action<Timer> callback2, float delay, int numRepeats, string name)
+    private Timer Schedule(Action callback1, Action<Timer> callback2, float delay, int numRepeats, String name)
     {
         float timeout = delay < 0 ? 0 : delay;
 
@@ -240,7 +240,7 @@ public class TimerManager implements ITimerManager
     }
 
     @Override
-    public void Cancel(string name)
+    public void Cancel(String name)
     {
         synchronized (this)
         {

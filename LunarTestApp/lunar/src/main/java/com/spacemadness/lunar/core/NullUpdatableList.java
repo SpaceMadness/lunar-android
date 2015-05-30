@@ -16,13 +16,13 @@ final class NullUpdatableList extends UpdatableList
     }
 
     @Override
-    public bool Add(IUpdatable updatable)
+    public boolean Add(IUpdatable updatable)
     {
         throw new InvalidOperationException("Can't add element to unmodifiable updatable list");
     }
 
     @Override
-    public bool Remove(IUpdatable updatable)
+    public boolean Remove(IUpdatable updatable)
     {
         throw new InvalidOperationException("Can't remove element from unmodifiable updatable list");
     }
@@ -40,13 +40,13 @@ final class NullUpdatableList extends UpdatableList
     }
 
     @Override
-    public bool Contains(IUpdatable updatable)
+    public boolean Contains(IUpdatable updatable)
     {
         return false;
     }
 
     @Override
-    public bool IsNull()
+    public boolean IsNull()
     {
         return true;
     }

@@ -5,12 +5,12 @@ package com.spacemadness.lunar.console;
  */
 class CValue
 {
-    public string stringValue;
+    public String stringValue;
     public int intValue;
     public float floatValue;
     public Vector4 vectorValue;
 
-    public bool Equals(ref CValue other)
+    public boolean Equals(ref CValue other)
     {
         return other.intValue == intValue &&
         other.floatValue == floatValue &&

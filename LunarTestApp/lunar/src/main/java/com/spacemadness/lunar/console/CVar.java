@@ -2,8 +2,8 @@ package com.spacemadness.lunar.console;
 
 public class CVar // FIXME: IEquatable<CVar>
 {
-    private readonly string m_name;
-    private readonly CVarType m_type;
+    private final String m_name;
+    private final CVarType m_type;
 
     private CValue m_value;
     private CValue m_defaultValue;
@@ -12,12 +12,12 @@ public class CVar // FIXME: IEquatable<CVar>
 
     private CVarChangedDelegateList m_delegateList;
 
-    public CVar(string name, bool defaultValue)
+    public CVar(String name, boolean defaultValue)
     {
         this(name, defaultValue, CFlags.None);
     }
 
-    public CVar(string name, bool defaultValue, CFlags flags)
+    public CVar(String name, boolean defaultValue, CFlags flags)
     {
         this(name, CVarType.Boolean, flags);
 
@@ -25,12 +25,12 @@ public class CVar // FIXME: IEquatable<CVar>
         m_defaultValue = m_value;
     }
 
-    public CVar(string name, int defaultValue)
+    public CVar(String name, int defaultValue)
     {
         this(name, defaultValue, CFlags.None);
     }
 
-    public CVar(string name, int defaultValue, CFlags flags)
+    public CVar(String name, int defaultValue, CFlags flags)
     {
         this(name, CVarType.Integer, flags)
 
@@ -38,12 +38,12 @@ public class CVar // FIXME: IEquatable<CVar>
         m_defaultValue = m_value;
     }
 
-    public CVar(string name, float defaultValue)
+    public CVar(String name, float defaultValue)
     {
         this(name, defaultValue, CFlags.None);
     }
 
-    public CVar(string name, float defaultValue, CFlags flags)
+    public CVar(String name, float defaultValue, CFlags flags)
     {
         this(name, CVarType.Float, flags);
 
@@ -51,12 +51,12 @@ public class CVar // FIXME: IEquatable<CVar>
         m_defaultValue = m_value;
     }
 
-    public CVar(string name, string defaultValue)
+    public CVar(String name, String defaultValue)
     {
         this(name, defaultValue, CFlags.None);
     }
 
-    public CVar(string name, string defaultValue, CFlags flags)
+    public CVar(String name, String defaultValue, CFlags flags)
     {
         this(name, CVarType.String, flags);
 
@@ -64,24 +64,24 @@ public class CVar // FIXME: IEquatable<CVar>
         m_defaultValue = m_value;
     }
 
-    public CVar(string name, Color defaultValue)
+    public CVar(String name, Color defaultValue)
     {
         this(name, defaultValue, CFlags.None);
     }
 
-    public CVar(string name, Color defaultValue, CFlags flags)
+    public CVar(String name, Color defaultValue, CFlags flags)
         : this(name, CVarType.Color, flags)
     {
         this.ColorValue = defaultValue;;
         m_defaultValue = m_value;
     }
 
-    public CVar(string name, Rect defaultValue)
+    public CVar(String name, Rect defaultValue)
     {
         this(name, defaultValue, CFlags.None);
     }
 
-    public CVar(string name, Rect defaultValue, CFlags flags)
+    public CVar(String name, Rect defaultValue, CFlags flags)
     {
         this(name, CVarType.Rect, flags);
 
@@ -89,12 +89,12 @@ public class CVar // FIXME: IEquatable<CVar>
         m_defaultValue = m_value;
     }
 
-    public CVar(string name, Vector2 defaultValue)
+    public CVar(String name, Vector2 defaultValue)
     {
         this(name, defaultValue, CFlags.None);
     }
 
-    public CVar(string name, Vector2 defaultValue, CFlags flags)
+    public CVar(String name, Vector2 defaultValue, CFlags flags)
     {
         this(name, CVarType.Vector2, flags);
 
@@ -102,12 +102,12 @@ public class CVar // FIXME: IEquatable<CVar>
         m_defaultValue = m_value;
     }
 
-    public CVar(string name, Vector3 defaultValue)
+    public CVar(String name, Vector3 defaultValue)
     {
         this(name, defaultValue, CFlags.None);
     }
 
-    public CVar(string name, Vector3 defaultValue, CFlags flags)
+    public CVar(String name, Vector3 defaultValue, CFlags flags)
     {
         this(name, CVarType.Vector3, flags);
 
@@ -115,12 +115,12 @@ public class CVar // FIXME: IEquatable<CVar>
         m_defaultValue = m_value;
     }
 
-    public CVar(string name, Vector4 defaultValue)
+    public CVar(String name, Vector4 defaultValue)
     {
         this(name, defaultValue, CFlags.None);
     }
 
-    public CVar(string name, Vector4 defaultValue, CFlags flags)
+    public CVar(String name, Vector4 defaultValue, CFlags flags)
     {
         this(name, CVarType.Vector4, flags);
 
@@ -128,11 +128,11 @@ public class CVar // FIXME: IEquatable<CVar>
         m_defaultValue = m_value;
     }
 
-    private CVar(string name, CVarType type, CFlags flags)
+    private CVar(String name, CVarType type, CFlags flags)
     {
         if (name == null)
         {
-            throw new NullReferenceException("Name is null");
+            throw new NullPointerException("Name is null");
         }
 
         m_name = name;
@@ -157,7 +157,7 @@ public class CVar // FIXME: IEquatable<CVar>
     {
         if (del == null)
         {
-            throw new ArgumentNullException("Delegate is null");
+            throw new NullPointerException("Delegate is null");
         }
 
         if (m_delegateList == null)
@@ -184,7 +184,7 @@ public class CVar // FIXME: IEquatable<CVar>
         }
     }
 
-    public void RemoveDelegates(object target)
+    public void RemoveDelegates(Object target)
     {
         if (target != null && m_delegateList != null)
         {
@@ -214,7 +214,7 @@ public class CVar // FIXME: IEquatable<CVar>
     //////////////////////////////////////////////////////////////////////////////
     // IEquatable
 
-    public bool Equals(CVar other)
+    public boolean Equals(CVar other)
     {
         return other != null &&
             other.m_name == m_name &&
@@ -227,7 +227,7 @@ public class CVar // FIXME: IEquatable<CVar>
     //////////////////////////////////////////////////////////////////////////////
     // Properties
 
-    public string Name
+    public String Name
     {
         get { return m_name; }
     }
@@ -237,22 +237,22 @@ public class CVar // FIXME: IEquatable<CVar>
         get { return m_type; }
     }
 
-    public string DefaultValue
+    public String DefaultValue
     {
         get { return m_defaultValue.stringValue; }
     }
 
-    public bool IsString
+    public boolean IsString
     {
         get { return m_type == CVarType.String; }
     }
 
-    public string Value
+    public String Value
     {
         get { return m_value.stringValue; }
         set
         {
-            bool changed = m_value.stringValue != value;
+            boolean changed = m_value.stringValue != value;
 
             m_value.stringValue = value;
             m_value.intValue = 0;
@@ -266,7 +266,7 @@ public class CVar // FIXME: IEquatable<CVar>
         }
     }
 
-    public bool IsInt
+    public boolean IsInt
     {
         get { return m_type == CVarType.Integer || m_type == CVarType.Boolean; }
     }
@@ -276,7 +276,7 @@ public class CVar // FIXME: IEquatable<CVar>
         get { return m_value.intValue; }
         set
         {
-            bool changed = m_value.intValue != value;
+            boolean changed = m_value.intValue != value;
 
             m_value.stringValue = StringUtils.ToString(value);
             m_value.intValue = value;
@@ -290,7 +290,7 @@ public class CVar // FIXME: IEquatable<CVar>
         }
     }
 
-    public bool IsFloat
+    public boolean IsFloat
     {
         get { return m_type == CVarType.Float; }
     }
@@ -314,18 +314,18 @@ public class CVar // FIXME: IEquatable<CVar>
         }
     }
 
-    public bool IsBool
+    public boolean IsBool
     {
         get { return m_type == CVarType.Boolean; }
     }
 
-    public bool BoolValue
+    public boolean BoolValue
     {
         get { return m_value.intValue != 0; }
         set { this.IntValue = value ? 1 : 0; }
     }
 
-    public bool IsColor
+    public boolean IsColor
     {
         get { return m_type == CVarType.Color; }
     }
@@ -340,7 +340,7 @@ public class CVar // FIXME: IEquatable<CVar>
         }
         set {
             Vector4 vector = new Vector4(value.r, value.g, value.b, value.a);
-            bool changed = m_value.vectorValue != vector;
+            boolean changed = m_value.vectorValue != vector;
 
             m_value.stringValue = StringUtils.ToString(ref value);
             m_value.intValue = 0;
@@ -355,7 +355,7 @@ public class CVar // FIXME: IEquatable<CVar>
         }
     }
 
-    public bool IsRect
+    public boolean IsRect
     {
         get { return m_type == CVarType.Rect; }
     }
@@ -371,7 +371,7 @@ public class CVar // FIXME: IEquatable<CVar>
 
         set {
             Vector4 vector = new Vector4(value.x, value.y, value.width, value.height);
-            bool changed = m_value.vectorValue != vector;
+            boolean changed = m_value.vectorValue != vector;
 
             m_value.stringValue = StringUtils.ToString(ref value);
             m_value.intValue = 0;
@@ -385,7 +385,7 @@ public class CVar // FIXME: IEquatable<CVar>
         }
     }
 
-    public bool IsVector2
+    public boolean IsVector2
     {
         get { return m_type == CVarType.Vector2; }
     }
@@ -398,7 +398,7 @@ public class CVar // FIXME: IEquatable<CVar>
         }
         set {
             Vector4 vector = new Vector4(value.x, value.y);
-            bool changed = m_value.vectorValue != vector;
+            boolean changed = m_value.vectorValue != vector;
 
             m_value.stringValue = StringUtils.ToString(ref value);
             m_value.intValue = 0;
@@ -412,7 +412,7 @@ public class CVar // FIXME: IEquatable<CVar>
         }
     }
 
-    public bool IsVector3
+    public boolean IsVector3
     {
         get { return m_type == CVarType.Vector3; }
     }
@@ -426,7 +426,7 @@ public class CVar // FIXME: IEquatable<CVar>
         }
         set {
             Vector4 vector = new Vector4(value.x, value.y, value.z);
-            bool changed = m_value.vectorValue != vector;
+            boolean changed = m_value.vectorValue != vector;
 
             m_value.stringValue = StringUtils.ToString(ref value);
             m_value.intValue = 0;
@@ -440,7 +440,7 @@ public class CVar // FIXME: IEquatable<CVar>
         }
     }
 
-    public bool IsVector4
+    public boolean IsVector4
     {
         get { return m_type == CVarType.Vector4; }
     }
@@ -449,7 +449,7 @@ public class CVar // FIXME: IEquatable<CVar>
     {
         get { return m_value.vectorValue; }
         set {
-            bool changed = m_value.vectorValue != value;
+            boolean changed = m_value.vectorValue != value;
 
             m_value.stringValue = StringUtils.ToString(ref value);
             m_value.intValue = 0;
@@ -463,12 +463,12 @@ public class CVar // FIXME: IEquatable<CVar>
         }
     }
 
-    public bool IsDefault
+    public boolean IsDefault
     {
         get { return m_value.Equals(m_defaultValue); }
         set
         {
-            bool changed = this.IsDefault ^ value;
+            boolean changed = this.IsDefault ^ value;
             m_value = m_defaultValue;
 
             if (changed)
@@ -478,22 +478,22 @@ public class CVar // FIXME: IEquatable<CVar>
         }
     }
 
-    internal bool IsHidden
+    internal boolean IsHidden
     {
         get { return HasFlag(CFlags.Hidden); }
     }
 
-    internal bool IsSystem
+    internal boolean IsSystem
     {
         get { return HasFlag(CFlags.System); }
     }
 
-    internal bool IsDebug
+    internal boolean IsDebug
     {
         get { return HasFlag(CFlags.Debug); }
     }
 
-    internal bool HasFlag(CFlags flag)
+    internal boolean HasFlag(CFlags flag)
     {
         return (m_flags & flag) != 0;
     }

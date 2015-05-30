@@ -13,27 +13,27 @@ abstract class ITimerManager implements IUpdatable, IDestroyable // not a good i
     {
     }
 
-    public Timer Schedule(Action callback, float delay = 0.0f, bool repeated = false, string name = null)
+    public Timer Schedule(Action callback, float delay = 0.0f, boolean repeated = false, String name = null)
     {
         return Schedule(callback, delay, repeated ? 0 : 1, name);
     }
 
-    public Timer Schedule(Action<Timer> callback, float delay = 0.0f, bool repeated = false, string name = null)
+    public Timer Schedule(Action<Timer> callback, float delay = 0.0f, boolean repeated = false, String name = null)
     {
         return Schedule(callback, delay, repeated ? 0 : 1, name);
     }
 
-    public Timer ScheduleOnce(Action callback, float delay = 0.0f, bool repeated = false, string name = null)
+    public Timer ScheduleOnce(Action callback, float delay = 0.0f, boolean repeated = false, String name = null)
     {
         return ScheduleOnce(callback, delay, repeated ? 0 : 1, name);
     }
 
-    public Timer ScheduleOnce(Action<Timer> callback, float delay = 0.0f, bool repeated = false, string name = null)
+    public Timer ScheduleOnce(Action<Timer> callback, float delay = 0.0f, boolean repeated = false, String name = null)
     {
         return ScheduleOnce(callback, delay, repeated ? 0 : 1, name);
     }
 
-    public Timer ScheduleOnce(Action callback, float delay, int numRepeats, string name = null)
+    public Timer ScheduleOnce(Action callback, float delay, int numRepeats, String name = null)
     {
         synchronized (this)
         {
@@ -47,7 +47,7 @@ abstract class ITimerManager implements IUpdatable, IDestroyable // not a good i
         }
     }
 
-    public Timer ScheduleOnce(Action<Timer> callback, float delay, int numRepeats, string name = null)
+    public Timer ScheduleOnce(Action<Timer> callback, float delay, int numRepeats, String name = null)
     {
         lock (this)
         {
@@ -61,15 +61,15 @@ abstract class ITimerManager implements IUpdatable, IDestroyable // not a good i
         }
     }
 
-    public abstract Timer Schedule(Action callback, float delay, int numRepeats, string name = null);
-    public abstract Timer Schedule(Action<Timer> callback, float delay, int numRepeats, string name = null);
+    public abstract Timer Schedule(Action callback, float delay, int numRepeats, String name = null);
+    public abstract Timer Schedule(Action<Timer> callback, float delay, int numRepeats, String name = null);
 
     public abstract void Cancel(Action callback);
     public abstract void Cancel(Action<Timer> callback);
 
-    public abstract void Cancel(string name);
+    public abstract void Cancel(String name);
     public abstract void CancelAll();
-    public abstract void CancelAll(object target);
+    public abstract void CancelAll(Object target);
 
     protected abstract Timer FindTimer(Action callback);
     protected abstract Timer FindTimer(Action<Timer> callback);

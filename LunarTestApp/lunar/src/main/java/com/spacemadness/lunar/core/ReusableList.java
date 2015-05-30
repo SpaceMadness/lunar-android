@@ -84,7 +84,7 @@ public class ReusableList<T> extends ObjectsPoolEntry
         m_innerList.clear();
     }
 
-    public bool Contains(T item)
+    public boolean Contains(T item)
     {
         return m_innerList.contains(item);
     }
@@ -95,7 +95,7 @@ public class ReusableList<T> extends ObjectsPoolEntry
         throw new NotImplementedException();
     }
 
-    public bool Remove(T item)
+    public boolean Remove(T item)
     {
         return m_innerList.remove(item);
     }

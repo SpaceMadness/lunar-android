@@ -85,7 +85,7 @@ public class FastList<T extends FastListNode> implements IFastList
         return node;
     }
 
-    public bool ContainsItem(T item)
+    public boolean ContainsItem(T item)
     {
         if (item.m_list != this)
         {

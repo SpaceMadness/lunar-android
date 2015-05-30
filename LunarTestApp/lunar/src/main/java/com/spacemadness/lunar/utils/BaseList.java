@@ -31,14 +31,14 @@ public class BaseList<T> implements IBaseCollection<T>
         this.nullElement = nullElement;
     }
 
-    public bool Add(T e)
+    public boolean Add(T e)
     {
         Assert.NotContains(e, list);
         list.add(e);
         return true;
     }
 
-    public bool Remove(T e)
+    public boolean Remove(T e)
     {
         int index = list.indexOf(e);
         if (index != -1)
@@ -71,12 +71,12 @@ public class BaseList<T> implements IBaseCollection<T>
         list.clear();
     }
 
-    public bool Contains(T e)
+    public boolean Contains(T e)
     {
         return list.contains(e);
     }
 
-    public bool IsNull()
+    public boolean IsNull()
     {
         return false;
     }

@@ -8,7 +8,7 @@ import com.spacemadness.lunar.debug.Assert;
 public class ObjectsPoolEntry extends FastListNode
 {
     IObjectsPool pool;
-    bool recycled;
+    boolean recycled;
 
     public ObjectsPoolEntry AutoRecycle()
     {
