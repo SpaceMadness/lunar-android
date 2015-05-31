@@ -9,12 +9,12 @@ import java.util.regex.Pattern;
  */
 public class StringUtils
 {
-    private static final char[] kSpaceSplitChars = { ' ' };
+    private static final char[] kSpaceSplitChars = { ' ' }; // FIXME: rename
 
-    private static final Pattern kRichTagRegex = Pattern.compile("(<color=.*?>)|(<b>)|(<i>)|(</color>)|(</b>)|(</i>)");
-    private static final Pattern kColorCodeTagRegex = Pattern.compile("<color=\\$(\\d+)>");
+    private static final Pattern kRichTagRegex = Pattern.compile("(<color=.*?>)|(<b>)|(<i>)|(</color>)|(</b>)|(</i>)");  // FIXME: rename
+    private static final Pattern kColorCodeTagRegex = Pattern.compile("<color=\\$(\\d+)>"); // FIXME: rename
 
-    static String TryFormat(String format, Object... args)
+    static String TryFormat(String format, Object... args) // FIXME: rename
     {
         if (format != null && args != null && args.length > 0)
         {
@@ -24,7 +24,7 @@ public class StringUtils
             }
             catch (Exception e)
             {
-                Debug.LogError("Error while formatting String: " + e.getMessage());
+                android.util.Log.e("Lunar", "Error while formatting String: " + e.getMessage()); // FIXME: better system loggingb
             }
         }
 
@@ -33,7 +33,7 @@ public class StringUtils
 
     //////////////////////////////////////////////////////////////////////////////
 
-    public static boolean StartsWithIgnoreCase(String str, String prefix)
+    public static boolean StartsWithIgnoreCase(String str, String prefix) // FIXME: rename
     {
         // return str != null && prefix != null && str.startsWith(prefix, StringComparison.OrdinalIgnoreCase);
         throw new NotImplementedException();
@@ -42,7 +42,7 @@ public class StringUtils
     //////////////////////////////////////////////////////////////////////////////
     // Parsing
 
-    public static int ParseInt(String str)
+    public static int ParseInt(String str) // FIXME: rename
     {
         return ParseInt(str, 0);
     }
@@ -51,28 +51,20 @@ public class StringUtils
     {   
         if (!IsNullOrEmpty(str))
         {
-            int value;
-            boolean succeed = int.TryParse(str, out value);
-            return succeed ? value : defValue;
+            try
+            {
+                return Integer.parseInt(str);
+            }
+            catch (NumberFormatException e)
+            {
+                return defValue;
+            }
         }
 
         return defValue;
     }
 
-    public static int ParseInt(String str, out boolean succeed)
-    {
-        if (!IsNullOrEmpty(str))
-        {
-            int value;
-            succeed = int.TryParse(str, out value);
-            return succeed ? value : 0;
-        }
-
-        succeed = false;
-        return 0;
-    }
-
-    public static float ParseFloat(String str)
+    public static float ParseFloat(String str) // FIXME: rename
     {
         return ParseFloat(str, 0.0f);
     }
@@ -81,39 +73,36 @@ public class StringUtils
     {
         if (!IsNullOrEmpty(str))
         {
-            float value;
-            boolean succeed = float.TryParse(str, out value);
-            return succeed ? value : defValue;
+            try
+            {
+                return Float.parseFloat(str);
+            }
+            catch (NumberFormatException e)
+            {
+                return defValue;
+            }
         }
 
         return defValue;
     }
 
-    public static float ParseFloat(String str, out boolean succeed)
-    {
-        if (!IsNullOrEmpty(str))
-        {
-            float value;
-            succeed = float.TryParse(str, out value);
-            return succeed ? value : 0.0f;
-        }
-
-        succeed = false;
-        return 0.0f;
-    }
-
-    public static boolean ParseBool(String str)
+    public static boolean ParseBool(String str) // FIXME: rename
     {
         return ParseBool(str, false);
     }
 
-    public static boolean ParseBool(String str, boolean defValue)
+    public static boolean ParseBool(String str, boolean defValue) // FIXME: rename
     {
         if (!IsNullOrEmpty(str))
         {
-            boolean value;
-            boolean succeed = boolean.TryParse(str, out value);
-            return succeed ? value : defValue;
+            try
+            {
+                return Boolean.parseBoolean(str);
+            }
+            catch (NumberFormatException e)
+            {
+                return defValue;
+            }
         }
 
         return defValue;
