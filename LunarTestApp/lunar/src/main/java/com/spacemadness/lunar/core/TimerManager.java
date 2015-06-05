@@ -5,7 +5,7 @@ import com.spacemadness.lunar.debug.Assert;
 /**
  * Created by weee on 5/28/15.
  */
-public class TimerManager implements ITimerManager
+public class TimerManager extends ITimerManager
 {
     public static final ITimerManager Null = new NullTimerManager();
 
@@ -32,32 +32,36 @@ public class TimerManager implements ITimerManager
         s_sharedInstance = new TimerManager();
     }
 
-    public static Timer ScheduleTimer(Action callback, float delay = 0.0f, boolean repeated = false, String name = null)
+    // FIXME: public static Timer ScheduleTimer(Runnable callback, float delay = 0.0f, boolean repeated = false, String name = null)
+    public static Timer ScheduleTimer(Runnable callback, float delay, boolean repeated, String name)
     {
         return s_sharedInstance.Schedule(callback, delay, repeated, name);
     }
 
-    public static Timer ScheduleTimer(Action<Timer> callback, float delay = 0.0f, boolean repeated = false, String name = null)
+    // FIXME: public static Timer ScheduleTimer(TimerRunnable callback, float delay = 0.0f, boolean repeated = false, String name = null)
+    public static Timer ScheduleTimer(TimerRunnable callback, float delay, boolean repeated, String name)
     {
         return s_sharedInstance.Schedule(callback, delay, repeated, name);
     }
 
-    public static Timer ScheduleTimerOnce(Action callback, float delay = 0.0f, boolean repeated = false, String name = null)
+    // FIXME: public static Timer ScheduleTimerOnce(Runnable callback, float delay = 0.0f, boolean repeated = false, String name = null)
+    public static Timer ScheduleTimerOnce(Runnable callback, float delay, boolean repeated, String name)
     {
         return s_sharedInstance.ScheduleOnce(callback, delay, repeated, name);
     }
 
-    public static Timer ScheduleTimerOnce(Action<Timer> callback, float delay = 0.0f, boolean repeated = false, String name = null)
+    // FIXME: public static Timer ScheduleTimerOnce(TimerRunnable callback, float delay = 0.0f, boolean repeated = false, String name = null)
+    public static Timer ScheduleTimerOnce(TimerRunnable callback, float delay, boolean repeated, String name)
     {
         return s_sharedInstance.ScheduleOnce(callback, delay, repeated, name);
     }
 
-    public static void CancelTimer(Action callback)
+    public static void CancelTimer(Runnable callback)
     {
         s_sharedInstance.Cancel(callback);
     }
 
-    public static void CancelTimer(Action<Timer> callback)
+    public static void CancelTimer(TimerRunnable callback)
     {
         s_sharedInstance.Cancel(callback);
     }
@@ -136,18 +140,18 @@ public class TimerManager implements ITimerManager
     // Schedule
 
     @Override
-    public Timer Schedule(Action callback, float delay, int numRepeats, String name = null)
+    public Timer Schedule(Runnable callback, float delay, int numRepeats, String name)
     {
         return Schedule(callback, Timer.DefaultTimerCallback, delay, numRepeats, name);
     }
 
     @Override
-    public Timer Schedule(Action<Timer> callback, float delay, int numRepeats, String name = null)
+    public Timer Schedule(TimerRunnable callback, float delay, int numRepeats, String name)
     {
         return Schedule(null, callback, delay, numRepeats, name);
     }
 
-    private Timer Schedule(Action callback1, Action<Timer> callback2, float delay, int numRepeats, String name)
+    private Timer Schedule(Runnable callback1, TimerRunnable callback2, float delay, int numRepeats, String name)
     {
         float timeout = delay < 0 ? 0 : delay;
 
@@ -176,7 +180,7 @@ public class TimerManager implements ITimerManager
     }
 
     @Override
-    protected Timer FindTimer(Action callback)
+    protected Timer FindTimer(Runnable callback)
     {
         for (Timer timer = rootTimer; timer != null; timer = timer.next)
         {
@@ -190,7 +194,7 @@ public class TimerManager implements ITimerManager
     }
 
     @Override
-    protected Timer FindTimer(Action<Timer> callback)
+    protected Timer FindTimer(TimerRunnable callback)
     {
         for (Timer timer = rootTimer; timer != null; timer = timer.next)
         {
@@ -204,7 +208,7 @@ public class TimerManager implements ITimerManager
     }
 
     @Override
-    public void Cancel(Action callback)
+    public void Cancel(Runnable callback)
     {
         synchronized (this)
         {
@@ -222,7 +226,7 @@ public class TimerManager implements ITimerManager
     }
 
     @Override
-    public void Cancel(Action<Timer> callback)
+    public void Cancel(TimerRunnable callback)
     {
         synchronized (this)
         {
@@ -250,24 +254,6 @@ public class TimerManager implements ITimerManager
                 timer = timer.next;
 
                 if (t.name == name)
-                {
-                    t.Cancel();
-                }
-            }
-        }
-    }
-
-    @Override
-    public void CancelAll(Object target)
-    {
-        synchronized (this)
-        {
-            for (Timer timer = rootTimer; timer != null;)
-            {
-                Timer t = timer;
-                timer = timer.next;
-
-                if (t.callback1 != null && t.callback1.Target == target || t.callback2.Target == target)
                 {
                     t.Cancel();
                 }

@@ -6,24 +6,24 @@ package com.spacemadness.lunar.core;
 class NullTimerManager extends ITimerManager
 {
     @Override
-    public Timer Schedule(Action callback, float delay, int numRepeats, String name = null)
+    public Timer Schedule(Runnable callback, float delay, int numRepeats, String name)
     {
         throw new InvalidOperationException("Can't schedule timer on a 'null' timer manager");
     }
 
     @Override
-    public Timer Schedule(Action<Timer> callback, float delay, int numRepeats, String name = null)
+    public Timer Schedule(TimerRunnable callback, float delay, int numRepeats, String name)
     {
         throw new InvalidOperationException("Can't schedule timer on a 'null' timer manager");
     }
 
     @Override
-    public void Cancel(Action callback)
+    public void Cancel(Runnable callback)
     {   
     }
 
     @Override
-    public void Cancel(Action<Timer> callback)
+    public void Cancel(TimerRunnable callback)
     {
     }
 
@@ -43,13 +43,13 @@ class NullTimerManager extends ITimerManager
     }
 
     @Override
-    protected Timer FindTimer(Action callback)
+    protected Timer FindTimer(Runnable callback)
     {
         return null;
     }
 
     @Override
-    protected Timer FindTimer(Action<Timer> callback)
+    protected Timer FindTimer(TimerRunnable callback)
     {
         return null;
     }

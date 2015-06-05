@@ -2,6 +2,7 @@ package com.spacemadness.lunar.core;
 
 import com.spacemadness.lunar.debug.Log;
 import com.spacemadness.lunar.utils.ClassUtils;
+import com.spacemadness.lunar.utils.StringUtils;
 
 /**
  * Created by weee on 5/28/15.
@@ -10,12 +11,21 @@ public class Timer
 {
     static final Object mutex = new Object();
 
+    static final TimerRunnable DefaultTimerCallback = new TimerRunnable()
+    {
+        @Override
+        public void run(Timer timer)
+        {
+            timer.callback1.run();
+        }
+    };
+
     static Timer freeRoot;
 
     boolean cancelled;
 
-    Action callback1;
-    Action<Timer> callback2;
+    Runnable callback1;
+    TimerRunnable callback2;
 
     Timer next;
     Timer prev;
@@ -52,7 +62,7 @@ public class Timer
         {
             try
             {
-                callback2(this);
+                callback2.run(this);
 
                 if (!cancelled)
                 {
@@ -75,14 +85,9 @@ public class Timer
         }
     }
 
-    static void DefaultTimerCallback(Timer timer)
+    public <T> T UserData(Class<? extends T> cls)
     {
-        timer.callback1();
-    }
-
-    public T UserData<T>()
-    {
-        return ClassUtils.Cast<T>(userData);
+        return ClassUtils.cast(userData, cls);
     }
 
     public boolean IsRepeated()
@@ -113,13 +118,12 @@ public class Timer
     @Override
     public String toString()
     {
-        Delegate callback = callback2 != DefaultTimerCallback ? (Delegate)callback2 : (Delegate)callback1;
-        return String.Format("[Target={0}, Method={1}, IsRepeated={2}, Timeout={3}, Elapsed={4}]",
-            callback != null ? callback.Target : null,
-            callback != null ? callback.Method : null,
-            this.IsRepeated, 
-            this.Timeout, 
-            this.manager != null ? this.Elapsed : 0);
+        Object callback = callback2 != DefaultTimerCallback ? callback2 : callback1;
+        return StringUtils.TryFormat("Method=%s, IsRepeated=%s, Timeout=%f, Elapsed=%f]",
+                callback,
+                this.IsRepeated(),
+                this.Timeout(),
+                this.manager != null ? this.Elapsed() : 0);
     }
 
     //////////////////////////////////////////////////////////////////////////////

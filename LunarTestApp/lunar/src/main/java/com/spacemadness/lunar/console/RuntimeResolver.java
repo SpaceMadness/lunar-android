@@ -1,8 +1,8 @@
 package com.spacemadness.lunar.console;
 
-import com.spacemadness.lunar.com.spacemadness.lunar.console.CCommand;
+import com.spacemadness.lunar.utils.NotImplementedException;
 
-import spacemadness.com.lunar.NotImplementedException;
+import java.util.List;
 
 /**
  * Created by alementuev on 5/28/15.
@@ -11,7 +11,8 @@ class RuntimeResolver // TODO: remove this class
 {
     public static List<CCommand> ResolveCommands()
     {
-        List<CCommand> list = new List<CCommand>();
+        /*
+        List<CCommand> list = new ArrayList<CCommand>();
 
         try
         {
@@ -68,15 +69,19 @@ class RuntimeResolver // TODO: remove this class
         }
 
         return list;
+        */
+
+        throw new NotImplementedException();
     }
 
     public static void ResolveOptions(CCommand command)
     {
-        ResolveOptions(command, command.GetType());
+        ResolveOptions(command, command.getClass());
     }
 
-    public static void ResolveOptions(CCommand command, Type commandType)
+    public static void ResolveOptions(CCommand command, Class<? extends CCommand> commandType)
     {
+        /*
         FieldInfo[] fields = commandType.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
         for (int i = 0; i < fields.Length; ++i)
         {
@@ -101,10 +106,14 @@ class RuntimeResolver // TODO: remove this class
                 command.AddOption(option);
             }
         }
+        */
+
+        throw new NotImplementedException();
     }
 
-    private static String[] ParseValues(String str, Type type)
+    private static String[] ParseValues(String str, Class<?> type)
     {
+        /*
         String[] tokens = str.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
         for (int i = 0; i < tokens.Length; ++i)
         {
@@ -122,70 +131,14 @@ class RuntimeResolver // TODO: remove this class
         Array.Sort(tokens);
 
         return tokens;
+        */
+
+        throw new NotImplementedException();
     }
 
-    private static boolean IsCorrectPlatform(CCommandFlags flags)
+    private static Object GetDefaultValue(CCommand command, /*FieldInfo*/ Object info)
     {
         /*
-            if ((flags & CCommandFlags.IOS) != 0 && !Runtime.IsIOS)
-            {
-                return false;
-            }
-            
-            if ((flags & CCommandFlags.Android) != 0 && !Runtime.IsAndroid)
-            {
-                return false;
-            }
-
-            if ((flags & CCommandFlags.Mobile) != 0 && !Runtime.IsMobile)
-            {
-                return false;
-            }
-
-            if ((flags & CCommandFlags.Standalone) != 0 && !Runtime.IsStandAlone)
-            {
-                return false;
-            }
-
-            if ((flags & CCommandFlags.OSX) != 0 && !Runtime.IsOSX)
-            {
-                Debug.Log(4);
-                return false;
-            }
-
-            if ((flags & CCommandFlags.Windows) != 0 && !Runtime.IsWindows)
-            {
-                Debug.Log(5);
-                return false;
-            }
-
-            if ((flags & CCommandFlags.Linux) != 0 && !Runtime.IsLinux)
-            {
-                Debug.Log(6);
-                return false;
-            }
-
-            if ((flags & CCommandFlags.Editor) != 0)
-            {
-                if ((flags & CCommandFlags.OSXEditor) != 0 && !Runtime.IsOSXEditor)
-                {
-                    return false;
-                }
-
-                if ((flags & CCommandFlags.WindowsEditor) != 0 && !Runtime.IsWindowsEditor)
-                {
-                    return false;
-                }
-
-                return true;
-            }
-            */
-
-        return true;
-    }
-
-    private static Object GetDefaultValue(CCommand command, FieldInfo info)
-    {
         Object value = info.GetValue(command);
         if (info.FieldType.IsValueType)
         {
@@ -193,5 +146,7 @@ class RuntimeResolver // TODO: remove this class
         }
 
         return value is ICloneable ? ((ICloneable)value).Clone() : value;
+        */
+        throw new NotImplementedException();
     }
 }

@@ -2,11 +2,17 @@ package com.spacemadness.lunar.console;
 
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.List;
 
-import com.spacemadness.lunar.utils.ClassUtils;
+import com.spacemadness.lunar.ColorCode;
+import com.spacemadness.lunar.utils.ArrayUtils;
+import com.spacemadness.lunar.utils.NotImplementedException;
 import com.spacemadness.lunar.utils.ReusableList;
 import com.spacemadness.lunar.utils.ReusableLists;
 import com.spacemadness.lunar.utils.StringUtils;
@@ -14,7 +20,7 @@ import com.spacemadness.lunar.utils.StringUtils;
 /**
  * Created by alementuev on 5/28/15.
  */
-public abstract class CCommand // FIXME: IComparable<CCommand>
+public abstract class CCommand implements Comparable<CCommand>
 {
     private static final String[] EMPTY_COMMAND_ARGS = new String[0];
 
@@ -27,7 +33,7 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
 
     public CCommand()
     {
-        this.Delegate = null;
+        this.Delegate(null);
     }
 
     public CCommand(String name)
@@ -46,12 +52,17 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
         RuntimeResolver.ResolveOptions(command);
     }
 
-    static void ResolveOptions(CCommand command, Type commandType)
+    static void ResolveOptions(CCommand command, Class<? extends CCommand> commandType)
     {
         RuntimeResolver.ResolveOptions(command, commandType);
     }
 
-    boolean ExecuteTokens(List<String> tokens, String commandLine = null)
+    boolean ExecuteTokens(List<String> tokens)
+    {
+        return ExecuteTokens(tokens, null);
+    }
+
+    boolean ExecuteTokens(List<String> tokens, String commandLine)
     {
         try
         {
@@ -61,6 +72,7 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
         {
             PrintError(e.getMessage());
         }
+        /* // FIXME: handle invocation error
         catch (TargetInvocationException e)
         {
             if (e.InnerException is CCommandException)
@@ -72,6 +84,7 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
                 PrintError(e.InnerException, "Error while executing command");
             }
         }
+        */
         catch (Exception e)
         {
             PrintError(e, "Error while executing command");
@@ -80,7 +93,7 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
         return false;
     }
 
-    private boolean ExecuteGuarded(List<String> tokens, String commandLine = null)
+    private boolean ExecuteGuarded(List<String> tokens, String commandLine)
     {
         ResetOptions();
 
@@ -99,7 +112,7 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
         //    return false;
         // }
 
-        ReusableList<String> argsList = ReusableLists.NextAutoRecycleList<String>();
+        ReusableList<String> argsList = ReusableLists.NextAutoRecycleList(String.class);
         while (iter.hasNext())
         {
             String token = StringUtils.UnArg(iter.next());
@@ -139,7 +152,7 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
             }
 
             String arg = argsList.get(0);
-            if (Array.IndexOf(m_values, arg) == -1)
+            if (ArrayUtils.IndexOf(m_values, arg) == -1)
             {
                 PrintError("Unexpected argument '{0}'", arg);
                 PrintUsage();
@@ -161,6 +174,7 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
             }
         }
 
+        /*
         String[] args = argsList.Count() > 0 ? argsList.ToArray() : EMPTY_COMMAND_ARGS;
         MethodInfo[] methods = ClassUtils.ListInstanceMethods(GetCommandType(), delegate(MethodInfo method)
         {
@@ -185,6 +199,9 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
         }
 
         return CCommandUtils.Invoke(this, methods[0], args);
+        */
+
+        throw new NotImplementedException();
     }
 
     private Option ParseOption(Iterator<String> iter, String name)
@@ -203,6 +220,7 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
 
     private void ParseOption(Iterator<String> iter, Option opt)
     {
+        /*
         Type type = opt.Target.FieldType;
         opt.IsHandled = true;
 
@@ -284,6 +302,9 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
         {
             throw new CCommandException("Unsupported field type: " + type);
         }
+        */
+
+        throw new NotImplementedException();
     }
 
     private boolean SkipOption(Iterator<String> iter, String name)
@@ -294,6 +315,7 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
 
     private boolean SkipOption(Iterator<String> iter, Option opt)
     {
+        /*
         Type type = opt.Target.FieldType;
 
         if (type.IsArray)
@@ -352,6 +374,8 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
         }
 
         return false;
+        */
+        throw new NotImplementedException();
     }
 
     private void CheckValue(Option opt, Object value)
@@ -367,11 +391,11 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
             }
 
             String optionDesc = opt.ShortName != null ?
-                StringUtils.TryFormat("--{0}(-{1})", opt.Name, opt.ShortName) :
-                StringUtils.TryFormat("--{0}", opt.Name);
+                StringUtils.TryFormat("--{%s}(-{%s})", opt.Name, opt.ShortName) :
+                StringUtils.TryFormat("--{%s}", opt.Name);
 
             StringBuilder buffer = new StringBuilder();
-            buffer.AppendFormat("Invalid value '{0}' for option {1}\n", value, optionDesc);
+            buffer.append(StringUtils.TryFormat("Invalid value '{%s}' for option {%s}\n", value, optionDesc));
             buffer.append("Valid values:");
             for (Object v : opt.Values)
             {
@@ -389,8 +413,8 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
     {
         if (m_optionsLookup == null)
         {
-            m_optionsLookup = new Map<String, Option>();
-            m_options = new List<Option>();
+            m_optionsLookup = new HashMap<String, Option>();
+            m_options = new ArrayList<Option>();
         }
 
         String name = opt.Name;
@@ -417,13 +441,24 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
         }
     }
 
-    List<Option> ListShortOptions(String prefix = null)
+    List<Option> ListShortOptions()
     {
-        return ListShortOptions(ReusableLists.NextAutoRecycleList<Option>(), prefix);
+        return ListShortOptions((String)null);
     }
 
-    List<Option> ListShortOptions(List<Option> outList, String prefix = null)
+    List<Option> ListShortOptions(String prefix)
     {
+        return ListShortOptions(ReusableLists.NextAutoRecycleList(Option.class), prefix);
+    }
+
+    List<Option> ListShortOptions(List<Option> outList)
+    {
+        return ListShortOptions(outList, null);
+    }
+
+    List<Option> ListShortOptions(List<Option> outList, String prefix)
+    {
+        /*
         if (!StringUtils.IsNullOrEmpty(prefix))
         {
             return ListOptions(outList, delegate(Option opt) {
@@ -432,15 +467,29 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
         }
 
         return ListOptions(outList, DefaultListShortOptionsFilter);
+        */
+
+        throw new NotImplementedException(); // FIXME
     }
 
-    List<Option> ListOptions(String prefix = null)
+    List<Option> ListOptions()
     {
-        return ListOptions(ReusableLists.NextAutoRecycleList<Option>(), prefix);
+        return ListOptions((String)null);
     }
 
-    List<Option> ListOptions(List<Option> outList, String prefix = null)
+    List<Option> ListOptions(String prefix)
     {
+        return ListOptions(ReusableLists.NextAutoRecycleList(Option.class), prefix);
+    }
+
+    List<Option> ListOptions(List<Option> outList)
+    {
+        return ListOptions(outList, (String)null);
+    }
+
+    List<Option> ListOptions(List<Option> outList, String prefix)
+    {
+        /*
         if (!StringUtils.IsNullOrEmpty(prefix))
         {
             return ListOptions(outList, delegate(Option opt) {
@@ -448,6 +497,9 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
             });
         }
         return ListOptions(outList, DefaultListOptionsFilter);
+        */
+
+        throw new NotImplementedException(); // FIXME
     }
 
     List<Option> ListOptions(List<Option> outList, ListOptionsFilter filter)
@@ -461,7 +513,7 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
         {
             for (Option opt : m_options)
             {
-                if (filter(opt))
+                if (filter.accept(opt))
                 {
                     outList.add(opt);
                 }
@@ -471,15 +523,23 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
         return outList;
     }
 
-    private static boolean DefaultListOptionsFilter(Option opt)
+    private static final ListOptionsFilter DefaultListOptionsFilter = new ListOptionsFilter()
     {
-        return true;
-    }
+        @Override
+        public boolean accept(Option opt)
+        {
+            return true;
+        }
+    };
 
-    private static boolean DefaultListShortOptionsFilter(Option opt)
+    private static final ListOptionsFilter DefaultListShortOptionsFilter = new ListOptionsFilter()
     {
-        return opt.ShortName != null;
-    }
+        @Override
+        public boolean accept(Option opt)
+        {
+            return opt.ShortName != null;
+        }
+    };
 
     private Option FindOption(String name)
     {
@@ -508,6 +568,7 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
 
     private void ResetOption(Option opt)
     {
+        /*
         Type type = opt.Target.FieldType;
         if (type.IsArray)
         {
@@ -520,13 +581,16 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
             opt.Target.SetValue(this, opt.DefaultValue);
         }
         opt.IsHandled = false;
+        */
+        throw new NotImplementedException(); // FIXME
     }
 
     //////////////////////////////////////////////////////////////////////////////
 
     String AutoComplete(String commandLine, List<String> tokens, boolean doubleTab)
     {
-        Iterator<String> iter = new Iterator<String>(tokens);
+        /*
+        Iterator<String> iter = tokens.iterator();
         iter.next(); // first token is a command name
 
         while (iter.hasNext())
@@ -555,11 +619,15 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
             return AutoCompleteArgs(commandLine, token, doubleTab);
         }
 
-        return AutoCompleteArgs(commandLine, "", doubleTab);;
+        return AutoCompleteArgs(commandLine, "", doubleTab);
+        */
+
+        throw new NotImplementedException(); // FIXME
     }
 
     private String AutoCompleteOption(String commandLine, Iterator<String> iter, String optNameToken, String prefix, boolean doubleTab)
     {
+        /*
         ReusableList<Option> optionsList = ReusableLists.NextAutoRecycleList<Option>();
 
         // list options
@@ -638,10 +706,14 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
         }
 
         return null;
+        */
+
+        throw new NotImplementedException(); // FIXME
     }
 
     private String AutoCompleteOption(String commandLine, String optToken, String argToken, boolean doubleTab, boolean useShort)
     {
+        /*
         String prefix = useShort ? "-" : "--";
         String optName = optToken.Length > prefix.Length ? optToken.SubString(prefix.Length) : null;
 
@@ -692,6 +764,9 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
         }
 
         return null;
+        */
+
+        throw new NotImplementedException(); // FIXME
     }
 
     private String AutoComplete(String commandLine, Option opt, String token, boolean doubleTab)
@@ -700,10 +775,10 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
         {
             if (opt.Values != null)
             {
-                if (opt.Values.Length == 1)
+                if (opt.Values.length == 1)
                 {
                     String value = opt.Values[0];
-                    if (value.StartsWith(token))
+                    if (StringUtils.StartsWithIgnoreCase(value, token))
                     {
                         return commandLine + value + " ";
                     }
@@ -720,20 +795,20 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
                 String suggested = StringUtils.GetSuggestedText(token, opt.ListValues());
                 if (suggested != null)
                 {
-                    String trimmed = commandLine.TrimEnd();
-                    return trimmed.SubString(0, trimmed.Length - token.Length) + suggested;
+                    String trimmed = commandLine.trim();
+                    return trimmed.substring(0, trimmed.length() - token.length()) + suggested;
                 }
             }
 
             return null;
         }
 
-        if (opt.Values.Length == 1)
+        if (opt.Values.length == 1)
         {
-            return commandLine + opt.Values[0].ToString() + " ";
+            return commandLine + opt.Values[0].toString() + " ";
         }
 
-        if (opt.Values.Length > 1 && doubleTab)
+        if (opt.Values.length > 1 && doubleTab)
         {
             Print(opt.Values);
         }
@@ -743,13 +818,13 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
 
     protected String AutoCompleteArgs(String commandLine, String token, boolean doubleTab)
     {
-        if (m_values != null && m_values.Length > 0)
+        if (m_values != null && m_values.length > 0)
         {
             return AutoCompleteArgs(commandLine, m_values, token, doubleTab);
         }
 
         String[] customValues = AutoCompleteArgs(commandLine, token);
-        if (customValues != null && customValues.Length > 0)
+        if (customValues != null && customValues.length > 0)
         {
             return AutoCompleteArgs(commandLine, customValues, token, doubleTab);
         }
@@ -760,23 +835,23 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
     private String AutoCompleteArgs(String commandLine, String[] values, String token, boolean doubleTab)
     {
         // we need to keep suggested values in a sorted order
-        List<String> sortedValues = new List<String>(values.Length);
-        for (int i = 0; i < values.Length; ++i)
+        List<String> sortedValues = new ArrayList<String>(values.length);
+        for (int i = 0; i < values.length; ++i)
         {
-            if (token.Length == 0 || StringUtils.StartsWithIgnoreCase(StringUtils.RemoveRichTextTags(values[i]), token))
+            if (token.length() == 0 || StringUtils.StartsWithIgnoreCase(StringUtils.RemoveRichTextTags(values[i]), token))
             {
-                sortedValues.Add(values[i]);
+                sortedValues.add(values[i]);
             }
         }
 
-        if (sortedValues.Count > 1)
+        if (sortedValues.size() > 1)
         {
-            sortedValues.Sort();
+            Collections.sort(sortedValues);
 
             if (doubleTab)
             {
                 PrintPrompt(commandLine);
-                Print(sortedValues.ToArray());
+                Print(sortedValues.toArray(new String[sortedValues.size()]));
             }
 
             StringUtils.RemoveRichTextTags(sortedValues);
@@ -784,14 +859,14 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
             String suggested = StringUtils.GetSuggestedText(token, sortedValues);
             if (suggested != null)
             {
-                String trimmed = commandLine.TrimEnd();
-                return trimmed.SubString(0, trimmed.Length - token.Length) + suggested;
+                String trimmed = commandLine.trim();
+                return trimmed.substring(0, trimmed.length() - token.length()) + suggested;
             }
         }
-        else if (sortedValues.Count == 1)
+        else if (sortedValues.size() == 1)
         {
-            String trimmed = commandLine.TrimEnd();
-            return trimmed.SubString(0, trimmed.Length - token.Length) + StringUtils.RemoveRichTextTags(sortedValues[0]) + " ";
+            String trimmed = commandLine.trim();
+            return trimmed.substring(0, trimmed.length() - token.length()) + StringUtils.RemoveRichTextTags(sortedValues.get(0)) + " ";
         }
 
         return null;
@@ -804,40 +879,40 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
 
     private void PrintOptions(String commandLine, List<Option> options, boolean useShort)
     {
-        if (options.Count > 0)
+        if (options.size() > 0)
         {
             PrintPrompt(commandLine);
 
-            String[] names = new String[options.Count];
-            for (int i = 0; i < options.Count; ++i)
+            String[] names = new String[options.size()];
+            for (int i = 0; i < options.size(); ++i)
             {
                 if (useShort)
                 {
-                    names[i] = C("-" + options[i].ShortName, ColorCode.TableVar);
+                    names[i] = C("-" + options.get(i).ShortName, ColorCode.TableVar);
                 }
                 else
                 {
-                    names[i] = C("--" + options[i].Name, ColorCode.TableVar);
+                    names[i] = C("--" + options.get(i).Name, ColorCode.TableVar);
                 }
             }
 
-            System.Array.Sort(names);
+            Arrays.sort(names);
             Print(names);
         }
     }
 
     private String GetSuggestedText(String token, List<Option> options, boolean useShort)
     {
-        if (options.Count == 1)
+        if (options.size() == 1)
         {
-            Option opt = options[0];
+            Option opt = options.get(0);
             return useShort ? opt.ShortName : opt.Name;
         }
 
-        String[] names = new String[options.Count];
-        for (int i = 0; i < names.Length; ++i)
+        String[] names = new String[options.size()];
+        for (int i = 0; i < names.length; ++i)
         {
-            names[i] = useShort ? options[i].ShortName : options[i].Name;
+            names[i] = useShort ? options.get(i).ShortName : options.get(i).Name;
         }
 
         return StringUtils.GetSuggestedTextFiltered(token, names);
@@ -845,7 +920,7 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
 
     void Clear()
     {
-        this.Delegate = null;
+        this.Delegate(null);
         this.Args = null;
         this.CommandString = null;
         this.IsManualMode = false;
@@ -861,7 +936,7 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
 
     void PrintPrompt(String commandLine)
     {
-        if (Delegate.IsPromptEnabled)
+        if (Delegate().IsPromptEnabled())
         {
             Print(Prompt(commandLine));
         }
@@ -878,7 +953,7 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
     /// <summary>
     /// Print the specified formatted message.
     /// </summary>
-    protected void Print(String format, params Object[] args)
+    protected void Print(String format, Object... args)
     {
         m_delegate.LogTerminal(StringUtils.TryFormat(format, args));
     }
@@ -914,7 +989,7 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
     /// <summary>
     /// Prints formatted message with indent.
     /// </summary>
-    protected void PrintIndent(String format, params Object[] args)
+    protected void PrintIndent(String format, Object... args)
     {
         m_delegate.LogTerminal("  " + StringUtils.TryFormat(format, args));
     }
@@ -922,7 +997,7 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
     /// <summary>
     /// Prints error message.
     /// </summary>
-    protected void PrintError(String format, params Object[] args)
+    protected void PrintError(String format, Object... args)
     {
         PrintIndent(C(StringUtils.TryFormat(format, args), ColorCode.Error));
     }
@@ -938,7 +1013,7 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
     /// <summary>
     /// Prints exceptions.
     /// </summary>
-    protected void PrintError(Exception e, String format, params Object[] args)
+    protected void PrintError(Exception e, String format, Object... args)
     {
         PrintError(e, StringUtils.TryFormat(format, args));
     }
@@ -954,65 +1029,74 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
     /// <summary>
     /// Prints command's usage.
     /// </summary>
-    public void PrintUsage(boolean showDescription = false)
+    public void PrintUsage()
+    {
+        PrintUsage(false);
+    }
+
+    /// <summary>
+    /// Prints command's usage.
+    /// </summary>
+    public void PrintUsage(boolean showDescription)
     {
         StringBuilder buffer = new StringBuilder();
 
         // description
         if (showDescription && this.Description != null)
         {
-            buffer.AppendFormat("  {0}\n", this.Description);
+            buffer.append(StringUtils.TryFormat("  %s\n", this.Description));
         }
 
         String optionsUsage = GetOptionsUsage(m_options);
         String[] argsUsages = GetArgsUsages();
 
         // name
-        if (argsUsages != null && argsUsages.Length > 0)
+        if (argsUsages != null && argsUsages.length > 0)
         {
             String name = StringUtils.C(this.Name, ColorCode.TableCommand);
 
             // first usage line
-            buffer.AppendFormat("  usage: {0}", name);
+            buffer.append(StringUtils.TryFormat("  usage: %s", name));
             if (!StringUtils.IsNullOrEmpty(optionsUsage))
             {
-                buffer.Append(optionsUsage);
+                buffer.append(optionsUsage);
             }
-            buffer.Append(argsUsages[0]);
+            buffer.append(argsUsages[0]);
 
             // optional usage lines
-            for (int i = 1; i < argsUsages.Length; ++i)
+            for (int i = 1; i < argsUsages.length; ++i)
             {
-                buffer.AppendFormat("\n         {0}", name);
+                buffer.append(StringUtils.TryFormat("\n         %s", name));
                 if (!StringUtils.IsNullOrEmpty(optionsUsage))
                 {
-                    buffer.Append(optionsUsage);
+                    buffer.append(optionsUsage);
                 }
-                buffer.Append(argsUsages[i]);
+                buffer.append(argsUsages[i]);
             }
         }
         else
         {
-            buffer.Append(StringUtils.C("'Execute' method is not resolved", ColorCode.Error));
+            buffer.append(StringUtils.C("'Execute' method is not resolved", ColorCode.Error));
         }
 
-        Print(buffer.ToString());
+        Print(buffer.toString());
     }
 
     private String GetOptionsUsage(List<Option> options)
     {
-        if (options != null && options.Count > 0)
+        /*
+        if (options != null && options.size() > 0)
         {
             StringBuilder buffer = new StringBuilder();
-            for (int i = 0; i < options.Count; ++i)
+            for (int i = 0; i < options.size(); ++i)
             {
-                Option opt = options[i];
+                Option opt = options.get(i);
 
-                buffer.Append(' ');
+                buffer.append(' ');
 
                 if (!opt.IsRequired)
                 {
-                    buffer.Append('[');
+                    buffer.append('[');
                 }
 
                 if (opt.ShortName != null)
@@ -1054,6 +1138,9 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
         }
 
         return null;
+        */
+
+        throw new NotImplementedException();
     }
 
     private String UsageOptionName(Option opt)
@@ -1062,7 +1149,7 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
         {
             return GetUsageOptionName(opt);
         }
-        catch
+        catch (Exception e)
         {
             return "#err";
         }
@@ -1070,6 +1157,7 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
 
     private String GetUsageOptionName(Option opt)
     {
+        /*
         Type type = opt.Type;
         if (type != null && type.IsArray)
         {
@@ -1094,6 +1182,9 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
 
         String typename = ClassUtils.TypeShortName(type);
         return typename != null ? typename : "opt";
+        */
+
+        throw new NotImplementedException();
     }
 
     private String[] GetArgsUsages()
@@ -1102,7 +1193,7 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
         {
             return GetUsageArgs();
         }
-        catch
+        catch (Exception e)
         {
             return new String[] { "#err" };
         }
@@ -1110,7 +1201,8 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
 
     protected String[] GetUsageArgs()
     {
-        if (m_values != null && m_values.Length > 0)
+        /*
+        if (m_values != null && m_values.length > 0)
         {
             return new String[] { " " + StringUtils.Join(m_values, "|") };
         }
@@ -1148,6 +1240,9 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
         }
 
         return null;
+        */
+
+        throw new NotImplementedException();
     }
 
     void ClearTerminal()
@@ -1155,12 +1250,17 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
         m_delegate.ClearTerminal();
     }
 
-    protected boolean ExecCommand(String commandLine, boolean manualMode = false)
+    protected boolean ExecCommand(String commandLine)
+    {
+        return ExecCommand(commandLine, false);
+    }
+
+    protected boolean ExecCommand(String commandLine, boolean manualMode)
     {
         return m_delegate.ExecuteCommandLine(commandLine, manualMode);
     }
 
-    void PostNotification(String name, params Object[] data)
+    void PostNotification(String name, Object... data)
     {
         m_delegate.PostNotification(this, name, data);
     }
@@ -1168,12 +1268,12 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
     //////////////////////////////////////////////////////////////////////////////
     // Helpers
 
-    public boolean HasFlag(CCommandFlags flag)
+    public boolean HasFlag(int flag)
     {
         return (Flags & flag) != 0;
     }
 
-    public void SetFlag(CCommandFlags flag, boolean value)
+    public void SetFlag(int flag, boolean value)
     {
         if (value)
         {
@@ -1187,20 +1287,7 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
 
     boolean StartsWith(String prefix)
     {
-        if (prefix.Length <= Name.Length)
-        {
-            for (int i = 0; i < prefix.Length; ++i)
-            {
-                char pc = char.ToLower(prefix[i]);
-                char nc = char.ToLower(Name[i]);
-
-                if (pc != nc) return false;
-            }
-
-            return true;
-        }
-
-        return false;
+        return StringUtils.StartsWithIgnoreCase(Name, prefix);
     }
 
     static String Arg(String value) { return StringUtils.Arg(value); }
@@ -1210,68 +1297,94 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
     //////////////////////////////////////////////////////////////////////////////
     // Properties
 
-    public String Name { get; protected set; }
-    public String Description { get; set; }
+    public String Name; // FIXME { get; protected set; }
+    public String Description; // FIXME { get; set; }
 
-    public Type GetCommandType()
+    public Class<? extends CCommand> GetCommandType()
     {
-        return GetType();
+        return getClass();
     }
 
-    public String[] Values
+    public String[] Values() // FIXME
     {
-        get { return m_values; }
-        set { m_values = value; }
+        return m_values;
     }
 
-    ICCommandDelegate Delegate
+    public void Values(String[] values) // FIXME
     {
-        get { return m_delegate; }
-        set { m_delegate = value != null ? value : NullCommandDelegate.Instance; }
+        m_values = values;
     }
 
-    List<String> Args { get; set; }
-
-    public String CommandString { get; set; } // TODO: rename to CommandLine
-    public CCommandFlags Flags { get; set; }
-
-    public boolean IsHidden
+    ICCommandDelegate Delegate() // FIXME
     {
-        get { return HasFlag(CCommandFlags.Hidden); }
-        set { SetFlag(CCommandFlags.Hidden, value); }
+        return m_delegate;
     }
 
-    public boolean IsSystem
+    void Delegate(ICCommandDelegate value) // FIXME
     {
-        get { return HasFlag(CCommandFlags.System); }
-        set { SetFlag(CCommandFlags.System, value); }
+        m_delegate = value != null ? value : NullCommandDelegate.Instance;
     }
 
-    public boolean IsDebug
+    List<String> Args; // FIXME { get; set; }
+
+    public String CommandString; // FIXME { get; set; } // TODO: rename to CommandLine
+    public int Flags; // FIXME { get; set; }
+
+    public boolean IsHidden() // FIXME
     {
-        get { return HasFlag(CCommandFlags.Debug); }
-        set { SetFlag(CCommandFlags.Debug, value); }
+        return HasFlag(CCommandFlags.Hidden);
     }
 
-    public boolean IsPlayModeOnly
+    public void IsHidden(boolean value) // FIXME
     {
-        get { return HasFlag(CCommandFlags.PlayModeOnly); }
-        set { SetFlag(CCommandFlags.PlayModeOnly, value); }
+        SetFlag(CCommandFlags.Hidden, value);
     }
 
-    boolean IsManualMode { get; set; }
-
-    ColorCode ColorCode
+    public boolean IsSystem() // FIXME
     {
-        get { return IsPlayModeOnly && !Runtime.IsPlaying ? ColorCode.TableCommandDisabled : ColorCode.TableCommand; }
+        return HasFlag(CCommandFlags.System);
+    }
+
+    public void IsSystem(boolean value) // FIXME
+    {
+        SetFlag(CCommandFlags.System, value);
+    }
+
+    public boolean IsDebug() // FIXME
+    {
+        return HasFlag(CCommandFlags.Debug);
+    }
+
+    public void IsDebug(boolean value) // FIXME
+    {
+        SetFlag(CCommandFlags.Debug, value);
+    }
+
+    public boolean IsPlayModeOnly()
+    {
+        return HasFlag(CCommandFlags.PlayModeOnly);
+    }
+
+    public void IsPlayModeOnly(boolean value)
+    {
+        SetFlag(CCommandFlags.PlayModeOnly, value);
+    }
+
+    boolean IsManualMode; // FIXME { get; set; }
+
+    ColorCode ColorCode()
+    {
+        return ColorCode.TableCommand;
     }
 
     //////////////////////////////////////////////////////////////////////////////
-    // IComparable
+    // Comparable
 
-    public int CompareTo(CCommand other)
+
+    @Override
+    public int compareTo(CCommand another)
     {
-        return Name.CompareTo(other.Name);
+        return Name.compareTo(another.Name);
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -1287,16 +1400,21 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
 
         public boolean IsValidValue(String value)
         {
+            /*
             if (HasValues())
             {
-                return Array.IndexOf(Values, value) != -1;
+                return ArrayUtils.IndexOf(Values, value) != -1;
             }
 
             return IsValidValue(Target.FieldType, value);
+            */
+
+            throw new NotImplementedException(); // FIXME
         }
 
-        static boolean IsValidValue(Type type, String value)
+        static boolean IsValidValue(Class<?> type, String value)
         {
+            /*
             if (type == typeof(String))
             {
                 if (value.StartsWith("--")) // can't be long option
@@ -1321,44 +1439,52 @@ public abstract class CCommand // FIXME: IComparable<CCommand>
             }
 
             return false;
+            */
+
+            throw new NotImplementedException(); // FIXME
         }
 
         public boolean HasValues()
         {
-            return Values != null && Values.Length > 0;
+            return Values != null && Values.length > 0;
         }
 
         //////////////////////////////////////////////////////////////////////////////
         // Properties
 
-        public FieldInfo Target { get; private set; }
+        public FieldInfo Target; // FIXME: { get; private set; }
 
-        public String Name { get; protected set; }
-        public String Description { get; protected set; }
-        public Type Type { get { return Target != null ? Target.FieldType : null; } }
-        public Object DefaultValue { get; set; }
+        public String Name; // FIXME: { get; protected set; }
+        public String Description; // FIXME: { get; protected set; }
+        public Class<?> Type;  // FIXME: { get { return Target != null ? Target.FieldType : null; } }
+        public Object DefaultValue; // FIXME: { get; set; }
 
-        public String ShortName { get; set; }
-        public boolean IsRequired { get; set; }
-        public boolean IsHandled { get; set; }
+        public String ShortName; // FIXME: { get; set; }
+        public boolean IsRequired; // FIXME: { get; set; }
+        public boolean IsHandled; // FIXME: { get; set; }
 
-        public String[] Values { get; set; }
+        public String[] Values; // FIXME: { get; set; }
 
-        public String[] ListValues(String token = null)
+        public String[] ListValues()
+        {
+            return ListValues(null);
+        }
+
+        public String[] ListValues(String token)
         {
             if (HasValues())
             {
-                List<String> list = new List<String>(Values.Length);
-                for (int i = 0; i < Values.Length; ++i)
+                List<String> list = new ArrayList<String>(Values.length);
+                for (int i = 0; i < Values.length; ++i)
                 {
                     String str = Values[i];
-                    if (token == null || str.StartsWith(token, false, null))
+                    if (token == null || StringUtils.StartsWithIgnoreCase(str, token))
                     {
-                        list.Add(str);
+                        list.add(str);
                     }
                 }
 
-                return list.ToArray();
+                return list.toArray(new String[list.size()]);
             }
 
             return new String[0];

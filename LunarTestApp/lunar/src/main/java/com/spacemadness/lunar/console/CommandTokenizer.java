@@ -2,25 +2,27 @@ package com.spacemadness.lunar.console;
 
 import com.spacemadness.lunar.utils.ReusableLists;
 
+import java.util.List;
+
 /**
  * Created by alementuev on 5/29/15.
  */
 class CommandTokenizer
 {
-    private const char DoubleQuote  = '"';
-    private const char SingleQuote  = '\'';
-    private const char EscapeSymbol = '\\';
+    private static final char DoubleQuote  = '"';
+    private static final char SingleQuote  = '\'';
+    private static final char EscapeSymbol = '\\';
 
-    public static IList<String> Tokenize(String str)
+    public static List<String> Tokenize(String str)
     {
-        IList<String> list = ReusableLists.NextAutoRecycleList<String>();
+        List<String> list = ReusableLists.NextAutoRecycleList(String.class);
         Tokenize(str, list);
         return list;
     }
 
-    public static void Tokenize(String str, IList<String> tokens)
+    public static void Tokenize(String str, List<String> tokens)
     {
-        StringBuilder tokenBuffer = StringBuilderPool.NextAutoRecycleBuilder();
+        StringBuilder tokenBuffer = new StringBuilder();
 
         boolean insideSingleQuotes = false;
         boolean insideDoubleQuotes = false;
@@ -29,12 +31,12 @@ class CommandTokenizer
         char ch = (char) 0;
         char prevCh;
 
-        for (int i = 0; i < str.Length;)
+        for (int i = 0; i < str.length();)
         {
             prevCh = ch;
-            ch = str[i++];
+            ch = str.charAt(i++);
 
-            if (char.IsWhiteSpace(ch))
+            if (Character.isWhitespace(ch))
             {
                 if (!insideDoubleQuotes && !insideSingleQuotes && shouldAddToken)
                 {
@@ -42,14 +44,14 @@ class CommandTokenizer
                 }
                 else
                 {
-                    tokenBuffer.Append(ch);
+                    tokenBuffer.append(ch);
                 }
             }
             else if (ch == DoubleQuote)
             {
                 if (insideSingleQuotes)
                 {
-                    tokenBuffer.Append(ch);
+                    tokenBuffer.append(ch);
                 }
                 else
                 {
@@ -57,7 +59,7 @@ class CommandTokenizer
                     {
                         if (prevCh == EscapeSymbol)
                         {
-                            tokenBuffer.Append(ch);
+                            tokenBuffer.append(ch);
                         }
                         else
                         {
@@ -67,7 +69,7 @@ class CommandTokenizer
                             }
                             else
                             {
-                                tokenBuffer.Append(ch);
+                                tokenBuffer.append(ch);
                             }
 
                             shouldAddToken = true;
@@ -76,10 +78,10 @@ class CommandTokenizer
                     }
                     else
                     {
-                        shouldAddToken = char.IsWhiteSpace(prevCh) || prevCh == (char)0;
+                        shouldAddToken = Character.isWhitespace(prevCh) || prevCh == (char)0;
                         if (!shouldAddToken)
                         {
-                            tokenBuffer.Append(ch);
+                            tokenBuffer.append(ch);
                         }
                         insideDoubleQuotes = true;
                     }
@@ -89,7 +91,7 @@ class CommandTokenizer
             {
                 if (insideDoubleQuotes)
                 {
-                    tokenBuffer.Append(ch);
+                    tokenBuffer.append(ch);
                 }
                 else 
                 {
@@ -97,7 +99,7 @@ class CommandTokenizer
                     {
                         if (prevCh == EscapeSymbol)
                         {
-                            tokenBuffer.Append(ch);
+                            tokenBuffer.append(ch);
                         }
                         else
                         {
@@ -107,7 +109,7 @@ class CommandTokenizer
                             }
                             else
                             {
-                                tokenBuffer.Append(ch);
+                                tokenBuffer.append(ch);
                             }
 
                             shouldAddToken = true;
@@ -116,10 +118,10 @@ class CommandTokenizer
                     }
                     else
                     {
-                        shouldAddToken = char.IsWhiteSpace(prevCh) || prevCh == (char)0;
+                        shouldAddToken = Character.isWhitespace(prevCh) || prevCh == (char)0;
                         if (!shouldAddToken)
                         {
-                            tokenBuffer.Append(ch);
+                            tokenBuffer.append(ch);
                         }
                         insideSingleQuotes = true;
                     }
@@ -127,7 +129,7 @@ class CommandTokenizer
             }
             else
             {
-                tokenBuffer.Append(ch);
+                tokenBuffer.append(ch);
             }
         }
 
@@ -144,12 +146,17 @@ class CommandTokenizer
         AddToken(tokenBuffer, tokens);
     }
 
-    private static void AddToken(StringBuilder buffer, IList<String> list, boolean addEmpty = false)
+    private static void AddToken(StringBuilder buffer, List<String> list)
     {
-        if (buffer.Length > 0 || addEmpty)
+        AddToken(buffer, list, false);
+    }
+
+    private static void AddToken(StringBuilder buffer, List<String> list, boolean addEmpty)
+    {
+        if (buffer.length() > 0 || addEmpty)
         {
-            list.Add(buffer.ToString());
-            buffer.Length = 0;
+            list.add(buffer.toString());
+            buffer.setLength(0);
         }
     }
 }

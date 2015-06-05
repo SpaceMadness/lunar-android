@@ -1,6 +1,9 @@
 package com.spacemadness.lunar.console;
 
+import com.spacemadness.lunar.ColorCode;
 import com.spacemadness.lunar.utils.StringUtils;
+
+import java.util.List;
 
 /**
  * Created by alementuev on 5/29/15.
@@ -17,14 +20,14 @@ class CommandProcessor
     //////////////////////////////////////////////////////////////////////////////
     // Command buffer
 
-    public boolean TryExecute(String commandLine, boolean manualMode = false)
+    public boolean TryExecute(String commandLine, boolean manualMode)
     {
         try
         {
-            IList<String> commandList = CommandSplitter.Split(commandLine);
-            for (int commandIndex = 0; commandIndex < commandList.Count; ++commandIndex)
+            List<String> commandList = CommandSplitter.Split(commandLine);
+            for (int commandIndex = 0; commandIndex < commandList.size(); ++commandIndex)
             {
-                if (!TryExecuteSingleCommand(commandList[commandIndex], manualMode))
+                if (!TryExecuteSingleCommand(commandList.get(commandIndex), manualMode))
                 {
                     return false;
                 }
@@ -32,7 +35,7 @@ class CommandProcessor
         }
         catch (Exception e)
         {
-            m_delegate.LogTerminal(StringUtils.C(e.Message, ColorCode.ErrorUnknownCommand));
+            m_delegate.LogTerminal(StringUtils.C(e.getMessage(), ColorCode.ErrorUnknownCommand));
             m_delegate.LogTerminal(StringUtils.C(e.StackTrace, ColorCode.ErrorUnknownCommand));
             return false;
         }
@@ -40,17 +43,17 @@ class CommandProcessor
         return true;
     }
 
-    private boolean TryExecuteSingleCommand(String commandLine, boolean manualMode = false)
+    private boolean TryExecuteSingleCommand(String commandLine, boolean manualMode)
     {
-        IList<String> tokensList = CommandTokenizer.Tokenize(commandLine);
-        if (tokensList.Count > 0)
+        List<String> tokensList = CommandTokenizer.Tokenize(commandLine);
+        if (tokensList.size() > 0)
         {
-            String commandName = tokensList[0];
+            String commandName = tokensList.get(0);
 
             CCommand command = CRegistery.FindCommand(commandName);
             if (command != null)
             {
-                command.Delegate = m_delegate;
+                command.Delegate(m_delegate);
                 command.IsManualMode = manualMode;
                 command.CommandString = commandLine;
                 boolean succeed = command.ExecuteTokens(tokensList, commandLine);

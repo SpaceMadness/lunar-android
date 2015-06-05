@@ -1,51 +1,42 @@
 package com.spacemadness.lunar.console;
 
-import java.util.Iterator;
+import com.spacemadness.lunar.utils.StringUtils;
 
-import spacemadness.com.lunar.NotImplementedException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by alementuev on 5/28/15.
  */
-static class CCommandUtils
+class CCommandUtils
 {
     private static final Object[] EMPTY_INVOKE_ARGS = new Object[0];
 
-    public static boolean CanInvokeMethodWithArgsCount(MethodInfo method, int argsCount)
+    public static boolean CanInvokeMethodWithArgsCount(Method method, int argsCount)
     {
         if (method == null)
         {
             throw new NullPointerException("Method is null");
         }
 
-        Type returnType = method.ReturnType;
-        if (returnType != typeof(boolean) && returnType != typeof(void))
+        Class<?> returnType = method.getReturnType();
+        if (!Boolean.class.equals(returnType) && !Void.class.equals(returnType))
         {
             return false;
         }
 
-        ParameterInfo[] parameters = method.GetParameters();
+        Class<?>[] parameters = method.getParameterTypes();
 
         int realParamsLength = 0;
-        int optionalParamsCount = 0;
-        for (int i = 0; i < parameters.Length; ++i)
+        for (Class<?> paramType : parameters)
         {
-            ParameterInfo param = parameters[i];
-            if (param.IsIn || param.IsOut)
-            {
-                return false; // 'ref' and 'out' are not permitted
-            }
-
-            Type paramType = param.ParameterType;
-            if (paramType == typeof(Vector2)) realParamsLength += 2;
-            else if (paramType == typeof(Vector3)) realParamsLength += 3;
-            else if (paramType == typeof(Vector4)) realParamsLength += 4;
-            else realParamsLength += 1;
-
-            if (param.IsOptional)
-            {
-                ++optionalParamsCount;
-            }
+            // if (paramType == typeof(Vector2)) realParamsLength += 2;
+            //else if (paramType == typeof(Vector3)) realParamsLength += 3;
+            //else if (paramType == typeof(Vector4)) realParamsLength += 4;
+            realParamsLength += 1;
         }
 
         if (realParamsLength == argsCount)
@@ -53,207 +44,143 @@ static class CCommandUtils
             return true;
         }
 
-        if (realParamsLength == 1 && parameters[0].ParameterType.IsArray)
+        if (realParamsLength == 1 && parameters[0].isArray())
         {
             return true; // a single array param
-        }
-
-        if (optionalParamsCount > 0 && 
-            argsCount >= realParamsLength - optionalParamsCount &&
-            argsCount <= realParamsLength)
-        {
-            return true;
         }
 
         return false;
     }
 
-    public static boolean Invoke(Delegate del, String[] invokeArgs)
+    public static boolean Invoke(Object target, Method method, String[] invokeArgs)
     {
-        if (del == null)
-        {
-            throw new NullPointerException("Delegate is null");
-        }
-
-        return Invoke(del.Target, del.Method, invokeArgs);
-    }
-
-    public static boolean Invoke(Object target, MethodInfo method, String[] invokeArgs)
-    {
-        ParameterInfo[] parameters = method.GetParameters();
-        if (parameters.Length == 0)
+        Class<?>[] parameters = method.getParameterTypes();
+        if (parameters.length == 0)
         {
             return Invoke(target, method, EMPTY_INVOKE_ARGS);
         }
 
-        List<Object> invokeList = new List<Object>(invokeArgs.Length);
+        List<Object> invokeList = new ArrayList<Object>(invokeArgs.length);
 
         Iterator<String> iter = new Iterator<String>(invokeArgs);
-        foreach (ParameterInfo param in parameters)
+        for (Class<?> param : parameters)
         {
-            invokeList.Add(ResolveInvokeParameter(param, iter));
+            invokeList.add(ResolveInvokeParameter(param, iter));
         }
 
-        return Invoke(target, method, invokeList.ToArray());
+        return Invoke(target, method, invokeList.toArray());
     }
 
-    public static boolean Invoke(Delegate del, Object[] invokeArgs)
+    private static boolean Invoke(Object target, Method method, Object[] args) throws InvocationTargetException, IllegalAccessException
     {
-        if (del == null)
+        if (boolean.class.equals(method.getReturnType()))
         {
-            throw new NullPointerException("Delegate is null");
+            return (Boolean) method.invoke(target, args);
         }
 
-        return Invoke(del.Target, del.Method, invokeArgs);
-    }
-
-    private static boolean Invoke(Object target, MethodInfo method, Object[] args)
-    {
-        if (method.ReturnType == typeof(boolean))
-        {
-            return (boolean)method.Invoke(target, args);
-        }
-
-        method.Invoke(target, args);
+        method.invoke(target, args);
         return true;
     }
 
-    public static String GetMethodParamsUsage(MethodInfo method)
+    public static String GetMethodParamsUsage(Method method)
     {
-        ParameterInfo[] parameters = method.GetParameters();
-        if (parameters.Length > 0)
+        Class<?>[] parameters = method.getParameterTypes();
+        if (parameters.length > 0)
         {
             StringBuilder result = new StringBuilder();
-            for (int i = 0; i < parameters.Length; ++i)
+            for (int i = 0; i < parameters.length; ++i)
             {
-                ParameterInfo param = parameters[i];
-                if (param.ParameterType.IsArray)
+                Class<?> param = parameters[i];
+                if (param.isArray())
                 {
-                    result.Append(" ...");
-                }
-                else if (param.IsOptional)
-                {
-                    result.AppendFormat(" [<{0}>]", param.Name);
+                    result.append(" ...");
                 }
                 else
                 {
-                    result.AppendFormat(" <{0}>", param.Name);
+                    result.append(StringUtils.TryFormat(" <%s>", param.Name));
                 }
             }
 
-            return result.ToString();
+            return result.toString();
         }
 
         return null;
     }
 
-    internal static List<Object> ResolveInvokeParameters(ParameterInfo[] parameters, String[] invokeArgs)
+    static List<Object> ResolveInvokeParameters(Class<?>[] parameters, String[] invokeArgs)
     {
-        List<Object> list = new List<Object>(invokeArgs.Length);
+        List<Object> list = new ArrayList<Object>(invokeArgs.length);
 
         Iterator<String> iter = new Iterator<String>(invokeArgs);
-        foreach (ParameterInfo param in parameters)
+        for (Class<?> param : parameters)
         {
-            list.Add(ResolveInvokeParameter(param, iter));
+            list.add(ResolveInvokeParameter(param, iter));
         }
 
         return list;
     }
 
-    private static Object ResolveInvokeParameter(ParameterInfo param, Iterator<String> iter)
+    private static Object ResolveInvokeParameter(Class<?> type, Iterator<String> iter)
     {
-        if (param.IsOptional && !iter.HasNext())
+        if (String[].class.equals(type))
         {
-            return param.DefaultValue;
-        }
-
-        Type type = param.ParameterType;
-
-        if (type == typeof(String[]))
-        {
-            List<String> values = new List<String>();
-            while (iter.HasNext())
+            List<String> values = new ArrayList<String>();
+            while (iter.hasNext())
             {
-                values.Add(NextArg(iter));
+                values.add(NextArg(iter));
             }
-            return values.ToArray();
+            return values.toArray();
         }
 
-        if (type == typeof(String))
+        if (String.class.equals(type))
         {
             return NextArg(iter);
         }
 
-        if (type == typeof(float))
+        if (float.class.equals(type))
         {
             return NextFloatArg(iter);
         }
 
-        if (type == typeof(int))
+        if (int.class.equals(type))
         {
             return NextIntArg(iter);
         }
 
-        if (type == typeof(boolean))
+        if (boolean.class.equals(type) || Boolean.class.equals(type))
         {
             return NextBoolArg(iter);
         }
 
-        if (type == typeof(Vector2))
+
+        if (int[].class.equals(type))
         {
-            float x = NextFloatArg(iter);
-            float y = NextFloatArg(iter);
-
-            return new Vector2(x, y);
-        }
-
-        if (type == typeof(Vector3))
-        {
-            float x = NextFloatArg(iter);
-            float y = NextFloatArg(iter);
-            float z = NextFloatArg(iter);
-
-            return new Vector3(x, y, z);
-        }
-
-        if (type == typeof(Vector4))
-        {
-            float x = NextFloatArg(iter);
-            float y = NextFloatArg(iter);
-            float z = NextFloatArg(iter);
-            float w = NextFloatArg(iter);
-
-            return new Vector4(x, y, z, w);
-        }
-
-        if (type == typeof(int[]))
-        {
-            List<int> values = new List<int>();
-            while (iter.HasNext())
+            List<Integer> values = new ArrayList<Integer>();
+            while (iter.hasNext())
             {
-                values.Add(NextIntArg(iter));
+                values.add(NextIntArg(iter));
             }
-            return values.ToArray();
+            return values.toArray();
         }
 
-        if (type == typeof(float[]))
+        if (float[].class.equals(type))
         {
-            List<float> values = new List<float>();
-            while (iter.HasNext())
+            List<Float> values = new ArrayList<Float>();
+            while (iter.hasNext())
             {
-                values.Add(NextFloatArg(iter));
+                values.add(NextFloatArg(iter));
             }
-            return values.ToArray();
+            return values.toArray();
         }
 
-        if (type == typeof(boolean[]))
+        if (boolean[].class.equals(type))
         {
-            List<boolean> values = new List<boolean>();
-            while (iter.HasNext())
+            List<Boolean> values = new ArrayList<Boolean>();
+            while (iter.hasNext())
             {
-                values.Add(NextBoolArg(iter));
+                values.add(NextBoolArg(iter));
             }
-            return values.ToArray();
+            return values.toArray();
         }
 
         throw new CCommandException("Unsupported value type: " + type);
@@ -262,43 +189,43 @@ static class CCommandUtils
     public static int NextIntArg(Iterator<String> iter)
     {
         String arg = NextArg(iter);
-        int value;
-
-        if (int.TryParse(arg, out value))
+        try
         {
-            return value;
+            return Integer.parseInt(arg);
         }
-
-        throw new CCommandException("Can't parse int arg: '" + arg + "'"); 
+        catch (NumberFormatException e)
+        {
+            throw new CCommandException("Can't parse int arg: '" + arg + "'");
+        }
     }
 
     public static float NextFloatArg(Iterator<String> iter)
     {
         String arg = NextArg(iter);
-        float value;
-
-        if (float.TryParse(arg, out value))
+        try
         {
-            return value;
+            return Float.parseFloat(arg);
         }
-
-        throw new CCommandException("Can't parse float arg: '" + arg + "'"); 
+        catch (NumberFormatException e)
+        {
+            throw new CCommandException("Can't parse float arg: '" + arg + "'");
+        }
     }
 
     public static boolean NextBoolArg(Iterator<String> iter)
     {
-        String arg = NextArg(iter).ToLower();
-        if (arg == "1" || arg == "yes" || arg == "true") return true; // FIXME: String comparision
-        if (arg == "0" || arg == "no"  || arg == "false") return false; // FIXME: String comparision
+        String arg = NextArg(iter).toLowerCase();
+        if (arg.equals("1") || arg.equals("yes") || arg.equals("true")) return true;
+        if (arg.equals("0") || arg.equals("no")  || arg.equals("false")) return false;
 
         throw new CCommandException("Can't parse boolean arg: '" + arg + "'"); 
     }
 
     public static String NextArg(Iterator<String> iter)
     {
-        if (iter.HasNext())
+        if (iter.hasNext())
         {
-            String arg = StringUtils.UnArg(iter.Next());
+            String arg = StringUtils.UnArg(iter.next());
             if (!IsValidArg(arg)) 
             {
                 throw new CCommandException("Invalid arg: " + arg);
@@ -312,6 +239,6 @@ static class CCommandUtils
 
     public static boolean IsValidArg(String arg)
     {
-        return !arg.StartsWith("-") || StringUtils.IsNumeric(arg);
+        return !arg.startsWith("-") || StringUtils.IsNumeric(arg);
     }
 }

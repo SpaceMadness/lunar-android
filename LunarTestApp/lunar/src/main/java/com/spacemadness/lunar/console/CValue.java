@@ -1,5 +1,7 @@
 package com.spacemadness.lunar.console;
 
+import com.spacemadness.lunar.utils.StringUtils;
+
 /**
  * Created by weee on 5/28/15.
  */
@@ -8,13 +10,18 @@ class CValue
     public String stringValue;
     public int intValue;
     public float floatValue;
-    public Vector4 vectorValue;
 
-    public boolean Equals(ref CValue other)
+    @Override
+    public boolean equals(Object o)
     {
-        return other.intValue == intValue &&
-        other.floatValue == floatValue &&
-        other.stringValue == stringValue &&
-        other.vectorValue == vectorValue;
+        if (!(o instanceof CValue))
+        {
+            return false;
+        }
+
+        CValue other = (CValue) o;
+        return intValue == other.intValue &&
+                floatValue == other.floatValue &&
+                StringUtils.equals(stringValue, other.stringValue);
     }
 }

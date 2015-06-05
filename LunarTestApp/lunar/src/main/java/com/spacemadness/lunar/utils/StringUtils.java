@@ -1,6 +1,10 @@
 package com.spacemadness.lunar.utils;
 
+import com.spacemadness.lunar.ColorCode;
+import com.spacemadness.lunar.core.ArrayIterator;
+
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -14,7 +18,7 @@ public class StringUtils
     private static final Pattern kRichTagRegex = Pattern.compile("(<color=.*?>)|(<b>)|(<i>)|(</color>)|(</b>)|(</i>)");  // FIXME: rename
     private static final Pattern kColorCodeTagRegex = Pattern.compile("<color=\\$(\\d+)>"); // FIXME: rename
 
-    static String TryFormat(String format, Object... args) // FIXME: rename
+    public static String TryFormat(String format, Object... args) // FIXME: rename
     {
         if (format != null && args != null && args.length > 0)
         {
@@ -108,38 +112,29 @@ public class StringUtils
         return defValue;
     }
 
-    public static boolean ParseBool(String str, out boolean succeed)
-    {
-        if (!IsNullOrEmpty(str))
-        {
-            boolean value;
-            succeed = boolean.TryParse(str, out value);
-            return succeed ? value : false;
-        }
-
-        succeed = false;
-        return false;
-    }
-
     public static float[] ParseFloats(String str)
     {
-        return str != null ? ParseFloats(str.Split(kSpaceSplitChars, StringSplitOptions.RemoveEmptyEntries)) : null;
+        return str != null ? ParseFloats(str.split("\\s+")) : null;
     }
 
     public static float[] ParseFloats(String[] args)
     {
         if (args != null)
         {
-            float[] floats = new float[args.length];
-            for (int i = 0; i < args.length; ++i)
+            try
             {
-                if (!float.TryParse(args[i], out floats[i]))
-                {
-                    return null;
-                }
-            }
+                float[] floats = new float[args.length];
 
-            return floats;
+                for (int i = 0; i < args.length; ++i)
+                {
+                    floats[i] = Float.parseFloat(args[i]);
+                }
+
+                return floats;
+            }
+            catch (NumberFormatException e)
+            {
+            }
         }
 
         return null;
@@ -147,14 +142,28 @@ public class StringUtils
 
     public static boolean IsNumeric(String str)
     {
-        double value;
-        return double.TryParse(str, out value);
+        try
+        {
+            Double.parseDouble(str); // TODO: a better approach
+            return true;
+        }
+        catch (NumberFormatException e)
+        {
+            return false;
+        }
     }
 
     public static boolean IsInteger(String str)
     {
-        int value;
-        return int.TryParse(str, out value);
+        try
+        {
+            Integer.parseInt(str); // TODO: a better approach
+            return true;
+        }
+        catch (NumberFormatException e)
+        {
+            return false;
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -206,7 +215,7 @@ public class StringUtils
 
     private static boolean IsSeparator(char ch)
     {
-        return !(char.IsLetter(ch) || char.IsDigit(ch));
+        return !(Character.isLetter(ch) || Character.isDigit(ch));
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -335,19 +344,19 @@ public class StringUtils
 
     private static List<String> s_tempList;
 
-    static String GetSuggestedText(String token, String[] strings)
+    public static String GetSuggestedText(String token, String[] strings)
     {
-        return GetSuggestedText0(token, strings);
+        return GetSuggestedText0(token, new ArrayIterator<String>(strings));
     }
 
-    static String GetSuggestedText(String token, List<String> Strings)
+    public static String GetSuggestedText(String token, List<String> strings)
     {
-        return GetSuggestedText0(token, (List)Strings);
+        return GetSuggestedText0(token, strings.iterator());
     }
 
-    private static String GetSuggestedText0(String token, IList Strings)
+    private static String GetSuggestedText0(String token, Iterator<String> iter)
     {
-        if (token == null || token.length() == 0)
+        if (IsNullOrEmpty(token))
         {
             return null;
         }
@@ -355,9 +364,10 @@ public class StringUtils
         if (s_tempList == null) s_tempList = new ArrayList<String>();
         else s_tempList.clear();
 
-        for (String str : Strings)
+        while (iter.hasNext())
         {
-            if (str.startsWith(token, true, null))
+            String str = iter.next();
+            if (StringUtils.StartsWithIgnoreCase(str, token))
             {
                 s_tempList.add(str);
             }
@@ -366,23 +376,23 @@ public class StringUtils
         return GetSuggestedTextFiltered0(token, s_tempList);
     }
 
-    static String GetSuggestedTextFiltered(String token, List<String> Strings)
+    public static String GetSuggestedTextFiltered(String token, List<String> strings)
     {
-        return GetSuggestedTextFiltered0(token, (IList)Strings);
+        return GetSuggestedTextFiltered0(token, strings);
     }
 
-    static String GetSuggestedTextFiltered(String token, String[] Strings)
+    public static String GetSuggestedTextFiltered(String token, String[] strings)
     {
-        return GetSuggestedTextFiltered0(token, Strings);
+        return GetSuggestedTextFiltered0(token, strings);
     }
 
-    private static String GetSuggestedTextFiltered0(String token, IList Strings)
+    private static String GetSuggestedTextFiltered0(String token, List<String> list)
     {
         if (token == null) return null;
-        if (Strings.Count == 0) return null;
-        if (Strings.Count == 1) return (String)Strings[0];
+        if (list.size() == 0) return null;
+        if (list.size() == 1) return list.get(0);
 
-        String firstString = (String)Strings[0];
+        String firstString = list.get(0);
         if (token.length() == 0)
         {
             token = firstString;
@@ -392,14 +402,14 @@ public class StringUtils
 
         for (int charIndex = 0; charIndex < firstString.length(); ++charIndex)
         {
-            char chr = firstString[charIndex];
-            char chrLower = char.ToLower(chr);
+            char chr = firstString.charAt(charIndex);
+            char chrLower = Character.toLowerCase(chr);
             
             boolean searchFinished = false;
-            for (int strIndex = 1; strIndex < Strings.Count; ++strIndex)
+            for (int strIndex = 1; strIndex < list.size(); ++strIndex)
             {
-                String otherString = (String)Strings[strIndex];
-                if (charIndex >= otherString.length() || char.ToLower(otherString[charIndex]) != chrLower)
+                String otherString = list.get(strIndex);
+                if (charIndex >= otherString.length() || Character.toLowerCase(otherString.charAt(charIndex)) != chrLower)
                 {
                     searchFinished = true;
                     break;
@@ -425,7 +435,7 @@ public class StringUtils
     private static final String EscapedQuote = "\\\"";
     private static final String EscapedSingleQuote = "\\'";
 
-    static String Arg(String value)
+    public static String Arg(String value)
     {
         if (value != null && value.length() > 0)
         {
@@ -443,14 +453,14 @@ public class StringUtils
         return "\"\"";
     }
 
-    static String UnArg(String value)
+    public static String UnArg(String value)
     {
         if (value != null && value.length() > 0)
         {
             if (value.startsWith(Quote) && value.endsWith(Quote) ||
                 value.startsWith(SingleQuote) && value.endsWith(SingleQuote))
             {
-                value = value.SubString(1, value.length() - 2);
+                value = value.substring(1, value.length() - 2);
             }
 
             value = value.replace(EscapedQuote, Quote);
@@ -503,12 +513,21 @@ public class StringUtils
 
     public static String RemoveRichTextTags(String line)
     {
-        return kRichTagRegex.replace(line, String.Empty);
+        // return kRichTagRegex.replace(line, String.Empty);
+        throw new NotImplementedException(); // FIXME
     }
 
-    static void RemoveRichTextTags(IList<String> lines)
+    public static void RemoveRichTextTags(List<String> lines)
     {
-        for (int i = 0; i < lines.Count; ++i)
+        for (int i = 0; i < lines.size(); ++i)
+        {
+            lines.set(i, RemoveRichTextTags(lines.get(i)));
+        }
+    }
+
+    public static void RemoveRichTextTags(String[] lines)
+    {
+        for (int i = 0; i < lines.length; ++i)
         {
             lines[i] = RemoveRichTextTags(lines[i]);
         }
@@ -516,6 +535,7 @@ public class StringUtils
 
     static String SetColors(String line, Color[] colorLookup)
     {
+        /*
         Match match = kColorCodeTagRegex.Match(line);
 
         if (match.Success)
@@ -553,10 +573,14 @@ public class StringUtils
         }
 
         return line;
+        */
+
+        throw new NotImplementedException(); // FIXME
     }
 
     private static int UnsafeParseInt(String str)
     {
+        /*
         int value = 0;
         for (int i = 0; i < str.length(); ++i)
         {
@@ -564,12 +588,14 @@ public class StringUtils
         }
 
         return value;
+        */
+        throw new NotImplementedException(); // FIXME: dafuq I need that??
     }
 
     //////////////////////////////////////////////////////////////////////////////
     // Nullability
 
-    static boolean IsNullOrEmpty(String str)
+    public static boolean IsNullOrEmpty(String str)
     {
         return str == null || str.length() == 0;
     }
@@ -582,19 +608,49 @@ public class StringUtils
     //////////////////////////////////////////////////////////////////////////////
     // String representation
 
-    static String ToString(int value)
+    public static String ToString(boolean value)
+    {
+        return Boolean.toString(value);
+    }
+
+    public static String ToString(byte value)
+    {
+        return Byte.toString(value);
+    }
+
+    public static String ToString(char value)
+    {
+        return Character.toString(value);
+    }
+
+    public static String ToString(short value)
+    {
+        return Short.toString(value);
+    }
+
+    public static String ToString(int value)
     {
         return Integer.toString(value);
     }
 
-    static String ToString(float value)
+    public static String ToString(long value)
+    {
+        return Long.toString(value);
+    }
+
+    public static String ToString(float value)
     {
         return Float.toString(value);
     }
 
-    static String ToString(boolean value)
+    public static String ToString(double value)
     {
-        return Boolean.toString(value);
+        return Double.toString(value);
+    }
+
+    public static String ToString(Object value)
+    {
+        return value != null ? value.toString() : "null";
     }
 
     public static <T> String Join(List<T> list)

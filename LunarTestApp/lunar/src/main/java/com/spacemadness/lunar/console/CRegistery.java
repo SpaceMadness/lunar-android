@@ -1,36 +1,42 @@
 package com.spacemadness.lunar.console;
 
+import com.spacemadness.lunar.debug.Log;
+import com.spacemadness.lunar.utils.ClassUtils;
+import com.spacemadness.lunar.utils.LinkedList;
+import com.spacemadness.lunar.utils.LinkedListNode;
+import com.spacemadness.lunar.utils.ReusableLists;
+import com.spacemadness.lunar.utils.StringUtils;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * Created by alementuev on 5/29/15.
  */
-static class CRegistery
+class CRegistery
 {
-    private static CommandLookup m_commandsLookup = new CommandLookup();
-    private static CommandList m_commands = new CommandList(); // TODO: use fast list
+    private static Map<String, CCommand> m_commandsLookup = new HashMap<String, CCommand>(); // TODO: use fast list
+    private static LinkedList<CCommand> m_commands = new LinkedList<CCommand>(); // TODO: rename
 
     //////////////////////////////////////////////////////////////////////////////
+    // Commands resolver
 
-    #region Commands resolver
-
-    [System.Diagnostics.Conditional("UNITY_EDITOR")]
     public static void ResolveCommands()
     {
         List<CCommand> commands = RuntimeResolver.ResolveCommands();
-        for (int i = 0; i < commands.Count; ++i)
+        for (int i = 0; i < commands.size(); ++i)
         {
-            Register(commands[i]);
+            Register(commands.get(i));
         }
     }
 
-    #endregion
-
     //////////////////////////////////////////////////////////////////////////////
-
-    #region Commands registry
+    // Commands registry
 
     public static boolean Register(CCommand cmd)
     {
-        if (cmd.Name.StartsWith("@"))
+        if (cmd.Name.startsWith("@"))
         {
             cmd.Flags |= CCommandFlags.Hidden;
         }
@@ -43,15 +49,15 @@ static class CRegistery
         return RemoveCommand(cmd);
     }
 
-    internal static boolean Unregister(ListCommandsFilter<CCommand> filter)
+    static boolean Unregister(ListCommandsFilter<CCommand> filter)
     {
         boolean unregistered = false;
 
-        for (LinkedListNode<CCommand> node = m_commands.First; node != null;)
+        for (LinkedListNode<CCommand> node = m_commands.First(); node != null;)
         {
-            LinkedListNode<CCommand> next = node.Next;
-            CCommand cmd = node.Value;
-            if (filter(cmd))
+            LinkedListNode<CCommand> next = node.Next();
+            CCommand cmd = node.value;
+            if (filter.accept(cmd))
             {
                 unregistered |= Unregister(cmd);
             }
@@ -64,59 +70,68 @@ static class CRegistery
 
     public static void Clear()
     {
-        m_commands.Clear();
-        m_commandsLookup.Clear();
+        m_commands.clear();
+        m_commandsLookup.clear();
     }
 
-    internal static IList<CCommand> ListCommands(String prefix = null, CommandListOptions options = CommandListOptions.None)
+    static List<CCommand> ListCommands(String prefix, int options)
     {
-        return ListCommands(ReusableLists.NextAutoRecycleList<CCommand>(), prefix, options);
+        return ListCommands(ReusableLists.NextAutoRecycleList(CCommand.class), prefix, options);
     }
 
-    internal static IList<CCommand> ListCommands(IList<CCommand> outList, String prefix = null, CommandListOptions options = CommandListOptions.None)
+    static List<CCommand> ListCommands(List<CCommand> outList, final String prefix, final int options)
     {
-        return ListCommands(outList, delegate(CCommand cmd)
+        return ListCommands(outList, new ListCommandsFilter<CCommand>()
         {
-            return ShouldListCommand(cmd, prefix, options);
+            @Override
+            public boolean accept(CCommand command)
+            {
+                return ShouldListCommand(command, prefix, options);
+            }
         });
     }
 
-    internal static IList<CCommand> ListCommands(ListCommandsFilter<CCommand> filter)
+    static List<CCommand> ListCommands(ListCommandsFilter<CCommand> filter)
     {
-        return ListCommands(ReusableLists.NextAutoRecycleList<CCommand>(), filter);
+        return ListCommands(ReusableLists.NextAutoRecycleList(CCommand.class), filter);
     }
 
-    internal static IList<CCommand> ListCommands(IList<CCommand> outList, ListCommandsFilter<CCommand> filter)
+    static List<CCommand> ListCommands(List<CCommand> outList, ListCommandsFilter<CCommand> filter)
     {
         if (filter == null)
         {
             throw new NullPointerException("Filter is null");
         }
 
-        foreach (CCommand command in m_commands)
+        for (CCommand command : m_commands)
         {
-            if (filter(command))
+            if (filter.accept(command))
             {
-                outList.Add(command);
+                outList.add(command);
             }
         }
 
         return outList;
     }
 
-    internal static boolean ShouldListCommand(CCommand cmd, String prefix, CommandListOptions options = CommandListOptions.None)
+    static boolean ShouldListCommand(CCommand cmd, String prefix)
     {
-        if (cmd.IsDebug && (options & CommandListOptions.Debug) == 0)
+        return ShouldListCommand(cmd, prefix, CommandListOptions.None);
+    }
+
+    static boolean ShouldListCommand(CCommand cmd, String prefix, int options)
+    {
+        if (cmd.IsDebug() && (options & CommandListOptions.Debug) == 0)
         {
             return false;
         }
 
-        if (cmd.IsSystem && (options & CommandListOptions.System) == 0)
+        if (cmd.IsSystem() && (options & CommandListOptions.System) == 0)
         {
             return false;
         }
 
-        if (cmd.IsHidden && (options & CommandListOptions.Hidden) == 0)
+        if (cmd.IsHidden() && (options & CommandListOptions.Hidden) == 0)
         {
             return false;
         }
@@ -127,32 +142,32 @@ static class CRegistery
     private static boolean AddCommand(CCommand cmd)
     {
         String name = cmd.Name;
-        for (LinkedListNode<CCommand> node = m_commands.First; node != null; node = node.Next)
+        for (LinkedListNode<CCommand> node = m_commands.First(); node != null; node = node.Next())
         {
-            CCommand otherCmd = node.Value;
+            CCommand otherCmd = node.value;
             if (cmd == otherCmd)
             {
                 return false; // no duplicates
             }
 
             String otherName = otherCmd.Name;
-            int compare = name.CompareTo(otherName);
+            int compare = name.compareTo(otherName);
             if (compare < 0)
             {
                 m_commands.AddBefore(node, cmd);
-                m_commandsLookup.Add(cmd.Name, cmd);
+                m_commandsLookup.put(cmd.Name, cmd);
                 return true;
             }
 
             if (compare == 0)
             {
-                node.Value = cmd;
+                node.value = cmd;
                 return true;
             }
         }
 
         m_commands.AddLast(cmd);
-        m_commandsLookup.Add(cmd.Name, cmd);
+        m_commandsLookup.put(cmd.Name, cmd);
 
         return true;
     }
@@ -161,7 +176,7 @@ static class CRegistery
     {
         if (m_commands.Remove(command))
         {
-            m_commandsLookup.Remove(command.Name);
+            m_commandsLookup.remove(command.Name);
             return true;
         }
 
@@ -170,103 +185,11 @@ static class CRegistery
 
     public static CCommand FindCommand(String name)
     {
-        CCommand cmd;
-        if (name != null && m_commandsLookup.TryGetValue(name, out cmd))
-        {
-            return cmd;
-        }
-
-        return null;
+        return m_commandsLookup.get(name);
     }
-
-    #endregion
 
     //////////////////////////////////////////////////////////////////////////////
-
-    #region Delegate commands
-
-    public static boolean RegisterDelegate(Delegate action)
-    {
-        if (action == null)
-        {
-            throw new NullPointerException("Action is null");
-        }
-
-        return RegisterDelegate(action.Method.Name, action);
-    }
-
-    public static boolean RegisterDelegate(String name, Delegate action)
-    {
-        if (name == null)
-        {
-            throw new NullPointerException("Name is null");
-        }
-        
-        if (action == null)
-        {
-            throw new NullPointerException("Action is null");
-        }
-
-        CCommand existingCmd = FindCommand(name);
-        if (existingCmd != null)
-        {
-            CDelegateCommand delegateCmd = existingCmd as CDelegateCommand;
-            if (delegateCmd != null)
-            {
-                Log.w("Overriding command: {0}", name);
-                delegateCmd.ActionDelegate = action;
-
-                return true;
-            }
-
-            Log.e("Another command with the same name exists: {0}", name);
-            return false;
-        }
-        
-        return Register(new CDelegateCommand(name, action));
-    }
-
-    public static boolean Unregister(String commandName)
-    {
-        CCommand cmd = FindCommand(commandName);
-        if (cmd != null)
-        {
-            if (cmd is CDelegateCommand)
-            {
-                Unregister(cmd);
-                return true;
-            }
-
-            Log.e("Unable to unregister a non-delegate command: {0}", cmd);
-            return false;
-        }
-
-        return false;
-    }
-
-    public static boolean Unregister(Delegate del)
-    {
-        return Unregister(delegate(CCommand cmd)
-        {
-            CDelegateCommand delegateCmd = cmd as CDelegateCommand;
-            return delegateCmd != null && delegateCmd.ActionDelegate == del;
-        });
-    }
-
-    public static boolean UnregisterAll(Object target)
-    {
-        return target != null && Unregister(delegate(CCommand cmd)
-        {
-            CDelegateCommand delegateCmd = cmd as CDelegateCommand;
-            return delegateCmd != null && delegateCmd.ActionDelegate.Target == target;
-        });
-    }
-
-    #endregion
-
-    //////////////////////////////////////////////////////////////////////////////
-
-    #region Cvars
+    // Cvars
 
     public static boolean Register(CVar cvar)
     {
@@ -275,53 +198,57 @@ static class CRegistery
 
     public static boolean Unregister(CVar cvar)
     {
-        CCommand cmd = FindCvarCommand(cvar.Name);
+        CCommand cmd = FindCvarCommand(cvar.Name());
         return cmd != null && Unregister(cmd);
     }
 
-    public static IList<CVar> ListVars(String prefix = null, CommandListOptions options = CommandListOptions.None)
+    public static List<CVar> ListVars(String prefix, int options)
     {
-        return ListVars(ReusableLists.NextAutoRecycleList<CVar>(), prefix, options);
+        return ListVars(ReusableLists.NextAutoRecycleList(CVar.class), prefix, options);
     }
 
-    public static IList<CVar> ListVars(IList<CVar> outList, String prefix = null, CommandListOptions options = CommandListOptions.None)
+    public static List<CVar> ListVars(List<CVar> outList, final String prefix, final int options)
     {
-        return ListVars(outList, delegate(CVarCommand cmd)
+        return ListVars(outList, new ListCommandsFilter<CVarCommand>()
         {
-            return ShouldListCommand(cmd, prefix, options);
+            @Override
+            public boolean accept(CVarCommand command)
+            {
+                return ShouldListCommand(command, prefix, options);
+            }
         });
     }
 
-    internal static IList<CVar> ListVars(ListCommandsFilter<CVarCommand> filter)
+    static List<CVar> ListVars(ListCommandsFilter<CVarCommand> filter)
     {
-        return ListVars(ReusableLists.NextAutoRecycleList<CVar>(), filter);
+        return ListVars(ReusableLists.NextAutoRecycleList(CVar.class), filter);
     }
 
-    internal static IList<CVar> ListVars(IList<CVar> outList, ListCommandsFilter<CVarCommand> filter)
+    static List<CVar> ListVars(List<CVar> outList, ListCommandsFilter<CVarCommand> filter)
     {
         if (filter == null)
         {
             throw new NullPointerException("Filter is null");
         }
 
-        foreach (CCommand cmd in m_commands)
+        for (CCommand cmd : m_commands)
         {
-            CVarCommand varCmd = cmd as CVarCommand;
-            if (varCmd != null && filter(varCmd))
+            CVarCommand varCmd = ClassUtils.as(cmd, CVarCommand.class);
+            if (varCmd != null && filter.accept(varCmd))
             {
-                outList.Add(varCmd.cvar);
+                outList.add(varCmd.cvar);
             }
         }
 
         return outList;
     }
 
-    internal static CVarCommand FindCvarCommand(String name)
+    static CVarCommand FindCvarCommand(String name)
     {
-        foreach (CCommand cmd in m_commands)
+        for (CCommand cmd : m_commands)
         {
-            CVarCommand varCmd = cmd as CVarCommand;
-            if (varCmd != null && varCmd.cvar.Name == name)
+            CVarCommand varCmd = ClassUtils.as(cmd, CVarCommand.class);
+            if (varCmd != null && varCmd.cvar.Name().equals(name))
             {
                 return varCmd;
             }
@@ -336,11 +263,8 @@ static class CRegistery
         return cmd != null ? cmd.cvar : null;
     }
 
-    #endregion
-
     //////////////////////////////////////////////////////////////////////////////
-
-    #region Aliases
+    // Aliases
 
     public static void AddAlias(String alias, String commandLine)
     {
@@ -357,7 +281,7 @@ static class CRegistery
         CCommand existingCmd = FindCommand(alias);
         if (existingCmd != null)
         {
-            CAliasCommand cmd = existingCmd as CAliasCommand;
+            CAliasCommand cmd = ClassUtils.as(existingCmd, CAliasCommand.class);
             if (cmd == null)
             {
                 throw new CCommandException("Can't override command with alias: " + alias);
@@ -373,38 +297,36 @@ static class CRegistery
 
     public static boolean RemoveAlias(String name)
     {
-        CAliasCommand cmd = FindCommand(name) as CAliasCommand;
+        CAliasCommand cmd = ClassUtils.as(FindCommand(name), CAliasCommand.class);
         return cmd != null && Unregister(cmd);
     }
 
-    internal static IList<CAliasCommand> ListAliases(String prefix = null, CommandListOptions options = CommandListOptions.None)
+    static List<CAliasCommand> ListAliases(String prefix, int options)
     {
-        return ListAliases(ReusableLists.NextAutoRecycleList<CAliasCommand>(), prefix, options);
+        return ListAliases(ReusableLists.NextAutoRecycleList(CAliasCommand.class), prefix, options);
     }
 
-    internal static IList<CAliasCommand> ListAliases(IList<CAliasCommand> outList, String prefix = null, CommandListOptions options = CommandListOptions.None)
+    static List<CAliasCommand> ListAliases(List<CAliasCommand> outList, String prefix, int options)
     {
-        foreach (CCommand cmd in m_commands)
+        for (CCommand cmd : m_commands)
         {
-            CAliasCommand aliasCmd = cmd as CAliasCommand;
+            CAliasCommand aliasCmd = ClassUtils.as(cmd, CAliasCommand.class);
             if (aliasCmd != null && ShouldListCommand(aliasCmd, prefix, options))
             {
-                outList.Add(aliasCmd);
+                outList.add(aliasCmd);
             }
         }
 
         return outList;
     }
 
-    #endregion
-
-    public static void GetSuggested(String token, CommandList outList)
+    public static void GetSuggested(String token, List<CCommand> outList)
     {
-        foreach (CCommand command in m_commands)
+        for (CCommand command : m_commands)
         {
             if (command.StartsWith(token))
             {
-                outList.AddLast(command);
+                outList.add(command);
             }
         }
     }

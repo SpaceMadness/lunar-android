@@ -1,37 +1,41 @@
 package com.spacemadness.lunar.console;
 
+import com.spacemadness.lunar.utils.ReusableLists;
+
+import java.util.List;
+
 /**
  * Created by alementuev on 5/29/15.
  */
 class CommandSplitter
 {
-    private const char Space        = ' ';
-    private const char DoubleQuote  = '"';
-    private const char SingleQuote  = '\'';
-    private const char EscapeSymbol = '\\';
+    private static final char Space        = ' ';
+    private static final char DoubleQuote  = '"';
+    private static final char SingleQuote  = '\'';
+    private static final char EscapeSymbol = '\\';
 
-    public static IList<String> Split(String str)
+    public static List<String> Split(String str)
     {
-        IList<String> list = ReusableLists.NextAutoRecycleList<String>();
+        List<String> list = ReusableLists.NextAutoRecycleList(String.class);
         Split(str, list);
         return list;
     }
 
-    public static void Split(String str, IList<String> list)
+    public static void Split(String str, List<String> list)
     {
-        StringBuilder commandBuffer = StringBuilderPool.NextAutoRecycleBuilder();
+        StringBuilder commandBuffer = new StringBuilder();
 
         boolean insideDoubleQuotes = false;
         boolean insideSingleQuotes = false;
 
         char ch = (char) 0;
         char prevCh;
-        for (int i = 0; i < str.Length;)
+        for (int i = 0; i < str.length();)
         {
             prevCh = ch;
-            ch = str[i++];
+            ch = str.charAt(i++);
 
-            if (ch == '&' && i < str.Length && str[i] == '&') // found command separator
+            if (ch == '&' && i < str.length() && str.charAt(i) == '&') // found command separator
             {
                 if (!insideDoubleQuotes && !insideSingleQuotes)
                 {
@@ -40,12 +44,12 @@ class CommandSplitter
                 }
                 else
                 {
-                    commandBuffer.Append(ch);
+                    commandBuffer.append(ch);
                 }
             }
             else if (ch == DoubleQuote)
             {
-                commandBuffer.Append(ch);
+                commandBuffer.append(ch);
 
                 if (insideDoubleQuotes)
                 {
@@ -58,7 +62,7 @@ class CommandSplitter
             }
             else if (ch == SingleQuote)
             {
-                commandBuffer.Append(ch);
+                commandBuffer.append(ch);
                 if (insideSingleQuotes)
                 {
                     insideSingleQuotes = prevCh == EscapeSymbol;
@@ -70,7 +74,7 @@ class CommandSplitter
             }
             else
             {
-                commandBuffer.Append(ch);
+                commandBuffer.append(ch);
             }
         }
 
@@ -84,21 +88,21 @@ class CommandSplitter
             throw new TokenizeException("Missing closing single quote");
         }
 
-        if (commandBuffer.Length > 0)
+        if (commandBuffer.length() > 0)
         {
             AddCommand(commandBuffer, list);
         }
     }
 
-    private static void AddCommand(StringBuilder buffer, IList<String> list)
+    private static void AddCommand(StringBuilder buffer, List<String> list)
     {
-        String command = buffer.ToString().Trim();
-        if (command.Length == 0)
+        String command = buffer.toString().trim();
+        if (command.length() == 0)
         {
             throw new TokenizeException("Can't add empty command");
         }
 
-        list.Add(command);
-        buffer.Length = 0;
+        list.add(command);
+        buffer.setLength(0);
     }
 }

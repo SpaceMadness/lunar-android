@@ -5,8 +5,8 @@ package com.spacemadness.lunar.console;
  */
 public class CommandListOptions
 {
-    None       = 0,
-    Debug      = 1 << 0,
-    Hidden     = 1 << 1,
-    System     = 1 << 2,
+    public static final int None   = 0;
+    public static final int Debug  = 1 << 0;
+    public static final int Hidden = 1 << 1;
+    public static final int System = 1 << 2;
 }

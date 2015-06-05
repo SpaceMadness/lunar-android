@@ -9,9 +9,4 @@ public enum CVarType
     Integer,
     Float,
     String,
-    Color,
-    Rect,
-    Vector2,
-    Vector3,
-    Vector4
 }

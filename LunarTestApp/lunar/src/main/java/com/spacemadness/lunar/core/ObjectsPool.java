@@ -1,6 +1,8 @@
 package com.spacemadness.lunar.core;
 
 import com.spacemadness.lunar.debug.Assert;
+import com.spacemadness.lunar.utils.ClassUtils;
+import com.spacemadness.lunar.utils.FastList;
 
 /**
  * Created by weee on 5/28/15.
@@ -8,8 +10,16 @@ import com.spacemadness.lunar.debug.Assert;
 public class ObjectsPool<T extends ObjectsPoolEntry> extends FastList<ObjectsPoolEntry>
         implements IObjectsPool, IDestroyable
 {
-    public ObjectsPool()
+    private Class<? extends T> cls;
+
+    public ObjectsPool(Class<? extends T> cls)
     {
+        if (cls == null)
+        {
+            throw new NullPointerException("Class is null");
+        }
+
+        this.cls = cls;
     }
 
     public T NextAutoRecycleObject()
@@ -41,7 +51,7 @@ public class ObjectsPool<T extends ObjectsPoolEntry> extends FastList<ObjectsPoo
 
     protected T CreateObject()
     {
-        return new T();
+        return ClassUtils.tryNewInstance(cls);
     }
 
     //////////////////////////////////////////////////////////////////////////////

@@ -1,5 +1,7 @@
 package com.spacemadness.lunar.utils;
 
+import com.spacemadness.lunar.ColorCode;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 

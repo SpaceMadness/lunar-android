@@ -1,5 +1,7 @@
 package com.spacemadness.lunar.debug;
 
+import com.spacemadness.lunar.utils.NotImplementedException;
+
 public class Log
 {
     private static final String TAG = "Lunar";
@@ -31,5 +33,10 @@ public class Log
     {
         String message = String.format(format, params);
         android.util.Log.e(TAG, message, e);
+    }
+
+    public static void error(Exception e, String s)
+    {
+        throw new NotImplementedException();
     }
 }
