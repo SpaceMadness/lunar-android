@@ -5,30 +5,32 @@ package com.spacemadness.lunar.core;
  */
 public class ObjectsPoolConcurrent<T extends ObjectsPoolEntry> extends ObjectsPool<T>
 {
-    @Override
-    public T NextObject()
+    public ObjectsPoolConcurrent(Class<? extends T> cls)
     {
-        synchronized (this)
-        {
-            return super.NextObject();
-        }
+        super(cls);
     }
 
     @Override
-    public void Recycle(ObjectsPoolEntry e)
+    public synchronized T NextObject()
     {
-        synchronized (this)
-        {
-            super.Recycle(e);
-        }
+        return super.NextObject();
     }
 
     @Override
-    public void Destroy()
+    public synchronized void Recycle(ObjectsPoolEntry e)
     {
-        synchronized (this)
-        {
-            super.Destroy();
-        }
+        super.Recycle(e);
+    }
+
+    @Override
+    public synchronized void Destroy()
+    {
+        super.Destroy();
+    }
+
+    @Override
+    public synchronized int size()
+    {
+        return super.size();
     }
 }

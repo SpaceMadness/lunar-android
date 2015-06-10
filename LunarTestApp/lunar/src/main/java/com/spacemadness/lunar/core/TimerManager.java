@@ -1,6 +1,7 @@
 package com.spacemadness.lunar.core;
 
 import com.spacemadness.lunar.debug.Assert;
+import com.spacemadness.lunar.utils.NotImplementedException;
 
 /**
  * Created by weee on 5/28/15.
@@ -9,7 +10,7 @@ public class TimerManager extends ITimerManager
 {
     public static final ITimerManager Null = new NullTimerManager();
 
-    private static TimerManager s_sharedInstance;
+    private static TimerManager s_sharedInstance; // FIXME: rename
 
     double currentTime;
 
@@ -32,25 +33,81 @@ public class TimerManager extends ITimerManager
         s_sharedInstance = new TimerManager();
     }
 
-    // FIXME: public static Timer ScheduleTimer(Runnable callback, float delay = 0.0f, boolean repeated = false, String name = null)
+    public static Timer ScheduleTimer(Runnable callback)
+    {
+        return ScheduleTimer(callback, 0.0f);
+    }
+
+    public static Timer ScheduleTimer(Runnable callback, float delay)
+    {
+        return ScheduleTimer(callback, delay, false);
+    }
+
+    public static Timer ScheduleTimer(Runnable callback, float delay, boolean repeated)
+    {
+        return ScheduleTimer(callback, delay, repeated, null);
+    }
+
     public static Timer ScheduleTimer(Runnable callback, float delay, boolean repeated, String name)
     {
         return s_sharedInstance.Schedule(callback, delay, repeated, name);
     }
 
-    // FIXME: public static Timer ScheduleTimer(TimerRunnable callback, float delay = 0.0f, boolean repeated = false, String name = null)
+    public static Timer ScheduleTimer(TimerRunnable callback)
+    {
+        return ScheduleTimer(callback, 0.0f);
+    }
+
+    public static Timer ScheduleTimer(TimerRunnable callback, float delay)
+    {
+        return ScheduleTimer(callback, delay, false);
+    }
+
+    public static Timer ScheduleTimer(TimerRunnable callback, float delay, boolean repeated)
+    {
+        return ScheduleTimer(callback, delay, repeated, null);
+    }
+
     public static Timer ScheduleTimer(TimerRunnable callback, float delay, boolean repeated, String name)
     {
         return s_sharedInstance.Schedule(callback, delay, repeated, name);
     }
 
-    // FIXME: public static Timer ScheduleTimerOnce(Runnable callback, float delay = 0.0f, boolean repeated = false, String name = null)
+    public static Timer ScheduleTimerOnce(Runnable callback)
+    {
+        return ScheduleTimerOnce(callback, 0.0f);
+    }
+
+    public static Timer ScheduleTimerOnce(Runnable callback, float delay)
+    {
+        return ScheduleTimerOnce(callback, delay, false);
+    }
+
+    public static Timer ScheduleTimerOnce(Runnable callback, float delay, boolean repeated)
+    {
+        return ScheduleTimerOnce(callback, delay, repeated, null);
+    }
+
     public static Timer ScheduleTimerOnce(Runnable callback, float delay, boolean repeated, String name)
     {
         return s_sharedInstance.ScheduleOnce(callback, delay, repeated, name);
     }
 
-    // FIXME: public static Timer ScheduleTimerOnce(TimerRunnable callback, float delay = 0.0f, boolean repeated = false, String name = null)
+    public static Timer ScheduleTimerOnce(TimerRunnable callback)
+    {
+        return ScheduleTimerOnce(callback, 0.0f);
+    }
+
+    public static Timer ScheduleTimerOnce(TimerRunnable callback, float delay)
+    {
+        return ScheduleTimerOnce(callback, delay, false);
+    }
+
+    public static Timer ScheduleTimerOnce(TimerRunnable callback, float delay, boolean repeated)
+    {
+        return ScheduleTimerOnce(callback, delay, repeated, null);
+    }
+
     public static Timer ScheduleTimerOnce(TimerRunnable callback, float delay, boolean repeated, String name)
     {
         return s_sharedInstance.ScheduleOnce(callback, delay, repeated, name);
@@ -68,7 +125,8 @@ public class TimerManager extends ITimerManager
 
     public static void CancelTimers(Object target)
     {
-        s_sharedInstance.CancelAll(target);
+        // s_sharedInstance.CancelAll(target);
+        throw new NotImplementedException();
     }
 
     static TimerManager SharedInstance()

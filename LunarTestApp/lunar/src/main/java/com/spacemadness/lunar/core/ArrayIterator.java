@@ -18,6 +18,7 @@ public class ArrayIterator<T> implements Iterator<T>
             throw new NullPointerException("Array is null");
         }
         this.array = array;
+        this.index = -1;
     }
 
     @Override

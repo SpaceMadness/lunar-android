@@ -1,8 +1,10 @@
 package com.spacemadness.lunar.debug;
 
-import com.spacemadness.lunar.utils.StringUtils;
+import com.spacemadness.lunar.utils.NotImplementedException;
 
+import java.util.Collection;
 import java.util.List;
+
 import static com.spacemadness.lunar.utils.StringUtils.*;
 
 public class Assert // FIXME: rename methods to assert*
@@ -82,7 +84,7 @@ public class Assert // FIXME: rename methods to assert*
     public static void IsNull(Object obj)
     {
         if (IsEnabled && obj != null)
-            AssertHelper("Assertion failed: expected 'null' but was '{0}'", obj);
+            AssertHelper("Assertion failed: expected 'null' but was '%s'", obj);
     }
 
     public static void IsNull(Object obj, String message)
@@ -143,7 +145,7 @@ public class Assert // FIXME: rename methods to assert*
             int index = 0;
             for (Object t : list)
             {
-                Assert.IsNotNull(t, "Element at {0} is null", ToString(index));
+                Assert.IsNotNull(t, "Element at %s is null", ToString(index));
                 ++index;
             }
         }
@@ -174,7 +176,7 @@ public class Assert // FIXME: rename methods to assert*
     public static void AreEqual(boolean expected, boolean actual)
     {
         if (IsEnabled && expected != actual)
-            AssertHelper("Assertion failed: expected '{0}' but was '{1}'", Boolean.toString(expected), Boolean.toString(actual));
+            AssertHelper("Assertion failed: expected '%s' but was '%s'", Boolean.toString(expected), Boolean.toString(actual));
     }
 
 
@@ -216,7 +218,7 @@ public class Assert // FIXME: rename methods to assert*
     public static void AreEqual(byte expected, byte actual)
     {
         if (IsEnabled && expected != actual)
-            AssertHelper("Assertion failed: expected '{0}' but was '{1}'", ToString(expected), ToString(actual));
+            AssertHelper("Assertion failed: expected '%s' but was '%s'", ToString(expected), ToString(actual));
     }
 
 
@@ -257,7 +259,7 @@ public class Assert // FIXME: rename methods to assert*
     public static void AreEqual(short expected, short actual)
     {
         if (IsEnabled && expected != actual)
-            AssertHelper("Assertion failed: expected '{0}' but was '{1}'", ToString(expected), ToString(actual));
+            AssertHelper("Assertion failed: expected '%s' but was '%s'", ToString(expected), ToString(actual));
     }
 
 
@@ -298,7 +300,7 @@ public class Assert // FIXME: rename methods to assert*
     public static void AreEqual(char expected, char actual)
     {
         if (IsEnabled && expected != actual)
-            AssertHelper("Assertion failed: expected '{0}' but was '{1}'", ToString(expected), ToString(actual));
+            AssertHelper("Assertion failed: expected '%s' but was '%s'", ToString(expected), ToString(actual));
     }
 
 
@@ -340,7 +342,7 @@ public class Assert // FIXME: rename methods to assert*
     public static void AreEqual(int expected, int actual)
     {
         if (IsEnabled && expected != actual)
-            AssertHelper("Assertion failed: expected '{0}' but was '{1}'", ToString(expected), ToString(actual));
+            AssertHelper("Assertion failed: expected '%s' but was '%s'", ToString(expected), ToString(actual));
     }
 
 
@@ -382,7 +384,7 @@ public class Assert // FIXME: rename methods to assert*
     public static void AreEqual(long expected, long actual)
     {
         if (IsEnabled && expected != actual)
-            AssertHelper("Assertion failed: expected '{0}' but was '{1}'", ToString(expected), ToString(actual));
+            AssertHelper("Assertion failed: expected '%s' but was '%s'", ToString(expected), ToString(actual));
     }
 
 
@@ -424,7 +426,7 @@ public class Assert // FIXME: rename methods to assert*
     public static void AreEqual(float expected, float actual)
     {
         if (IsEnabled && expected != actual)
-            AssertHelper("Assertion failed: expected '{0}' but was '{1}'", ToString(expected), ToString(actual));
+            AssertHelper("Assertion failed: expected '%s' but was '%s'", ToString(expected), ToString(actual));
     }
 
 
@@ -466,7 +468,7 @@ public class Assert // FIXME: rename methods to assert*
     public static void AreEqual(double expected, double actual)
     {
         if (IsEnabled && expected != actual)
-            AssertHelper("Assertion failed: expected '{0}' but was '{1}'", ToString(expected), ToString(actual));
+            AssertHelper("Assertion failed: expected '%s' but was '%s'", ToString(expected), ToString(actual));
     }
 
 
@@ -508,7 +510,7 @@ public class Assert // FIXME: rename methods to assert*
     public static void AreEqual(Object expected, Object actual)
     {
         if (IsEnabled && !(expected != null && actual != null && expected.equals(actual) || expected == null && actual == null))
-            AssertHelper("Assertion failed: expected '{0}' but was '{1}'", toString(expected), toString(actual));
+            AssertHelper("Assertion failed: expected '%s' but was '%s'", ToString(expected), ToString(actual));
     }
 
 
@@ -550,7 +552,7 @@ public class Assert // FIXME: rename methods to assert*
     public static void AreNotEqual(boolean expected, boolean actual)
     {
         if (IsEnabled && expected == actual)
-            AssertHelper("Assertion failed: values are equal '{0}'", ToString(expected));
+            AssertHelper("Assertion failed: values are equal '%s'", ToString(expected));
     }
 
 
@@ -592,7 +594,7 @@ public class Assert // FIXME: rename methods to assert*
     public static void AreNotEqual(byte expected, byte actual)
     {
         if (IsEnabled && expected == actual)
-            AssertHelper("Assertion failed: values are equal '{0}'", ToString(expected));
+            AssertHelper("Assertion failed: values are equal '%s'", ToString(expected));
     }
 
 
@@ -634,7 +636,7 @@ public class Assert // FIXME: rename methods to assert*
     public static void AreNotEqual(short expected, short actual)
     {
         if (IsEnabled && expected == actual)
-            AssertHelper("Assertion failed: values are equal '{0}'", ToString(expected));
+            AssertHelper("Assertion failed: values are equal '%s'", ToString(expected));
     }
 
 
@@ -676,7 +678,7 @@ public class Assert // FIXME: rename methods to assert*
     public static void AreNotEqual(char expected, char actual)
     {
         if (IsEnabled && expected == actual)
-            AssertHelper("Assertion failed: values are equal '{0}'", ToString(expected));
+            AssertHelper("Assertion failed: values are equal '%s'", ToString(expected));
     }
 
 
@@ -718,7 +720,7 @@ public class Assert // FIXME: rename methods to assert*
     public static void AreNotEqual(int expected, int actual)
     {
         if (IsEnabled && expected == actual)
-            AssertHelper("Assertion failed: values are equal '{0}'", ToString(expected));
+            AssertHelper("Assertion failed: values are equal '%s'", ToString(expected));
     }
 
 
@@ -760,7 +762,7 @@ public class Assert // FIXME: rename methods to assert*
     public static void AreNotEqual(long expected, long actual)
     {
         if (IsEnabled && expected == actual)
-            AssertHelper("Assertion failed: values are equal '{0}'", ToString(expected));
+            AssertHelper("Assertion failed: values are equal '%s'", ToString(expected));
     }
 
 
@@ -799,52 +801,10 @@ public class Assert // FIXME: rename methods to assert*
     }
 
 
-    public static void AreNotEqual(ulong expected, ulong actual)
-    {
-        if (IsEnabled && expected == actual)
-            AssertHelper("Assertion failed: values are equal '{0}'", ToString(expected));
-    }
-
-
-    public static void AreNotEqual(ulong expected, ulong actual, String message)
-    {
-        if (IsEnabled && expected == actual)
-            AssertHelper(message);
-    }
-
-
-    public static void AreNotEqual(ulong expected, ulong actual, String format, Object... args)
-    {
-        if (IsEnabled && expected == actual)
-            AssertHelper(format, args);
-    }
-
-
-    public static void AreNotEqual(ulong expected, ulong actual, String format, Object arg0)
-    {
-        if (IsEnabled && expected == actual)
-            AssertHelper(format, arg0);
-    }
-
-
-    public static void AreNotEqual(ulong expected, ulong actual, String format, Object arg0, Object arg1)
-    {
-        if (IsEnabled && expected == actual)
-            AssertHelper(format, arg0, arg1);
-    }
-
-
-    public static void AreNotEqual(ulong expected, ulong actual, String format, Object arg0, Object arg1, Object arg2)
-    {
-        if (IsEnabled && expected == actual)
-            AssertHelper(format, arg0, arg1, arg2);
-    }
-
-
     public static void AreNotEqual(float expected, float actual)
     {
         if (IsEnabled && expected == actual)
-            AssertHelper("Assertion failed: values are equal '{0}'", ToString(expected));
+            AssertHelper("Assertion failed: values are equal '%s'", ToString(expected));
     }
 
 
@@ -886,7 +846,7 @@ public class Assert // FIXME: rename methods to assert*
     public static void AreNotEqual(double expected, double actual)
     {
         if (IsEnabled && expected == actual)
-            AssertHelper("Assertion failed: values are equal '{0}'", ToString(expected));
+            AssertHelper("Assertion failed: values are equal '%s'", ToString(expected));
     }
 
 
@@ -928,7 +888,7 @@ public class Assert // FIXME: rename methods to assert*
     public static void AreNotEqual(Object expected, Object actual)
     {
         if (IsEnabled && (expected != null && actual != null && expected.equals(actual) || expected == null && actual == null))
-            AssertHelper("Assertion failed: Objects are equal '{0}'", toString(expected));
+            AssertHelper("Assertion failed: Objects are equal '%s'", ToString(expected));
     }
 
 
@@ -966,11 +926,1018 @@ public class Assert // FIXME: rename methods to assert*
             AssertHelper(format, arg0, arg1, arg2);
     }
 
+    public static void Greater(byte a, byte b)
+    {
+        if (IsEnabled && a <= b)
+            AssertHelper("Assertion failed: '%s' > '%s'", a, b);
+    }
+
+    public static void Greater(byte a, byte b, String message)
+    {
+        if (IsEnabled && a <= b)
+            AssertHelper(message);
+    }
+
+    public static void Greater(byte a, byte b, String format, Object... args)
+    {
+        if (IsEnabled && a <= b)
+            AssertHelper(format, args);
+    }
+
+    public static void Greater(byte a, byte b, String format, Object arg0)
+    {
+        if (IsEnabled && a <= b)
+            AssertHelper(format, arg0);
+    }
+
+    public static void Greater(byte a, byte b, String format, Object arg0, Object arg1)
+    {
+        if (IsEnabled && a <= b)
+            AssertHelper(format, arg0, arg1);
+    }
+
+    public static void Greater(byte a, byte b, String format, Object arg0, Object arg1, Object arg2)
+    {
+        if (IsEnabled && a <= b)
+            AssertHelper(format, arg0, arg1, arg2);
+    }
+
+    public static void Greater(short a, short b)
+    {
+        if (IsEnabled && a <= b)
+            AssertHelper("Assertion failed: '%s' > '%s'", a, b);
+    }
+
+    public static void Greater(short a, short b, String message)
+    {
+        if (IsEnabled && a <= b)
+            AssertHelper(message);
+    }
+
+    public static void Greater(short a, short b, String format, Object... args)
+    {
+        if (IsEnabled && a <= b)
+            AssertHelper(format, args);
+    }
+
+    public static void Greater(short a, short b, String format, Object arg0)
+    {
+        if (IsEnabled && a <= b)
+            AssertHelper(format, arg0);
+    }
+
+    public static void Greater(short a, short b, String format, Object arg0, Object arg1)
+    {
+        if (IsEnabled && a <= b)
+            AssertHelper(format, arg0, arg1);
+    }
+
+    public static void Greater(short a, short b, String format, Object arg0, Object arg1, Object arg2)
+    {
+        if (IsEnabled && a <= b)
+            AssertHelper(format, arg0, arg1, arg2);
+    }
+
+    public static void Greater(char a, char b)
+    {
+        if (IsEnabled && a <= b)
+            AssertHelper("Assertion failed: '%s' > '%s'", a, b);
+    }
+
+    public static void Greater(char a, char b, String message)
+    {
+        if (IsEnabled && a <= b)
+            AssertHelper(message);
+    }
+
+    public static void Greater(char a, char b, String format, Object... args)
+    {
+        if (IsEnabled && a <= b)
+            AssertHelper(format, args);
+    }
+
+    public static void Greater(char a, char b, String format, Object arg0)
+    {
+        if (IsEnabled && a <= b)
+            AssertHelper(format, arg0);
+    }
+
+    public static void Greater(char a, char b, String format, Object arg0, Object arg1)
+    {
+        if (IsEnabled && a <= b)
+            AssertHelper(format, arg0, arg1);
+    }
+
+    public static void Greater(char a, char b, String format, Object arg0, Object arg1, Object arg2)
+    {
+        if (IsEnabled && a <= b)
+            AssertHelper(format, arg0, arg1, arg2);
+    }
+
+    public static void Greater(int a, int b)
+    {
+        if (IsEnabled && a <= b)
+            AssertHelper("Assertion failed: '%s' > '%s'", a, b);
+    }
+
+    public static void Greater(int a, int b, String message)
+    {
+        if (IsEnabled && a <= b)
+            AssertHelper(message);
+    }
+
+    public static void Greater(int a, int b, String format, Object... args)
+    {
+        if (IsEnabled && a <= b)
+            AssertHelper(format, args);
+    }
+
+    public static void Greater(int a, int b, String format, Object arg0)
+    {
+        if (IsEnabled && a <= b)
+            AssertHelper(format, arg0);
+    }
+
+    public static void Greater(int a, int b, String format, Object arg0, Object arg1)
+    {
+        if (IsEnabled && a <= b)
+            AssertHelper(format, arg0, arg1);
+    }
+
+    public static void Greater(int a, int b, String format, Object arg0, Object arg1, Object arg2)
+    {
+        if (IsEnabled && a <= b)
+            AssertHelper(format, arg0, arg1, arg2);
+    }
+
+    public static void Greater(long a, long b)
+    {
+        if (IsEnabled && a <= b)
+            AssertHelper("Assertion failed: '%s' > '%s'", a, b);
+    }
+
+    public static void Greater(long a, long b, String message)
+    {
+        if (IsEnabled && a <= b)
+            AssertHelper(message);
+    }
+
+    public static void Greater(long a, long b, String format, Object... args)
+    {
+        if (IsEnabled && a <= b)
+            AssertHelper(format, args);
+    }
+
+    public static void Greater(long a, long b, String format, Object arg0)
+    {
+        if (IsEnabled && a <= b)
+            AssertHelper(format, arg0);
+    }
+
+    public static void Greater(long a, long b, String format, Object arg0, Object arg1)
+    {
+        if (IsEnabled && a <= b)
+            AssertHelper(format, arg0, arg1);
+    }
+
+    public static void Greater(long a, long b, String format, Object arg0, Object arg1, Object arg2)
+    {
+        if (IsEnabled && a <= b)
+            AssertHelper(format, arg0, arg1, arg2);
+    }
+
+    public static void Greater(float a, float b)
+    {
+        if (IsEnabled && a <= b)
+            AssertHelper("Assertion failed: '%s' > '%s'", a, b);
+    }
+
+    public static void Greater(float a, float b, String message)
+    {
+        if (IsEnabled && a <= b)
+            AssertHelper(message);
+    }
+
+    public static void Greater(float a, float b, String format, Object... args)
+    {
+        if (IsEnabled && a <= b)
+            AssertHelper(format, args);
+    }
+
+    public static void Greater(float a, float b, String format, Object arg0)
+    {
+        if (IsEnabled && a <= b)
+            AssertHelper(format, arg0);
+    }
+
+    public static void Greater(float a, float b, String format, Object arg0, Object arg1)
+    {
+        if (IsEnabled && a <= b)
+            AssertHelper(format, arg0, arg1);
+    }
+
+    public static void Greater(float a, float b, String format, Object arg0, Object arg1, Object arg2)
+    {
+        if (IsEnabled && a <= b)
+            AssertHelper(format, arg0, arg1, arg2);
+    }
+
+    public static void Greater(double a, double b)
+    {
+        if (IsEnabled && a <= b)
+            AssertHelper("Assertion failed: '%s' > '%s'", a, b);
+    }
+
+    public static void Greater(double a, double b, String message)
+    {
+        if (IsEnabled && a <= b)
+            AssertHelper(message);
+    }
+
+    public static void Greater(double a, double b, String format, Object... args)
+    {
+        if (IsEnabled && a <= b)
+            AssertHelper(format, args);
+    }
+
+    public static void Greater(double a, double b, String format, Object arg0)
+    {
+        if (IsEnabled && a <= b)
+            AssertHelper(format, arg0);
+    }
+
+    public static void Greater(double a, double b, String format, Object arg0, Object arg1)
+    {
+        if (IsEnabled && a <= b)
+            AssertHelper(format, arg0, arg1);
+    }
+
+    public static void Greater(double a, double b, String format, Object arg0, Object arg1, Object arg2)
+    {
+        if (IsEnabled && a <= b)
+            AssertHelper(format, arg0, arg1, arg2);
+    }
+
+    public static void GreaterOrEqual(byte a, byte b)
+    {
+        if (IsEnabled && a < b)
+            AssertHelper("Assertion failed: '%s' >= '%s'", a, b);
+    }
+
+    public static void GreaterOrEqual(byte a, byte b, String message)
+    {
+        if (IsEnabled && a < b)
+            AssertHelper(message);
+    }
+
+    public static void GreaterOrEqual(byte a, byte b, String format, Object... args)
+    {
+        if (IsEnabled && a < b)
+            AssertHelper(format, args);
+    }
+
+    public static void GreaterOrEqual(byte a, byte b, String format, Object arg0)
+    {
+        if (IsEnabled && a < b)
+            AssertHelper(format, arg0);
+    }
+
+    public static void GreaterOrEqual(byte a, byte b, String format, Object arg0, Object arg1)
+    {
+        if (IsEnabled && a < b)
+            AssertHelper(format, arg0, arg1);
+    }
+
+    public static void GreaterOrEqual(byte a, byte b, String format, Object arg0, Object arg1, Object arg2)
+    {
+        if (IsEnabled && a < b)
+            AssertHelper(format, arg0, arg1, arg2);
+    }
+
+    public static void GreaterOrEqual(short a, short b)
+    {
+        if (IsEnabled && a < b)
+            AssertHelper("Assertion failed: '%s' >= '%s'", a, b);
+    }
+
+    public static void GreaterOrEqual(short a, short b, String message)
+    {
+        if (IsEnabled && a < b)
+            AssertHelper(message);
+    }
+
+    public static void GreaterOrEqual(short a, short b, String format, Object... args)
+    {
+        if (IsEnabled && a < b)
+            AssertHelper(format, args);
+    }
+
+    public static void GreaterOrEqual(short a, short b, String format, Object arg0)
+    {
+        if (IsEnabled && a < b)
+            AssertHelper(format, arg0);
+    }
+
+    public static void GreaterOrEqual(short a, short b, String format, Object arg0, Object arg1)
+    {
+        if (IsEnabled && a < b)
+            AssertHelper(format, arg0, arg1);
+    }
+
+    public static void GreaterOrEqual(short a, short b, String format, Object arg0, Object arg1, Object arg2)
+    {
+        if (IsEnabled && a < b)
+            AssertHelper(format, arg0, arg1, arg2);
+    }
+
+    public static void GreaterOrEqual(char a, char b)
+    {
+        if (IsEnabled && a < b)
+            AssertHelper("Assertion failed: '%s' >= '%s'", a, b);
+    }
+
+    public static void GreaterOrEqual(char a, char b, String message)
+    {
+        if (IsEnabled && a < b)
+            AssertHelper(message);
+    }
+
+    public static void GreaterOrEqual(char a, char b, String format, Object... args)
+    {
+        if (IsEnabled && a < b)
+            AssertHelper(format, args);
+    }
+
+    public static void GreaterOrEqual(char a, char b, String format, Object arg0)
+    {
+        if (IsEnabled && a < b)
+            AssertHelper(format, arg0);
+    }
+
+    public static void GreaterOrEqual(char a, char b, String format, Object arg0, Object arg1)
+    {
+        if (IsEnabled && a < b)
+            AssertHelper(format, arg0, arg1);
+    }
+
+    public static void GreaterOrEqual(char a, char b, String format, Object arg0, Object arg1, Object arg2)
+    {
+        if (IsEnabled && a < b)
+            AssertHelper(format, arg0, arg1, arg2);
+    }
+
+    public static void GreaterOrEqual(int a, int b)
+    {
+        if (IsEnabled && a < b)
+            AssertHelper("Assertion failed: '%s' >= '%s'", a, b);
+    }
+
+    public static void GreaterOrEqual(int a, int b, String message)
+    {
+        if (IsEnabled && a < b)
+            AssertHelper(message);
+    }
+
+    public static void GreaterOrEqual(int a, int b, String format, Object... args)
+    {
+        if (IsEnabled && a < b)
+            AssertHelper(format, args);
+    }
+
+    public static void GreaterOrEqual(int a, int b, String format, Object arg0)
+    {
+        if (IsEnabled && a < b)
+            AssertHelper(format, arg0);
+    }
+
+    public static void GreaterOrEqual(int a, int b, String format, Object arg0, Object arg1)
+    {
+        if (IsEnabled && a < b)
+            AssertHelper(format, arg0, arg1);
+    }
+
+    public static void GreaterOrEqual(int a, int b, String format, Object arg0, Object arg1, Object arg2)
+    {
+        if (IsEnabled && a < b)
+            AssertHelper(format, arg0, arg1, arg2);
+    }
+
+    public static void GreaterOrEqual(long a, long b)
+    {
+        if (IsEnabled && a < b)
+            AssertHelper("Assertion failed: '%s' >= '%s'", a, b);
+    }
+
+    public static void GreaterOrEqual(long a, long b, String message)
+    {
+        if (IsEnabled && a < b)
+            AssertHelper(message);
+    }
+
+    public static void GreaterOrEqual(long a, long b, String format, Object... args)
+    {
+        if (IsEnabled && a < b)
+            AssertHelper(format, args);
+    }
+
+    public static void GreaterOrEqual(long a, long b, String format, Object arg0)
+    {
+        if (IsEnabled && a < b)
+            AssertHelper(format, arg0);
+    }
+
+    public static void GreaterOrEqual(long a, long b, String format, Object arg0, Object arg1)
+    {
+        if (IsEnabled && a < b)
+            AssertHelper(format, arg0, arg1);
+    }
+
+    public static void GreaterOrEqual(long a, long b, String format, Object arg0, Object arg1, Object arg2)
+    {
+        if (IsEnabled && a < b)
+            AssertHelper(format, arg0, arg1, arg2);
+    }
+
+    public static void GreaterOrEqual(float a, float b)
+    {
+        if (IsEnabled && a < b)
+            AssertHelper("Assertion failed: '%s' >= '%s'", a, b);
+    }
+
+    public static void GreaterOrEqual(float a, float b, String message)
+    {
+        if (IsEnabled && a < b)
+            AssertHelper(message);
+    }
+
+    public static void GreaterOrEqual(float a, float b, String format, Object... args)
+    {
+        if (IsEnabled && a < b)
+            AssertHelper(format, args);
+    }
+
+    public static void GreaterOrEqual(float a, float b, String format, Object arg0)
+    {
+        if (IsEnabled && a < b)
+            AssertHelper(format, arg0);
+    }
+
+    public static void GreaterOrEqual(float a, float b, String format, Object arg0, Object arg1)
+    {
+        if (IsEnabled && a < b)
+            AssertHelper(format, arg0, arg1);
+    }
+
+    public static void GreaterOrEqual(float a, float b, String format, Object arg0, Object arg1, Object arg2)
+    {
+        if (IsEnabled && a < b)
+            AssertHelper(format, arg0, arg1, arg2);
+    }
+
+    public static void GreaterOrEqual(double a, double b)
+    {
+        if (IsEnabled && a < b)
+            AssertHelper("Assertion failed: '%s' >= '%s'", a, b);
+    }
+
+    public static void GreaterOrEqual(double a, double b, String message)
+    {
+        if (IsEnabled && a < b)
+            AssertHelper(message);
+    }
+
+    public static void GreaterOrEqual(double a, double b, String format, Object... args)
+    {
+        if (IsEnabled && a < b)
+            AssertHelper(format, args);
+    }
+
+    public static void GreaterOrEqual(double a, double b, String format, Object arg0)
+    {
+        if (IsEnabled && a < b)
+            AssertHelper(format, arg0);
+    }
+
+    public static void GreaterOrEqual(double a, double b, String format, Object arg0, Object arg1)
+    {
+        if (IsEnabled && a < b)
+            AssertHelper(format, arg0, arg1);
+    }
+
+    public static void GreaterOrEqual(double a, double b, String format, Object arg0, Object arg1, Object arg2)
+    {
+        if (IsEnabled && a < b)
+            AssertHelper(format, arg0, arg1, arg2);
+    }
+
+    public static void Less(byte a, byte b)
+    {
+        if (IsEnabled && a >= b)
+            AssertHelper("Assertion failed: '%s' < '%s'", a, b);
+    }
+
+    public static void Less(byte a, byte b, String message)
+    {
+        if (IsEnabled && a >= b)
+            AssertHelper(message);
+    }
+
+    public static void Less(byte a, byte b, String format, Object... args)
+    {
+        if (IsEnabled && a >= b)
+            AssertHelper(format, args);
+    }
+
+    public static void Less(byte a, byte b, String format, Object arg0)
+    {
+        if (IsEnabled && a >= b)
+            AssertHelper(format, arg0);
+    }
+
+    public static void Less(byte a, byte b, String format, Object arg0, Object arg1)
+    {
+        if (IsEnabled && a >= b)
+            AssertHelper(format, arg0, arg1);
+    }
+
+    public static void Less(byte a, byte b, String format, Object arg0, Object arg1, Object arg2)
+    {
+        if (IsEnabled && a >= b)
+            AssertHelper(format, arg0, arg1, arg2);
+    }
+
+    public static void Less(short a, short b)
+    {
+        if (IsEnabled && a >= b)
+            AssertHelper("Assertion failed: '%s' < '%s'", a, b);
+    }
+
+    public static void Less(short a, short b, String message)
+    {
+        if (IsEnabled && a >= b)
+            AssertHelper(message);
+    }
+
+    public static void Less(short a, short b, String format, Object... args)
+    {
+        if (IsEnabled && a >= b)
+            AssertHelper(format, args);
+    }
+
+    public static void Less(short a, short b, String format, Object arg0)
+    {
+        if (IsEnabled && a >= b)
+            AssertHelper(format, arg0);
+    }
+
+    public static void Less(short a, short b, String format, Object arg0, Object arg1)
+    {
+        if (IsEnabled && a >= b)
+            AssertHelper(format, arg0, arg1);
+    }
+
+    public static void Less(short a, short b, String format, Object arg0, Object arg1, Object arg2)
+    {
+        if (IsEnabled && a >= b)
+            AssertHelper(format, arg0, arg1, arg2);
+    }
+
+    public static void Less(char a, char b)
+    {
+        if (IsEnabled && a >= b)
+            AssertHelper("Assertion failed: '%s' < '%s'", a, b);
+    }
+
+    public static void Less(char a, char b, String message)
+    {
+        if (IsEnabled && a >= b)
+            AssertHelper(message);
+    }
+
+    public static void Less(char a, char b, String format, Object... args)
+    {
+        if (IsEnabled && a >= b)
+            AssertHelper(format, args);
+    }
+
+    public static void Less(char a, char b, String format, Object arg0)
+    {
+        if (IsEnabled && a >= b)
+            AssertHelper(format, arg0);
+    }
+
+    public static void Less(char a, char b, String format, Object arg0, Object arg1)
+    {
+        if (IsEnabled && a >= b)
+            AssertHelper(format, arg0, arg1);
+    }
+
+    public static void Less(char a, char b, String format, Object arg0, Object arg1, Object arg2)
+    {
+        if (IsEnabled && a >= b)
+            AssertHelper(format, arg0, arg1, arg2);
+    }
+
+    public static void Less(int a, int b)
+    {
+        if (IsEnabled && a >= b)
+            AssertHelper("Assertion failed: '%s' < '%s'", a, b);
+    }
+
+    public static void Less(int a, int b, String message)
+    {
+        if (IsEnabled && a >= b)
+            AssertHelper(message);
+    }
+
+    public static void Less(int a, int b, String format, Object... args)
+    {
+        if (IsEnabled && a >= b)
+            AssertHelper(format, args);
+    }
+
+    public static void Less(int a, int b, String format, Object arg0)
+    {
+        if (IsEnabled && a >= b)
+            AssertHelper(format, arg0);
+    }
+
+    public static void Less(int a, int b, String format, Object arg0, Object arg1)
+    {
+        if (IsEnabled && a >= b)
+            AssertHelper(format, arg0, arg1);
+    }
+
+    public static void Less(int a, int b, String format, Object arg0, Object arg1, Object arg2)
+    {
+        if (IsEnabled && a >= b)
+            AssertHelper(format, arg0, arg1, arg2);
+    }
+
+    public static void Less(long a, long b)
+    {
+        if (IsEnabled && a >= b)
+            AssertHelper("Assertion failed: '%s' < '%s'", a, b);
+    }
+
+    public static void Less(long a, long b, String message)
+    {
+        if (IsEnabled && a >= b)
+            AssertHelper(message);
+    }
+
+    public static void Less(long a, long b, String format, Object... args)
+    {
+        if (IsEnabled && a >= b)
+            AssertHelper(format, args);
+    }
+
+    public static void Less(long a, long b, String format, Object arg0)
+    {
+        if (IsEnabled && a >= b)
+            AssertHelper(format, arg0);
+    }
+
+    public static void Less(long a, long b, String format, Object arg0, Object arg1)
+    {
+        if (IsEnabled && a >= b)
+            AssertHelper(format, arg0, arg1);
+    }
+
+    public static void Less(long a, long b, String format, Object arg0, Object arg1, Object arg2)
+    {
+        if (IsEnabled && a >= b)
+            AssertHelper(format, arg0, arg1, arg2);
+    }
+
+    public static void Less(float a, float b)
+    {
+        if (IsEnabled && a >= b)
+            AssertHelper("Assertion failed: '%s' < '%s'", a, b);
+    }
+
+    public static void Less(float a, float b, String message)
+    {
+        if (IsEnabled && a >= b)
+            AssertHelper(message);
+    }
+
+    public static void Less(float a, float b, String format, Object... args)
+    {
+        if (IsEnabled && a >= b)
+            AssertHelper(format, args);
+    }
+
+    public static void Less(float a, float b, String format, Object arg0)
+    {
+        if (IsEnabled && a >= b)
+            AssertHelper(format, arg0);
+    }
+
+    public static void Less(float a, float b, String format, Object arg0, Object arg1)
+    {
+        if (IsEnabled && a >= b)
+            AssertHelper(format, arg0, arg1);
+    }
+
+    public static void Less(float a, float b, String format, Object arg0, Object arg1, Object arg2)
+    {
+        if (IsEnabled && a >= b)
+            AssertHelper(format, arg0, arg1, arg2);
+    }
+
+    public static void Less(double a, double b)
+    {
+        if (IsEnabled && a >= b)
+            AssertHelper("Assertion failed: '%s' < '%s'", a, b);
+    }
+
+    public static void Less(double a, double b, String message)
+    {
+        if (IsEnabled && a >= b)
+            AssertHelper(message);
+    }
+
+    public static void Less(double a, double b, String format, Object... args)
+    {
+        if (IsEnabled && a >= b)
+            AssertHelper(format, args);
+    }
+
+    public static void Less(double a, double b, String format, Object arg0)
+    {
+        if (IsEnabled && a >= b)
+            AssertHelper(format, arg0);
+    }
+
+    public static void Less(double a, double b, String format, Object arg0, Object arg1)
+    {
+        if (IsEnabled && a >= b)
+            AssertHelper(format, arg0, arg1);
+    }
+
+    public static void Less(double a, double b, String format, Object arg0, Object arg1, Object arg2)
+    {
+        if (IsEnabled && a >= b)
+            AssertHelper(format, arg0, arg1, arg2);
+    }
+
+    public static void LessOrEqual(byte a, byte b)
+    {
+        if (IsEnabled && a > b)
+            AssertHelper("Assertion failed: '%s' <= '%s'", a, b);
+    }
+
+    public static void LessOrEqual(byte a, byte b, String message)
+    {
+        if (IsEnabled && a > b)
+            AssertHelper(message);
+    }
+
+    public static void LessOrEqual(byte a, byte b, String format, Object... args)
+    {
+        if (IsEnabled && a > b)
+            AssertHelper(format, args);
+    }
+
+    public static void LessOrEqual(byte a, byte b, String format, Object arg0)
+    {
+        if (IsEnabled && a > b)
+            AssertHelper(format, arg0);
+    }
+
+    public static void LessOrEqual(byte a, byte b, String format, Object arg0, Object arg1)
+    {
+        if (IsEnabled && a > b)
+            AssertHelper(format, arg0, arg1);
+    }
+
+    public static void LessOrEqual(byte a, byte b, String format, Object arg0, Object arg1, Object arg2)
+    {
+        if (IsEnabled && a > b)
+            AssertHelper(format, arg0, arg1, arg2);
+    }
+
+    public static void LessOrEqual(short a, short b)
+    {
+        if (IsEnabled && a > b)
+            AssertHelper("Assertion failed: '%s' <= '%s'", a, b);
+    }
+
+    public static void LessOrEqual(short a, short b, String message)
+    {
+        if (IsEnabled && a > b)
+            AssertHelper(message);
+    }
+
+    public static void LessOrEqual(short a, short b, String format, Object... args)
+    {
+        if (IsEnabled && a > b)
+            AssertHelper(format, args);
+    }
+
+    public static void LessOrEqual(short a, short b, String format, Object arg0)
+    {
+        if (IsEnabled && a > b)
+            AssertHelper(format, arg0);
+    }
+
+    public static void LessOrEqual(short a, short b, String format, Object arg0, Object arg1)
+    {
+        if (IsEnabled && a > b)
+            AssertHelper(format, arg0, arg1);
+    }
+
+    public static void LessOrEqual(short a, short b, String format, Object arg0, Object arg1, Object arg2)
+    {
+        if (IsEnabled && a > b)
+            AssertHelper(format, arg0, arg1, arg2);
+    }
+
+    public static void LessOrEqual(char a, char b)
+    {
+        if (IsEnabled && a > b)
+            AssertHelper("Assertion failed: '%s' <= '%s'", a, b);
+    }
+
+    public static void LessOrEqual(char a, char b, String message)
+    {
+        if (IsEnabled && a > b)
+            AssertHelper(message);
+    }
+
+    public static void LessOrEqual(char a, char b, String format, Object... args)
+    {
+        if (IsEnabled && a > b)
+            AssertHelper(format, args);
+    }
+
+    public static void LessOrEqual(char a, char b, String format, Object arg0)
+    {
+        if (IsEnabled && a > b)
+            AssertHelper(format, arg0);
+    }
+
+    public static void LessOrEqual(char a, char b, String format, Object arg0, Object arg1)
+    {
+        if (IsEnabled && a > b)
+            AssertHelper(format, arg0, arg1);
+    }
+
+    public static void LessOrEqual(char a, char b, String format, Object arg0, Object arg1, Object arg2)
+    {
+        if (IsEnabled && a > b)
+            AssertHelper(format, arg0, arg1, arg2);
+    }
+
+    public static void LessOrEqual(int a, int b)
+    {
+        if (IsEnabled && a > b)
+            AssertHelper("Assertion failed: '%s' <= '%s'", a, b);
+    }
+
+    public static void LessOrEqual(int a, int b, String message)
+    {
+        if (IsEnabled && a > b)
+            AssertHelper(message);
+    }
+
+    public static void LessOrEqual(int a, int b, String format, Object... args)
+    {
+        if (IsEnabled && a > b)
+            AssertHelper(format, args);
+    }
+
+    public static void LessOrEqual(int a, int b, String format, Object arg0)
+    {
+        if (IsEnabled && a > b)
+            AssertHelper(format, arg0);
+    }
+
+    public static void LessOrEqual(int a, int b, String format, Object arg0, Object arg1)
+    {
+        if (IsEnabled && a > b)
+            AssertHelper(format, arg0, arg1);
+    }
+
+    public static void LessOrEqual(int a, int b, String format, Object arg0, Object arg1, Object arg2)
+    {
+        if (IsEnabled && a > b)
+            AssertHelper(format, arg0, arg1, arg2);
+    }
+
+    public static void LessOrEqual(long a, long b)
+    {
+        if (IsEnabled && a > b)
+            AssertHelper("Assertion failed: '%s' <= '%s'", a, b);
+    }
+
+    public static void LessOrEqual(long a, long b, String message)
+    {
+        if (IsEnabled && a > b)
+            AssertHelper(message);
+    }
+
+    public static void LessOrEqual(long a, long b, String format, Object... args)
+    {
+        if (IsEnabled && a > b)
+            AssertHelper(format, args);
+    }
+
+    public static void LessOrEqual(long a, long b, String format, Object arg0)
+    {
+        if (IsEnabled && a > b)
+            AssertHelper(format, arg0);
+    }
+
+    public static void LessOrEqual(long a, long b, String format, Object arg0, Object arg1)
+    {
+        if (IsEnabled && a > b)
+            AssertHelper(format, arg0, arg1);
+    }
+
+    public static void LessOrEqual(long a, long b, String format, Object arg0, Object arg1, Object arg2)
+    {
+        if (IsEnabled && a > b)
+            AssertHelper(format, arg0, arg1, arg2);
+    }
+
+    public static void LessOrEqual(float a, float b)
+    {
+        if (IsEnabled && a > b)
+            AssertHelper("Assertion failed: '%s' <= '%s'", a, b);
+    }
+
+    public static void LessOrEqual(float a, float b, String message)
+    {
+        if (IsEnabled && a > b)
+            AssertHelper(message);
+    }
+
+    public static void LessOrEqual(float a, float b, String format, Object... args)
+    {
+        if (IsEnabled && a > b)
+            AssertHelper(format, args);
+    }
+
+    public static void LessOrEqual(float a, float b, String format, Object arg0)
+    {
+        if (IsEnabled && a > b)
+            AssertHelper(format, arg0);
+    }
+
+    public static void LessOrEqual(float a, float b, String format, Object arg0, Object arg1)
+    {
+        if (IsEnabled && a > b)
+            AssertHelper(format, arg0, arg1);
+    }
+
+    public static void LessOrEqual(float a, float b, String format, Object arg0, Object arg1, Object arg2)
+    {
+        if (IsEnabled && a > b)
+            AssertHelper(format, arg0, arg1, arg2);
+    }
+
+    public static void LessOrEqual(double a, double b)
+    {
+        if (IsEnabled && a > b)
+            AssertHelper("Assertion failed: '%s' <= '%s'", a, b);
+    }
+
+    public static void LessOrEqual(double a, double b, String message)
+    {
+        if (IsEnabled && a > b)
+            AssertHelper(message);
+    }
+
+    public static void LessOrEqual(double a, double b, String format, Object... args)
+    {
+        if (IsEnabled && a > b)
+            AssertHelper(format, args);
+    }
+
+    public static void LessOrEqual(double a, double b, String format, Object arg0)
+    {
+        if (IsEnabled && a > b)
+            AssertHelper(format, arg0);
+    }
+
+    public static void LessOrEqual(double a, double b, String format, Object arg0, Object arg1)
+    {
+        if (IsEnabled && a > b)
+            AssertHelper(format, arg0, arg1);
+    }
+
+    public static void LessOrEqual(double a, double b, String format, Object arg0, Object arg1, Object arg2)
+    {
+        if (IsEnabled && a > b)
+            AssertHelper(format, arg0, arg1, arg2);
+    }
 
     public static void AreSame(Object expected, Object actual)
     {
         if (IsEnabled && expected != actual)
-            AssertHelper("Assertion failed: Object references are not the same '{0}' but was '{1}'", toString(expected), toString(actual));
+            AssertHelper("Assertion failed: Object references are not the same '%s' but was '%s'", ToString(expected), ToString(actual));
     }
 
 
@@ -1012,7 +1979,7 @@ public class Assert // FIXME: rename methods to assert*
     public static void AreNotSame(Object expected, Object actual)
     {
         if (IsEnabled && expected == actual)
-            AssertHelper("Assertion failed: Object references are the same '{0}'", toString(expected));
+            AssertHelper("Assertion failed: Object references are the same '%s'", ToString(expected));
     }
 
 
@@ -1051,34 +2018,26 @@ public class Assert // FIXME: rename methods to assert*
     }
 
 
-    public static void Contains
-    <T>(
-    T expected, ICollection
-    <T>collection)
-
+    public static <T> void Contains(T expected, Collection<T> collection)
     {
-        if (IsEnabled && (collection == null || !collection.Contains(expected)))
+        if (IsEnabled && (collection == null || !collection.contains(expected)))
         {
             if (collection == null)
                 AssertHelper("Assertion failed: collection is null");
             else
-                AssertHelper("Assertion failed: collection doesn't contain the item {0}", expected);
+                AssertHelper("Assertion failed: collection doesn't contain the item %s", expected);
         }
     }
 
 
-    public static void NotContains
-    <T>(
-    T expected, ICollection
-    <T>collection)
-
+    public static <T> void NotContains(T expected, Collection<T> collection)
     {
-        if (IsEnabled && (collection != null && collection.Contains(expected)))
+        if (IsEnabled && (collection != null && collection.contains(expected)))
         {
             if (collection == null)
                 AssertHelper("Assertion failed: collection is null");
             else
-                AssertHelper("Assertion failed: collection contains the item {0}", expected);
+                AssertHelper("Assertion failed: collection contains the item %s", expected);
         }
     }
 
@@ -1124,858 +2083,274 @@ public class Assert // FIXME: rename methods to assert*
             AssertHelper(format, arg0, arg1, arg2);
     }
 
-
-    public static void Greater
-    <T>(
-    T a, T
-    b)
-    where T
-    :IComparable<T>
-
+    public static void IsInstanceOfType(Class<?> type, Object o)
     {
-        if (IsEnabled && a.CompareTo(b) <= 0)
-            AssertHelper("Assertion failed: '{0}' is not greater than '{1}'", a, b);
+        if (IsEnabled && (type == null || !type.isInstance(o)))
+            AssertHelper("Assertion failed: expected type of '%s' but was '%s'", type, o != null ? o.getClass() : null);
     }
 
 
-    public static void Greater
-    <T>(
-    T a, T
-    b,
-    String message
-    )
-    where T
-    :IComparable<T>
-
+    public static void IsInstanceOfType(Class<?> type, Object o, String message)
     {
-        if (IsEnabled && a.CompareTo(b) <= 0)
+        if (IsEnabled && (type == null || !type.isInstance(o)))
             AssertHelper(message);
     }
 
 
-    public static void Greater
-    <T>(
-    T a, T
-    b,
-    String format, Object
-    ...args)
-    where T
-    :IComparable<T>
-
+    public static void IsInstanceOfType(Class<?> type, Object o, String format, Object... args)
     {
-        if (IsEnabled && a.CompareTo(b) <= 0)
+        if (IsEnabled && (type == null || !type.isInstance(o)))
             AssertHelper(format, args);
     }
 
 
-    public static void Greater
-    <T, Object>(
-    T a, T
-    b,
-    String format, Object
-    arg0)
-    where T
-    :IComparable<T>
-
+    public static void IsInstanceOfType(Class<?> type, Object o, String format, Object arg0)
     {
-        if (IsEnabled && a.CompareTo(b) <= 0)
+        if (IsEnabled && (type == null || !type.isInstance(o)))
             AssertHelper(format, arg0);
     }
 
 
-    public static void Greater
-    <T, Object, Object>(
-    T a, T
-    b,
-    String format, Object
-    arg0,
-    Object arg1
-    )
-    where T
-    :IComparable<T>
-
+    public static void IsInstanceOfType(Class<?> type, Object o, String format, Object arg0, Object arg1)
     {
-        if (IsEnabled && a.CompareTo(b) <= 0)
+        if (IsEnabled && (type == null || !type.isInstance(o)))
             AssertHelper(format, arg0, arg1);
     }
 
 
-    public static void Greater
-    <T, Object, Object, Object>(
-    T a, T
-    b,
-    String format, Object
-    arg0,
-    Object arg1, Object
-    arg2)
-    where T
-    :IComparable<T>
-
+    public static void IsInstanceOfType(Class<?> type, Object o, String format, Object arg0, Object arg1, Object arg2)
     {
-        if (IsEnabled && a.CompareTo(b) <= 0)
+        if (IsEnabled && (type == null || !type.isInstance(o)))
             AssertHelper(format, arg0, arg1, arg2);
     }
 
 
-    public static void GreaterOrEqual
-    <T>(
-    T a, T
-    b)
-    where T
-    :IComparable<T>
-
+    public static void IsNotInstanceOfType(Class<?> type, Object o)
     {
-        if (IsEnabled && a.CompareTo(b) < 0)
-            AssertHelper("Assertion failed: '{0}' is not greater or equal to '{1}'", a, b);
+        if (IsEnabled && (type != null && type.isInstance(o)))
+            AssertHelper("Assertion failed: Object '%s' is subtype of '%s'", type, o != null ? o.getClass() : null);
     }
 
 
-    public static void GreaterOrEqual
-    <T>(
-    T a, T
-    b,
-    String message
-    )
-    where T
-    :IComparable<T>
-
+    public static void IsNotInstanceOfType(Class<?> type, Object o, String message)
     {
-        if (IsEnabled && a.CompareTo(b) < 0)
+        if (IsEnabled && (type != null && type.isInstance(o)))
             AssertHelper(message);
     }
 
 
-    public static void GreaterOrEqual
-    <T>(
-    T a, T
-    b,
-    String format, Object
-    ...args)
-    where T
-    :IComparable<T>
-
+    public static void IsNotInstanceOfType(Class<?> type, Object o, String format, Object... args)
     {
-        if (IsEnabled && a.CompareTo(b) < 0)
+        if (IsEnabled && (type != null && type.isInstance(o)))
             AssertHelper(format, args);
     }
 
 
-    public static void GreaterOrEqual
-    <T, Object>(
-    T a, T
-    b,
-    String format, Object
-    arg0)
-    where T
-    :IComparable<T>
-
+    public static void IsNotInstanceOfType(Class<?> type, Object o, String format, Object arg0)
     {
-        if (IsEnabled && a.CompareTo(b) < 0)
+        if (IsEnabled && (type != null && type.isInstance(o)))
             AssertHelper(format, arg0);
     }
 
 
-    public static void GreaterOrEqual
-    <T, Object, Object>(
-    T a, T
-    b,
-    String format, Object
-    arg0,
-    Object arg1
-    )
-    where T
-    :IComparable<T>
-
+    public static void IsNotInstanceOfType(Class<?> type, Object o, String format, Object arg0, Object arg1)
     {
-        if (IsEnabled && a.CompareTo(b) < 0)
+        if (IsEnabled && (type != null && type.isInstance(o)))
             AssertHelper(format, arg0, arg1);
     }
 
 
-    public static void GreaterOrEqual
-    <T, Object, Object, Object>(
-    T a, T
-    b,
-    String format, Object
-    arg0,
-    Object arg1, Object
-    arg2)
-    where T
-    :IComparable<T>
-
+    public static void IsNotInstanceOfType(Class<?> type, Object o, String format, Object arg0, Object arg1, Object arg2)
     {
-        if (IsEnabled && a.CompareTo(b) < 0)
+        if (IsEnabled && (type != null && type.isInstance(o)))
             AssertHelper(format, arg0, arg1, arg2);
     }
-
-
-    public static void Less
-    <T>(
-    T a, T
-    b)
-    where T
-    :IComparable<T>
-
-    {
-        if (IsEnabled && a.CompareTo(b) >= 0)
-            AssertHelper("Assertion failed: '{0}' is not less than '{1}'", a, b);
-    }
-
-
-    public static void Less
-    <T>(
-    T a, T
-    b,
-    String message
-    )
-    where T
-    :IComparable<T>
-
-    {
-        if (IsEnabled && a.CompareTo(b) >= 0)
-            AssertHelper(message);
-    }
-
-
-    public static void Less
-    <T>(
-    T a, T
-    b,
-    String format, Object
-    ...args)
-    where T
-    :IComparable<T>
-
-    {
-        if (IsEnabled && a.CompareTo(b) >= 0)
-            AssertHelper(format, args);
-    }
-
-
-    public static void Less
-    <T, Object>(
-    T a, T
-    b,
-    String format, Object
-    arg0)
-    where T
-    :IComparable<T>
-
-    {
-        if (IsEnabled && a.CompareTo(b) >= 0)
-            AssertHelper(format, arg0);
-    }
-
-
-    public static void Less
-    <T, Object, Object>(
-    T a, T
-    b,
-    String format, Object
-    arg0,
-    Object arg1
-    )
-    where T
-    :IComparable<T>
-
-    {
-        if (IsEnabled && a.CompareTo(b) >= 0)
-            AssertHelper(format, arg0, arg1);
-    }
-
-
-    public static void Less
-    <T, Object, Object, Object>(
-    T a, T
-    b,
-    String format, Object
-    arg0,
-    Object arg1, Object
-    arg2)
-    where T
-    :IComparable<T>
-
-    {
-        if (IsEnabled && a.CompareTo(b) >= 0)
-            AssertHelper(format, arg0, arg1, arg2);
-    }
-
-
-    public static void LessOrEqual
-    <T>(
-    T a, T
-    b)
-    where T
-    :IComparable<T>
-
-    {
-        if (IsEnabled && a.CompareTo(b) > 0)
-            AssertHelper("Assertion failed: '{0}' is not less or equal to '{1}'", a, b);
-    }
-
-
-    public static void LessOrEqual
-    <T>(
-    T a, T
-    b,
-    String message
-    )
-    where T
-    :IComparable<T>
-
-    {
-        if (IsEnabled && a.CompareTo(b) > 0)
-            AssertHelper(message);
-    }
-
-
-    public static void LessOrEqual
-    <T>(
-    T a, T
-    b,
-    String format, Object
-    ...args)
-    where T
-    :IComparable<T>
-
-    {
-        if (IsEnabled && a.CompareTo(b) > 0)
-            AssertHelper(format, args);
-    }
-
-
-    public static void LessOrEqual
-    <T, Object>(
-    T a, T
-    b,
-    String format, Object
-    arg0)
-    where T
-    :IComparable<T>
-
-    {
-        if (IsEnabled && a.CompareTo(b) > 0)
-            AssertHelper(format, arg0);
-    }
-
-
-    public static void LessOrEqual
-    <T, Object, Object>(
-    T a, T
-    b,
-    String format, Object
-    arg0,
-    Object arg1
-    )
-    where T
-    :IComparable<T>
-
-    {
-        if (IsEnabled && a.CompareTo(b) > 0)
-            AssertHelper(format, arg0, arg1);
-    }
-
-
-    public static void LessOrEqual
-    <T, Object, Object, Object>(
-    T a, T
-    b,
-    String format, Object
-    arg0,
-    Object arg1, Object
-    arg2)
-    where T
-    :IComparable<T>
-
-    {
-        if (IsEnabled && a.CompareTo(b) > 0)
-            AssertHelper(format, arg0, arg1, arg2);
-    }
-
-
-    public static void IsInstanceOfType(Type type, Object o)
-    {
-        if (IsEnabled && (type == null || !type.IsInstanceOfType(o)))
-            AssertHelper("Assertion failed: expected type of '{0}' but was '{1}'", type, o != null ? o.GetType() : (Type) null);
-    }
-
-
-    public static void IsInstanceOfType(Type type, Object o, String message)
-    {
-        if (IsEnabled && (type == null || !type.IsInstanceOfType(o)))
-            AssertHelper(message);
-    }
-
-
-    public static void IsInstanceOfType(Type type, Object o, String format, Object... args)
-    {
-        if (IsEnabled && (type == null || !type.IsInstanceOfType(o)))
-            AssertHelper(format, args);
-    }
-
-
-    public static void IsInstanceOfType(Type type, Object o, String format, Object arg0)
-    {
-        if (IsEnabled && (type == null || !type.IsInstanceOfType(o)))
-            AssertHelper(format, arg0);
-    }
-
-
-    public static void IsInstanceOfType(Type type, Object o, String format, Object arg0, Object arg1)
-    {
-        if (IsEnabled && (type == null || !type.IsInstanceOfType(o)))
-            AssertHelper(format, arg0, arg1);
-    }
-
-
-    public static void IsInstanceOfType(Type type, Object o, String format, Object arg0, Object arg1, Object arg2)
-    {
-        if (IsEnabled && (type == null || !type.IsInstanceOfType(o)))
-            AssertHelper(format, arg0, arg1, arg2);
-    }
-
-
-    public static void IsInstanceOfType
-    <T>(
-    Object o
-    )
-
-    {
-        if (IsEnabled && !(o is T))
-        AssertHelper("Assertion failed: expected type of '{0}' but was '{1}'", typeof(T), o != null ? o.GetType() : (Type) null);
-    }
-
-
-    public static void IsInstanceOfType
-    <T>(
-    Object o, String
-    message)
-
-    {
-        if (IsEnabled && !(o is T))
-        AssertHelper(message);
-    }
-
-
-    public static void IsInstanceOfType
-    <T>(
-    Object o, String
-    format,Object...args)
-
-    {
-        if (IsEnabled && !(o is T))
-        AssertHelper(format, args);
-    }
-
-
-    public static void IsInstanceOfType
-    <T, Object>(
-    Object o, String
-    format,
-    Object arg0
-    )
-
-    {
-        if (IsEnabled && !(o is T))
-        AssertHelper(format, arg0);
-    }
-
-
-    public static void IsInstanceOfType
-    <T, Object, Object>(
-    Object o, String
-    format,
-    Object arg0, Object
-    arg1)
-
-    {
-        if (IsEnabled && !(o is T))
-        AssertHelper(format, arg0, arg1);
-    }
-
-
-    public static void IsInstanceOfType
-    <T, Object, Object, Object>(
-    Object o, String
-    format,
-    Object arg0, Object
-    arg1,
-    Object arg2
-    )
-
-    {
-        if (IsEnabled && !(o is T))
-        AssertHelper(format, arg0, arg1, arg2);
-    }
-
-
-    public static void IsNotInstanceOfType(Type type, Object o)
-    {
-        if (IsEnabled && (type != null && type.IsInstanceOfType(o)))
-            AssertHelper("Assertion failed: Object '{0}' is subtype of '{1}'", type, o != null ? o.GetType() : (Type) null);
-    }
-
-
-    public static void IsNotInstanceOfType(Type type, Object o, String message)
-    {
-        if (IsEnabled && (type != null && type.IsInstanceOfType(o)))
-            AssertHelper(message);
-    }
-
-
-    public static void IsNotInstanceOfType(Type type, Object o, String format, Object... args)
-    {
-        if (IsEnabled && (type != null && type.IsInstanceOfType(o)))
-            AssertHelper(format, args);
-    }
-
-
-    public static void IsNotInstanceOfType(Type type, Object o, String format, Object arg0)
-    {
-        if (IsEnabled && (type != null && type.IsInstanceOfType(o)))
-            AssertHelper(format, arg0);
-    }
-
-
-    public static void IsNotInstanceOfType(Type type, Object o, String format, Object arg0, Object arg1)
-    {
-        if (IsEnabled && (type != null && type.IsInstanceOfType(o)))
-            AssertHelper(format, arg0, arg1);
-    }
-
-
-    public static void IsNotInstanceOfType(Type type, Object o, String format, Object arg0, Object arg1, Object arg2)
-    {
-        if (IsEnabled && (type != null && type.IsInstanceOfType(o)))
-            AssertHelper(format, arg0, arg1, arg2);
-    }
-
-
-    public static void IsNotInstanceOfType
-    <T>(
-    Object o
-    )
-
-    {
-        if (IsEnabled && (o is T))
-        AssertHelper("Assertion failed: Object '{0}' is subtype of '{1}'", typeof(T), o != null ? o.GetType() : (Type) null);
-    }
-
-
-    public static void IsNotInstanceOfType
-    <T>(
-    Object o, String
-    message)
-
-    {
-        if (IsEnabled && (o is T))
-        AssertHelper(message);
-    }
-
-
-    public static void IsNotInstanceOfType
-    <T>(
-    Object o, String
-    format,Object...args)
-
-    {
-        if (IsEnabled && (o is T))
-        AssertHelper(format, args);
-    }
-
-
-    public static void IsNotInstanceOfType
-    <T, Object>(
-    Object o, String
-    format,
-    Object arg0
-    )
-
-    {
-        if (IsEnabled && (o is T))
-        AssertHelper(format, arg0);
-    }
-
-
-    public static void IsNotInstanceOfType
-    <T, Object, Object>(
-    Object o, String
-    format,
-    Object arg0, Object
-    arg1)
-
-    {
-        if (IsEnabled && (o is T))
-        AssertHelper(format, arg0, arg1);
-    }
-
-
-    public static void IsNotInstanceOfType
-    <T, Object, Object, Object>(
-    Object o, String
-    format,
-    Object arg0, Object
-    arg1,
-    Object arg2
-    )
-
-    {
-        if (IsEnabled && (o is T))
-        AssertHelper(format, arg0, arg1, arg2);
-    }
-
 
     public static void IsEmpty(String str)
     {
-        if (IsEnabled && !String.IsNullOrEmpty(str))
-            AssertHelper("Assertion failed: String is not empty '{0}'", str);
+        if (IsEnabled && !IsNullOrEmpty(str))
+            AssertHelper("Assertion failed: String is not empty '%s'", str);
     }
 
 
     public static void IsEmpty(String str, String message)
     {
-        if (IsEnabled && !String.IsNullOrEmpty(str))
+        if (IsEnabled && !IsNullOrEmpty(str))
             AssertHelper(message);
     }
 
 
     public static void IsEmpty(String str, String format, Object... args)
     {
-        if (IsEnabled && !String.IsNullOrEmpty(str))
+        if (IsEnabled && !IsNullOrEmpty(str))
             AssertHelper(format, args);
     }
 
 
     public static void IsEmpty(String str, String format, Object arg0)
     {
-        if (IsEnabled && !String.IsNullOrEmpty(str))
+        if (IsEnabled && !IsNullOrEmpty(str))
             AssertHelper(format, arg0);
     }
 
 
     public static void IsEmpty(String str, String format, Object arg0, Object arg1)
     {
-        if (IsEnabled && !String.IsNullOrEmpty(str))
+        if (IsEnabled && !IsNullOrEmpty(str))
             AssertHelper(format, arg0, arg1);
     }
 
 
     public static void IsEmpty(String str, String format, Object arg0, Object arg1, Object arg2)
     {
-        if (IsEnabled && !String.IsNullOrEmpty(str))
+        if (IsEnabled && !IsNullOrEmpty(str))
             AssertHelper(format, arg0, arg1, arg2);
     }
 
 
     public static void IsNotEmpty(String str)
     {
-        if (IsEnabled && String.IsNullOrEmpty(str))
-            AssertHelper("Assertion failed: String is null or empty '{0}'", str);
+        if (IsEnabled && IsNullOrEmpty(str))
+            AssertHelper("Assertion failed: String is null or empty '%s'", str);
     }
 
 
     public static void IsNotEmpty(String str, String message)
     {
-        if (IsEnabled && String.IsNullOrEmpty(str))
+        if (IsEnabled && IsNullOrEmpty(str))
             AssertHelper(message);
     }
 
 
     public static void IsNotEmpty(String str, String format, Object... args)
     {
-        if (IsEnabled && String.IsNullOrEmpty(str))
+        if (IsEnabled && IsNullOrEmpty(str))
             AssertHelper(format, args);
     }
 
 
     public static void IsNotEmpty(String str, String format, Object arg0)
     {
-        if (IsEnabled && String.IsNullOrEmpty(str))
+        if (IsEnabled && IsNullOrEmpty(str))
             AssertHelper(format, arg0);
     }
 
 
     public static void IsNotEmpty(String str, String format, Object arg0, Object arg1)
     {
-        if (IsEnabled && String.IsNullOrEmpty(str))
+        if (IsEnabled && IsNullOrEmpty(str))
             AssertHelper(format, arg0, arg1);
     }
 
 
     public static void IsNotEmpty(String str, String format, Object arg0, Object arg1, Object arg2)
     {
-        if (IsEnabled && String.IsNullOrEmpty(str))
+        if (IsEnabled && IsNullOrEmpty(str))
             AssertHelper(format, arg0, arg1, arg2);
     }
 
 
-    public static void IsEmpty
-    <T>(
-    ICollection<T> collection
-    )
-
+    public static void IsEmpty(Collection<?> collection)
     {
-        if (IsEnabled && collection != null && collection.Count == 0)
-            AssertHelper("Assertion failed: collection is null or not empty '{0}'", collection);
+        if (IsEnabled && collection != null && collection.size() == 0)
+            AssertHelper("Assertion failed: collection is null or not empty '%s'", collection);
     }
 
 
-    public static void IsEmpty
-    <T>(
-    ICollection<T> collection, String
-    message)
+    public static void IsEmpty(Collection<?> collection, String message)
 
     {
-        if (IsEnabled && collection != null && collection.Count == 0)
+        if (IsEnabled && collection != null && collection.size() == 0)
             AssertHelper(message);
     }
 
 
-    public static void IsEmpty
-    <T>(
-    ICollection<T> collection, String
-    format,Object...args)
-
+    public static void IsEmpty(Collection<?> collection, String format, Object... args)
     {
-        if (IsEnabled && collection != null && collection.Count == 0)
+        if (IsEnabled && collection != null && collection.size() == 0)
             AssertHelper(format, args);
     }
 
 
-    public static void IsEmpty
-    <T, Object>(
-    ICollection<T> collection, String
-    format,
-    Object arg0
-    )
-
+    public static void IsEmpty(Collection<?> collection, String format, Object arg0)
     {
-        if (IsEnabled && collection != null && collection.Count == 0)
+        if (IsEnabled && collection != null && collection.size() == 0)
             AssertHelper(format, arg0);
     }
 
 
-    public static void IsEmpty
-    <T, Object, Object>(
-    ICollection<T> collection, String
-    format,
-    Object arg0, Object
-    arg1)
-
+    public static void IsEmpty(Collection<?> collection, String format, Object arg0, Object arg1)
     {
-        if (IsEnabled && collection != null && collection.Count == 0)
+        if (IsEnabled && collection != null && collection.size() == 0)
             AssertHelper(format, arg0, arg1);
     }
 
 
-    public static void IsEmpty
-    <T, Object, Object, Object>(
-    ICollection<T> collection, String
-    format,
-    Object arg0, Object
-    arg1,
-    Object arg2
-    )
-
+    public static void IsEmpty(Collection<?> collection, String format, Object arg0, Object arg1, Object arg2)
     {
-        if (IsEnabled && collection != null && collection.Count == 0)
+        if (IsEnabled && collection != null && collection.size() == 0)
             AssertHelper(format, arg0, arg1, arg2);
     }
 
 
-    public static void IsNotEmpty
-    <T>(
-    ICollection<T> collection
-    )
-
+    public static void IsNotEmpty(Collection<?> collection)
     {
-        if (IsEnabled && collection != null && collection.Count != 0)
-            AssertHelper("Assertion failed: collection is null or empty '{0}'", collection);
+        if (IsEnabled && collection != null && collection.size() != 0)
+            AssertHelper("Assertion failed: collection is null or empty '%s'", collection);
     }
 
 
-    public static void IsNotEmpty
-    <T>(
-    ICollection<T> collection, String
-    message)
-
+    public static void IsNotEmpty(Collection<?> collection, String message)
     {
-        if (IsEnabled && collection != null && collection.Count != 0)
+        if (IsEnabled && collection != null && collection.size() != 0)
             AssertHelper(message);
     }
 
 
-    public static void IsNotEmpty
-    <T>(
-    ICollection<T> collection, String
-    format,Object...args)
-
+    public static void IsNotEmpty(Collection<?> collection, String format, Object... args)
     {
-        if (IsEnabled && collection != null && collection.Count != 0)
+        if (IsEnabled && collection != null && collection.size() != 0)
             AssertHelper(format, args);
     }
 
 
-    public static void IsNotEmpty
-    <T, Object>(
-    ICollection<T> collection, String
-    format,
-    Object arg0
-    )
-
+    public static void IsNotEmpty(Collection<?> collection, String format, Object arg0)
     {
-        if (IsEnabled && collection != null && collection.Count != 0)
+        if (IsEnabled && collection != null && collection.size() != 0)
             AssertHelper(format, arg0);
     }
 
 
-    public static void IsNotEmpty
-    <T, Object, Object>(
-    ICollection<T> collection, String
-    format,
-    Object arg0, Object
-    arg1)
-
+    public static void IsNotEmpty(Collection<?> collection, String format, Object arg0, Object arg1)
     {
-        if (IsEnabled && collection != null && collection.Count != 0)
+        if (IsEnabled && collection != null && collection.size() != 0)
             AssertHelper(format, arg0, arg1);
     }
 
 
-    public static void IsNotEmpty
-    <T, Object, Object, Object>(
-    ICollection<T> collection, String
-    format,
-    Object arg0, Object
-    arg1,
-    Object arg2
-    )
-
+    public static void IsNotEmpty(Collection<?> collection, String format, Object arg0, Object arg1, Object arg2)
     {
-        if (IsEnabled && collection != null && collection.Count != 0)
+        if (IsEnabled && collection != null && collection.size() != 0)
             AssertHelper(format, arg0, arg1, arg2);
     }
 
     private static void AssertHelper(String format, Object... args)
     {
-        String message = StringUtils.TryFormat(format, args);
-        String stackTrace = StackTrace.ExtractStackTrace(3);
+//        String message = TryFormat(format, args);
+//        String stackTrace = StackTrace.ExtractStackTrace(3);
+//
+//        Platform.AssertMessage(message, stackTrace);
+//
+//        try
+//        {
+//            if (callback != null)
+//                callback(message, stackTrace);
+//        }
+//        catch (Exception)
+//        {
+//        }
 
-        Platform.AssertMessage(message, stackTrace);
-
-        try
-        {
-            if (callback != null)
-                callback(message, stackTrace);
-        }
-        catch (Exception)
-        {
-        }
-    }
-
-    private static String toString(Object obj)
-    {
-        return obj != null ? obj.toString() : "null";
+        throw new NotImplementedException();
     }
 
     private static boolean IsEnabled;

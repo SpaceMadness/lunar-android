@@ -1,6 +1,5 @@
 package com.spacemadness.lunar.console;
 
-import com.spacemadness.lunar.debug.Log;
 import com.spacemadness.lunar.utils.ClassUtils;
 import com.spacemadness.lunar.utils.LinkedList;
 import com.spacemadness.lunar.utils.LinkedListNode;

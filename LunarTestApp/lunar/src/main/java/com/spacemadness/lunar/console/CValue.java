@@ -1,6 +1,6 @@
 package com.spacemadness.lunar.console;
 
-import com.spacemadness.lunar.utils.StringUtils;
+import com.spacemadness.lunar.utils.ObjectUtils;
 
 /**
  * Created by weee on 5/28/15.
@@ -22,6 +22,6 @@ class CValue
         CValue other = (CValue) o;
         return intValue == other.intValue &&
                 floatValue == other.floatValue &&
-                StringUtils.equals(stringValue, other.stringValue);
+                ObjectUtils.areEqual(stringValue, other.stringValue);
     }
 }

@@ -8,12 +8,13 @@ import java.util.List;
 /**
  * Created by weee on 5/28/15.
  */
-public class BaseList<T> implements IBaseCollection<T>
+public class BaseList<T> implements IBaseCollection<T> // TODO: need a better name
 {
     protected List<T> list;
 
     protected T nullElement;
     protected int removedCount;
+    protected boolean locked;
 
     protected BaseList(T nullElement)
     {
@@ -23,6 +24,11 @@ public class BaseList<T> implements IBaseCollection<T>
     protected BaseList(T nullElement, int capacity)
     {
         this(new ArrayList<T>(capacity), nullElement);
+
+        if (nullElement == null)
+        {
+            throw new NullPointerException("Null element is null");
+        }
     }
 
     protected BaseList(List<T> list, T nullElement)
@@ -31,14 +37,20 @@ public class BaseList<T> implements IBaseCollection<T>
         this.nullElement = nullElement;
     }
 
-    public boolean Add(T e) // FIXME: rename
+    public synchronized boolean Add(T e)
     {
+        if (e == null)
+        {
+            throw new NullPointerException("Element is null");
+        }
+
         Assert.NotContains(e, list);
         list.add(e);
+
         return true;
     }
 
-    public boolean Remove(T e) // FIXME: rename
+    public synchronized boolean Remove(T e)
     {
         int index = list.indexOf(e);
         if (index != -1)
@@ -50,38 +62,52 @@ public class BaseList<T> implements IBaseCollection<T>
         return false;
     }
 
-    public T Get(int index) // FIXME: rename
+    public synchronized T Get(int index) // FIXME: rename
     {
         return list.get(index);
     }
 
-    public int IndexOf(T e) // FIXME: rename
+    public synchronized int IndexOf(T e) // FIXME: rename
     {
         return list.indexOf(e);
     }
 
-    public void RemoveAt(int index)
+    public synchronized void RemoveAt(int index)
     {
-        ++removedCount;
-        list.set(index, nullElement);
+        if (locked)
+        {
+            ++removedCount;
+            list.set(index, nullElement);
+        }
+        else
+        {
+            list.remove(index);
+        }
     }
 
-    public void Clear() // FIXME: rename
+    public synchronized void Clear() // FIXME: rename
     {
-        list.clear();
+        if (locked)
+        {
+            for (int i = 0; i < list.size(); ++i)
+            {
+                list.set(i, nullElement);
+            }
+            removedCount = list.size();
+        }
+        else
+        {
+            list.clear();
+            removedCount = 0;
+        }
     }
 
-    public boolean Contains(T e) // FIXME: rename
+    public synchronized boolean Contains(T e) // FIXME: rename
     {
         return list.contains(e);
     }
 
-    public boolean IsNull() // FIXME: rename
-    {
-        return false;
-    }
-
-    protected void ClearRemoved() // FIXME: rename
+    protected synchronized void ClearRemoved() // FIXME: rename
     {
         for (int i = list.size() - 1; removedCount > 0 && i >= 0; --i)
         {
@@ -93,7 +119,7 @@ public class BaseList<T> implements IBaseCollection<T>
         }
     }
 
-    public int Count() // FIXME: rename
+    public synchronized int Count() // FIXME: rename
     {
         return list.size() - removedCount;
     }

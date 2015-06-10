@@ -5,7 +5,7 @@ package com.spacemadness.lunar.utils;
  */
 public class ObjectUtils
 {
-    public static <T> boolean areEqual(T o1, T o2)
+    public static boolean areEqual(Object o1, Object o2)
     {
         return o1 != null && o1.equals(o2) || o1 == null && o2 == null;
     }

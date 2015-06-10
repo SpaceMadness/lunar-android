@@ -20,19 +20,21 @@ public class ReusableLists
 
     public static <T> ReusableList<T> NextList(Class<? extends T> cls)
     {
-        if (m_poolLookup == null)
-        {
-            m_poolLookup = new HashMap<Class<?>, Object>();
-        }
+//        if (m_poolLookup == null)
+//        {
+//            m_poolLookup = new HashMap<Class<?>, Object>();
+//        }
+//
+//        Object poolObject = m_poolLookup.get(cls);
+//        if (poolObject == null)
+//        {
+//            poolObject = new ObjectsPoolConcurrent<ReusableList<T>>(ReusableList.class);
+//            m_poolLookup.put(cls, poolObject);
+//        }
+//
+//        return ((ObjectsPool<ReusableList<T>>) poolObject).NextObject();
 
-        Object poolObject = m_poolLookup.get(cls);
-        if (poolObject == null)
-        {
-            poolObject = new ObjectsPoolConcurrent<ReusableList<T>>();
-            m_poolLookup.put(cls, poolObject);
-        }
-
-        return ((ObjectsPool<ReusableList<T>>) poolObject).NextObject();
+        throw new NotImplementedException();
     }
 
     public static void Clear()

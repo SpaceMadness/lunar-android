@@ -2,6 +2,7 @@ package com.spacemadness.lunar.core;
 
 import com.spacemadness.lunar.utils.NotImplementedException;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -12,10 +13,15 @@ import java.util.List;
  */
 public class ReusableList<T> extends ObjectsPoolEntry
 {
+    private Class<T> cls;
     private List<T> m_innerList;
 
-    public ReusableList()
+    public ReusableList(Class<T> cls)
     {
+        if (cls == null)
+        {
+            throw new NullPointerException("Class is null");
+        }
         m_innerList = new ArrayList<T>();
     }
 
@@ -29,7 +35,7 @@ public class ReusableList<T> extends ObjectsPoolEntry
 
     public T[] ToArray()
     {
-        return m_innerList.toArray(new T[m_innerList.size()]);
+        return m_innerList.toArray((T[]) Array.newInstance(cls, m_innerList.size()));
     }
 
     public void Sort()

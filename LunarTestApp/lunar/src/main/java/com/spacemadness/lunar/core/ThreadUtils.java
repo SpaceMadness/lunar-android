@@ -18,7 +18,13 @@ public class ThreadUtils
             waitFlag = true;
             while (waitFlag)
             {
-                mutex.wait();
+                try
+                {
+                    mutex.wait();
+                }
+                catch (InterruptedException e)
+                {
+                }
             }
         }
     }

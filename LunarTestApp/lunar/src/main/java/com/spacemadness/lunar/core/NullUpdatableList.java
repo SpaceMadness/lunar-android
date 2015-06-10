@@ -46,12 +46,6 @@ final class NullUpdatableList extends UpdatableList
     }
 
     @Override
-    public boolean IsNull()
-    {
-        return true;
-    }
-
-    @Override
     public int Count()
     {
         return 0;

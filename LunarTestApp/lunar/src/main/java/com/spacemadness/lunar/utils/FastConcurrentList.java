@@ -6,56 +6,38 @@ package com.spacemadness.lunar.utils;
 public class FastConcurrentList<T extends FastListNode> extends FastList<T>
 {
     @Override
-    public void RemoveItem(T item)
+    public synchronized void RemoveItem(T item)
     {
-        synchronized (this)
-        {
-            super.RemoveItem(item);
-        }
+        super.RemoveItem(item);
     }
 
     @Override
-    public T RemoveFirstItem()
+    public synchronized T RemoveFirstItem()
     {
-        synchronized (this)
-        {
-            return super.RemoveFirstItem();
-        }
+        return super.RemoveFirstItem();
     }
 
     @Override
-    public T RemoveLastItem()
+    public synchronized T RemoveLastItem()
     {
-        synchronized (this)
-        {
-            return super.RemoveLastItem();
-        }
+        return super.RemoveLastItem();
     }
 
     @Override
-    public boolean ContainsItem(T item)
+    public synchronized boolean ContainsItem(T item)
     {
-        synchronized (this)
-        {
-            return super.ContainsItem(item);
-        }
+        return super.ContainsItem(item);
     }
 
     @Override
-    protected void InsertItem(T item, T prev, T next)
+    protected synchronized void InsertItem(T item, T prev, T next)
     {
-        synchronized (this)
-        {
-            super.InsertItem(item, prev, next);
-        }
+        super.InsertItem(item, prev, next);
     }
 
     @Override
-    public void Clear()
+    public synchronized void Clear()
     {
-        synchronized (this)
-        {
-            super.Clear();
-        }
+        super.Clear();
     }
 }

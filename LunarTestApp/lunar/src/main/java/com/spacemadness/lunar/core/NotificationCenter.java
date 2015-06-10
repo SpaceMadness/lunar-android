@@ -2,6 +2,7 @@ package com.spacemadness.lunar.core;
 
 import com.spacemadness.lunar.debug.Assert;
 import com.spacemadness.lunar.utils.ClassUtils;
+import com.spacemadness.lunar.utils.NotImplementedException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -38,7 +39,7 @@ class NotificationCenter implements IDestroyable
     {
         m_timerManager = timerManager;
         m_registerMap = new HashMap<String, NotificationDelegateList>();
-        m_notificatoinsPool = new ObjectsPool<Notification>();
+        m_notificatoinsPool = new ObjectsPool(Notification.class);
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -191,8 +192,10 @@ class NotificationCenter implements IDestroyable
     
     private void SchedulePost(Notification notification)
     {
-        Timer timer = m_timerManager.Schedule(PostCallback);
-        timer.userData = notification;
+//        Timer timer = m_timerManager.Schedule(PostCallback);
+//        timer.userData = notification;
+
+        throw new NotImplementedException();
     }
     
     private void CancelScheduledPosts()

@@ -1,5 +1,7 @@
 package com.spacemadness.lunar.core;
 
+import com.spacemadness.lunar.utils.NotImplementedException;
+
 /**
  * Created by weee on 5/28/15.
  */
@@ -32,7 +34,7 @@ public abstract class BaseObject implements IDestroyable
 
     protected void UnregisterNotifications()
     {
-        NotificationCenter.UnregisterNotifications(this);
+        throw new NotImplementedException();
     }
 
     protected void PostNotification(String name, Object... data)

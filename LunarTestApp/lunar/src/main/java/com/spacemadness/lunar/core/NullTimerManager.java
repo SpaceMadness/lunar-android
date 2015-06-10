@@ -38,11 +38,6 @@ class NullTimerManager extends ITimerManager
     }
 
     @Override
-    public void CancelAll(Object target)
-    {
-    }
-
-    @Override
     protected Timer FindTimer(Runnable callback)
     {
         return null;

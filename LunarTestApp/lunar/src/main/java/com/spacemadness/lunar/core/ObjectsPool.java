@@ -7,10 +7,10 @@ import com.spacemadness.lunar.utils.FastList;
 /**
  * Created by weee on 5/28/15.
  */
-public class ObjectsPool<T extends ObjectsPoolEntry> extends FastList<ObjectsPoolEntry>
-        implements IObjectsPool, IDestroyable
+public class ObjectsPool<T extends ObjectsPoolEntry> implements IDestroyable
 {
-    private Class<? extends T> cls;
+    private final Class<? extends T> cls;
+    private final FastList<ObjectsPoolEntry> poolList;
 
     public ObjectsPool(Class<? extends T> cls)
     {
@@ -20,6 +20,7 @@ public class ObjectsPool<T extends ObjectsPoolEntry> extends FastList<ObjectsPoo
         }
 
         this.cls = cls;
+        this.poolList = new FastList<>();
     }
 
     public T NextAutoRecycleObject()
@@ -29,7 +30,7 @@ public class ObjectsPool<T extends ObjectsPoolEntry> extends FastList<ObjectsPoo
 
     public T NextObject()
     {
-        ObjectsPoolEntry first = RemoveFirstItem();
+        ObjectsPoolEntry first = TakeReference();
         if (first == null)
         {
             first = CreateObject();
@@ -41,12 +42,12 @@ public class ObjectsPool<T extends ObjectsPoolEntry> extends FastList<ObjectsPoo
         return (T)first;
     }
 
-    public void Recycle(ObjectsPoolEntry e)
+    void Recycle(ObjectsPoolEntry e)
     {
-        Assert.IsInstanceOfType<T>(e);
+        Assert.IsInstanceOfType(cls, e);
         Assert.AreSame(this, e.pool);
 
-        AddLastItem(e);
+        PutReference(e);
     }
 
     protected T CreateObject()
@@ -54,11 +55,29 @@ public class ObjectsPool<T extends ObjectsPoolEntry> extends FastList<ObjectsPoo
         return ClassUtils.tryNewInstance(cls);
     }
 
+    private ObjectsPoolEntry TakeReference()
+    {
+        return poolList.RemoveFirstItem();
+    }
+
+    private void PutReference(ObjectsPoolEntry e)
+    {
+        poolList.AddFirstItem(e);
+    }
+
     //////////////////////////////////////////////////////////////////////////////
     // Destroyable
 
     public void Destroy()
     {
-        Clear();
+        poolList.Clear();
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    // Properties
+
+    public int size()
+    {
+        return poolList.Count();
     }
 }

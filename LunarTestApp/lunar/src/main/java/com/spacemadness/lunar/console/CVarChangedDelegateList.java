@@ -21,21 +21,29 @@ public class CVarChangedDelegateList extends BaseList<CVarChangedDelegate>
         super(NullCVarChangedDelegate, capacity);
     }
 
-    public void NotifyValueChanged(CVar cvar)
+    public synchronized void NotifyValueChanged(CVar cvar)
     {
-        int elementsCount = list.size();
-        for (int i = 0; i < elementsCount; ++i) // do not update added items on that tick
+        try
         {
-            try
+            locked = true;
+
+            int elementsCount = list.size();
+            for (int i = 0; i < elementsCount; ++i) // do not update added items on that tick
             {
-                list.get(i).onChanged(cvar);
-            }
-            catch (Exception e)
-            {
-                Log.logException(e);
+                try
+                {
+                    list.get(i).onChanged(cvar);
+                }
+                catch (Exception e)
+                {
+                    Log.logException(e);
+                }
             }
         }
-
-        ClearRemoved();
+        finally
+        {
+            locked = false;
+            ClearRemoved();
+        }
     }
 }

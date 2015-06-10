@@ -6,6 +6,7 @@ import com.spacemadness.lunar.core.ArrayIterator;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
@@ -39,8 +40,17 @@ public class StringUtils
 
     public static boolean StartsWithIgnoreCase(String str, String prefix) // FIXME: rename
     {
-        // return str != null && prefix != null && str.startsWith(prefix, StringComparison.OrdinalIgnoreCase);
-        throw new NotImplementedException();
+        if (str == null || prefix == null)
+        {
+            return (str == null && prefix == null);
+        }
+
+        if (prefix.length() > str.length())
+        {
+            return false;
+        }
+
+        return str.regionMatches(true, 0, prefix, 0, prefix.length());
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -383,7 +393,8 @@ public class StringUtils
 
     public static String GetSuggestedTextFiltered(String token, String[] strings)
     {
-        return GetSuggestedTextFiltered0(token, strings);
+        // return GetSuggestedTextFiltered0(token, strings);
+        throw new NotImplementedException();
     }
 
     private static String GetSuggestedTextFiltered0(String token, List<String> list)
@@ -444,7 +455,7 @@ public class StringUtils
 
             if (value.indexOf(' ') != -1)
             {
-                value = StringUtils.TryFormat("\"{0}\"", value);
+                value = StringUtils.TryFormat("\"%s\"", value);
             }
 
             return value;
@@ -460,7 +471,7 @@ public class StringUtils
             if (value.startsWith(Quote) && value.endsWith(Quote) ||
                 value.startsWith(SingleQuote) && value.endsWith(SingleQuote))
             {
-                value = value.substring(1, value.length() - 2);
+                value = value.substring(1, value.length() - 1);
             }
 
             value = value.replace(EscapedQuote, Quote);
@@ -472,49 +483,52 @@ public class StringUtils
         return "";
     }
 
-    static String C(String str, ColorCode color)
+    public static String C(String str, ColorCode color)
     {
-        return StringUtils.TryFormat("<color=${0}>{1}</color>", ((int)color).toString(), str);
+        return StringUtils.TryFormat("<color=$%s>%s</color>", ToString(color.ordinal()), str);
     }
 
     static String C(String str, Color color, int startIndex, int endIndex)
     {
-        return StringUtils.TryFormat("{0}<color=#{1}>{2}</color>{3}", str.SubString(0, startIndex), 
-            ToHexValue(ref color), 
-            str.SubString(startIndex, endIndex - startIndex), 
-            str.SubString(endIndex)
-        );
+//        return StringUtils.TryFormat("%s<color=#%s>%s</color>%s", str.SubString(0, startIndex),
+//            ToHexValue(ref color),
+//            str.SubString(startIndex, endIndex - startIndex),
+//            str.SubString(endIndex)
+//        );
+        throw new NotImplementedException();
     }
 
     public static String C(String str, Color color)
     {
-        return StringUtils.TryFormat("<color=#{0}>{1}</color>", ToHexValue(ref color), str);
+        // return StringUtils.TryFormat("<color=#%s>%s</color>", ToHexValue(ref color), str);
+        throw new NotImplementedException();
     }
 
-    private static String ToHexValue(ref Color color)
+    private static String ToHexValue(Color color)
     {
-        int value = (((int)(255 * color.r)) << 24) |
-            (((int)(255 * color.g)) << 16) |
-            (((int)(255 * color.b)) << 8) |
-            (color.a > 0 ? (int)(255 * color.a) : 0xff);
-
-        return value.ToString("x8");
+//        int value = (((int)(255 * color.r)) << 24) |
+//            (((int)(255 * color.g)) << 16) |
+//            (((int)(255 * color.b)) << 8) |
+//            (color.a > 0 ? (int)(255 * color.a) : 0xff);
+//
+//        return value.ToString("x8");
+        throw new NotImplementedException();
     }
 
     public static String B(String str)
     {
-        return StringUtils.TryFormat("<b>{0}</b>", str);
+        return StringUtils.TryFormat("<b>%s</b>", str);
     }
 
     public static String I(String str)
     {
-        return StringUtils.TryFormat("<i>{0}</i>", str);
+        return StringUtils.TryFormat("<i>%s</i>", str);
     }
 
     public static String RemoveRichTextTags(String line)
     {
-        // return kRichTagRegex.replace(line, String.Empty);
-        throw new NotImplementedException(); // FIXME
+        Matcher matcher = kRichTagRegex.matcher(line);
+        return matcher.replaceAll("");
     }
 
     public static void RemoveRichTextTags(List<String> lines)
@@ -553,7 +567,7 @@ public class StringUtils
                 int lookupIndex = UnsafeParseInt(match.Groups[1].Value);
                 if (lookupIndex < colorLookup.length())
                 {
-                    buffer.appendFormat("<color=#{0}>", ToHexValue(ref colorLookup[lookupIndex]));
+                    buffer.appendFormat("<color=#%s>", ToHexValue(ref colorLookup[lookupIndex]));
                 }
                 else
                 {
@@ -661,10 +675,28 @@ public class StringUtils
     public static <T> String Join(List<T> list, String separator)
     {
         StringBuilder builder = new StringBuilder();
-        for (int i = 0; i < list.size(); ++i)
+
+        int i = 0;
+        for (T e : list)
         {
-            builder.append(list.get(i));
-            if (i < list.size()-1) builder.append(separator);
+            builder.append(e);
+            if (++i < list.size()) builder.append(separator);
+        }
+        return builder.toString();
+    }
+
+    public static <T> String Join(T[] array)
+    {
+        return Join(array, ",");
+    }
+
+    public static <T> String Join(T[] array, String separator)
+    {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < array.length; ++i)
+        {
+            builder.append(array[i]);
+            if (i < array.length-1) builder.append(separator);
         }
         return builder.toString();
     }

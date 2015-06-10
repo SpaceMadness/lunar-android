@@ -7,7 +7,7 @@ import com.spacemadness.lunar.utils.StringUtils;
 /**
  * Created by weee on 5/28/15.
  */
-public class Timer
+public final class Timer
 {
     static final Object mutex = new Object();
 
@@ -20,7 +20,7 @@ public class Timer
         }
     };
 
-    static Timer freeRoot;
+    protected static Timer freeRoot;
 
     boolean cancelled;
 
@@ -79,7 +79,7 @@ public class Timer
             }
             catch (Exception e)
             {
-                Log.error(e, "Exception while firing timer");
+                Log.logException(e, "Exception while firing timer");
                 Cancel();
             }
         }

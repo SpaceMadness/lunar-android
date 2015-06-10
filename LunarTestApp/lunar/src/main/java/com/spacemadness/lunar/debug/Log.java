@@ -29,14 +29,14 @@ public class Log
         android.util.Log.e(TAG, message);
     }
 
+    public static void logException(Exception e)
+    {
+        logException(e, "");
+    }
+
     public static void logException(Exception e, String format, Object... params)
     {
         String message = String.format(format, params);
         android.util.Log.e(TAG, message, e);
-    }
-
-    public static void error(Exception e, String s)
-    {
-        throw new NotImplementedException();
     }
 }

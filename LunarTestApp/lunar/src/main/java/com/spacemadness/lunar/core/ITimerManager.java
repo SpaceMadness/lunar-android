@@ -3,35 +3,93 @@ package com.spacemadness.lunar.core;
 /**
  * Created by weee on 5/28/15.
  */
-abstract class ITimerManager implements IUpdatable, IDestroyable // not a good idea to name abstract class as interface, but what you gonna do
+abstract class ITimerManager implements IUpdatable, IDestroyable // FIXME: remove to AbstractTimerManager
 {
+    @Override
     public void Update(float delta)
     {
     }
 
+    @Override
     public void Destroy()
     {
     }
 
-    // FIXME: public Timer Schedule(Runnable callback, float delay = 0.0f, boolean repeated = false, String name = null)
+    public Timer Schedule(Runnable callback)
+    {
+        return Schedule(callback, 0.0f);
+    }
+
+    public Timer Schedule(Runnable callback, float delay)
+    {
+        return Schedule(callback, delay, false);
+    }
+
+    public Timer Schedule(Runnable callback, float delay, boolean repeated)
+    {
+        return Schedule(callback, delay, repeated, null);
+    }
+
     public Timer Schedule(Runnable callback, float delay, boolean repeated, String name)
     {
         return Schedule(callback, delay, repeated ? 0 : 1, name);
     }
 
-    // FIXME: public Timer Schedule(TimerRunnable callback, float delay = 0.0f, boolean repeated = false, String name = null)
+    public Timer Schedule(TimerRunnable callback)
+    {
+        return Schedule(callback, 0.0f);
+    }
+
+    public Timer Schedule(TimerRunnable callback, float delay)
+    {
+        return Schedule(callback, delay, false);
+    }
+
+    public Timer Schedule(TimerRunnable callback, float delay, boolean repeated)
+    {
+        return Schedule(callback, delay, repeated, null);
+    }
+
     public Timer Schedule(TimerRunnable callback, float delay, boolean repeated, String name)
     {
         return Schedule(callback, delay, repeated ? 0 : 1, name);
     }
 
-    // FIXME: public Timer ScheduleOnce(Runnable callback, float delay = 0.0f, boolean repeated = false, String name = null)
+    public Timer ScheduleOnce(Runnable callback)
+    {
+        return ScheduleOnce(callback, 0.0f);
+    }
+
+    public Timer ScheduleOnce(Runnable callback, float delay)
+    {
+        return ScheduleOnce(callback, delay, false);
+    }
+
+    public Timer ScheduleOnce(Runnable callback, float delay, boolean repeated)
+    {
+        return ScheduleOnce(callback, delay, repeated, null);
+    }
+
     public Timer ScheduleOnce(Runnable callback, float delay, boolean repeated, String name)
     {
         return ScheduleOnce(callback, delay, repeated ? 0 : 1, name);
     }
 
-    // FIXME: public Timer ScheduleOnce(TimerRunnable callback, float delay = 0.0f, boolean repeated = false, String name = null)
+    public Timer ScheduleOnce(TimerRunnable callback)
+    {
+        return ScheduleOnce(callback, 0.0f);
+    }
+
+    public Timer ScheduleOnce(TimerRunnable callback, float delay)
+    {
+        return ScheduleOnce(callback, delay, false);
+    }
+
+    public Timer ScheduleOnce(TimerRunnable callback, float delay, boolean repeated)
+    {
+        return ScheduleOnce(callback, delay, repeated, null);
+    }
+
     public Timer ScheduleOnce(TimerRunnable callback, float delay, boolean repeated, String name)
     {
         return ScheduleOnce(callback, delay, repeated ? 0 : 1, name);

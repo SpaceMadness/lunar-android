@@ -1,5 +1,6 @@
 package com.spacemadness.lunar.console;
 
+import com.spacemadness.lunar.utils.NotImplementedException;
 import com.spacemadness.lunar.utils.StringUtils;
 
 import java.lang.reflect.InvocationTargetException;
@@ -54,21 +55,22 @@ class CCommandUtils
 
     public static boolean Invoke(Object target, Method method, String[] invokeArgs)
     {
-        Class<?>[] parameters = method.getParameterTypes();
-        if (parameters.length == 0)
-        {
-            return Invoke(target, method, EMPTY_INVOKE_ARGS);
-        }
-
-        List<Object> invokeList = new ArrayList<Object>(invokeArgs.length);
-
-        Iterator<String> iter = new Iterator<String>(invokeArgs);
-        for (Class<?> param : parameters)
-        {
-            invokeList.add(ResolveInvokeParameter(param, iter));
-        }
-
-        return Invoke(target, method, invokeList.toArray());
+//        Class<?>[] parameters = method.getParameterTypes();
+//        if (parameters.length == 0)
+//        {
+//            return Invoke(target, method, EMPTY_INVOKE_ARGS);
+//        }
+//
+//        List<Object> invokeList = new ArrayList<Object>(invokeArgs.length);
+//
+//        Iterator<String> iter = new ArrayIterator<String>(invokeArgs);
+//        for (Class<?> param : parameters)
+//        {
+//            invokeList.add(ResolveInvokeParameter(param, iter));
+//        }
+//
+//        return Invoke(target, method, invokeList.toArray());
+        throw new NotImplementedException();
     }
 
     private static boolean Invoke(Object target, Method method, Object[] args) throws InvocationTargetException, IllegalAccessException
@@ -84,40 +86,42 @@ class CCommandUtils
 
     public static String GetMethodParamsUsage(Method method)
     {
-        Class<?>[] parameters = method.getParameterTypes();
-        if (parameters.length > 0)
-        {
-            StringBuilder result = new StringBuilder();
-            for (int i = 0; i < parameters.length; ++i)
-            {
-                Class<?> param = parameters[i];
-                if (param.isArray())
-                {
-                    result.append(" ...");
-                }
-                else
-                {
-                    result.append(StringUtils.TryFormat(" <%s>", param.Name));
-                }
-            }
-
-            return result.toString();
-        }
-
-        return null;
+//        Class<?>[] parameters = method.getParameterTypes();
+//        if (parameters.length > 0)
+//        {
+//            StringBuilder result = new StringBuilder();
+//            for (int i = 0; i < parameters.length; ++i)
+//            {
+//                Class<?> param = parameters[i];
+//                if (param.isArray())
+//                {
+//                    result.append(" ...");
+//                }
+//                else
+//                {
+//                    result.append(StringUtils.TryFormat(" <%s>", param.Name));
+//                }
+//            }
+//
+//            return result.toString();
+//        }
+//
+//        return null;
+        throw new NotImplementedException();
     }
 
     static List<Object> ResolveInvokeParameters(Class<?>[] parameters, String[] invokeArgs)
     {
-        List<Object> list = new ArrayList<Object>(invokeArgs.length);
-
-        Iterator<String> iter = new Iterator<String>(invokeArgs);
-        for (Class<?> param : parameters)
-        {
-            list.add(ResolveInvokeParameter(param, iter));
-        }
-
-        return list;
+//        List<Object> list = new ArrayList<Object>(invokeArgs.length);
+//
+//        Iterator<String> iter = new ArrayIterator<String>(invokeArgs);
+//        for (Class<?> param : parameters)
+//        {
+//            list.add(ResolveInvokeParameter(param, iter));
+//        }
+//
+//        return list;
+        throw new NotImplementedException();
     }
 
     private static Object ResolveInvokeParameter(Class<?> type, Iterator<String> iter)

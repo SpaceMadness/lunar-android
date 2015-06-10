@@ -1,7 +1,9 @@
 package com.spacemadness.lunar.core;
 
+import com.spacemadness.lunar.debug.Assert;
 import com.spacemadness.lunar.debug.Log;
 import com.spacemadness.lunar.utils.BaseList;
+import com.spacemadness.lunar.utils.NotImplementedException;
 
 /**
  * Created by weee on 5/28/15.
@@ -30,18 +32,20 @@ class NotificationDelegateList extends BaseList<NotificationDelegate>
     
     public boolean RemoveAll(Object target)
     {
-        boolean removed = false;
-        for (int i = 0; i < list.size(); ++i)
-        {
-            NotificationDelegate del = list.get(i);
-            if (del.Target == target)
-            {
-                RemoveAt(i); // it's safe: the list size will be changed on the next update
-                removed = true;
-            }
-        }
-        
-        return removed;
+//        boolean removed = false;
+//        for (int i = 0; i < list.size(); ++i)
+//        {
+//            NotificationDelegate del = list.get(i);
+//            if (del.Target == target)
+//            {
+//                RemoveAt(i); // it's safe: the list size will be changed on the next update
+//                removed = true;
+//            }
+//        }
+//
+//        return removed;
+
+        throw new NotImplementedException();
     }
     
     public void NotifyDelegates(Notification notification)
@@ -56,7 +60,7 @@ class NotificationDelegateList extends BaseList<NotificationDelegate>
             }
             catch (Exception e)
             {
-                Log.error(e, "Error while notifying delegate");
+                Log.logException(e, "Error while notifying delegate");
             }
         }
         ClearRemoved();

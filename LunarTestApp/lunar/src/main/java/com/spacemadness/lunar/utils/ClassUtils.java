@@ -16,7 +16,7 @@ public class ClassUtils
         if (obj != null)
         {
             T casted = as(obj, clazz);
-            Assert.True(casted != null, "Can't cast from '%s' to '%s'", obj.getClass(), clazz);
+            Assert.IsTrue(casted != null, "Can't cast from '%s' to '%s'", obj.getClass(), clazz);
 
             return casted;
         }

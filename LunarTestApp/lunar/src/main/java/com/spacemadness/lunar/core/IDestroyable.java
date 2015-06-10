@@ -1,6 +1,6 @@
 package com.spacemadness.lunar.core;
 
-public interface IDestroyable
+public interface IDestroyable // FIXME: rename
 {
-    public void Destroy();
+    void Destroy(); // FIXME: rename
 }
