@@ -1,0 +1,61 @@
+//  Copyright 2015 SpaceMadness.
+// 
+//  Lunar is licensed under the Apache License, 
+//  Version 2.0 (the "License"); you may not use this file except in compliance 
+//  with the License. You may obtain a copy of the License at
+// 
+//     http://www.apache.org/licenses/LICENSE-2.0
+// 
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+//
+
+package com.spacemadness.lunar.console.commands;
+
+import com.spacemadness.lunar.console.CCommand;
+import com.spacemadness.lunar.console.CRegistery;
+import com.spacemadness.lunar.console.CVarCommand;
+import com.spacemadness.lunar.console.annotations.Command;
+import com.spacemadness.lunar.utils.ClassUtils;
+
+@Command("cvar_restart", Description="Resets all cvars to their default values.")
+public class Cmd_cvar_restart extends CCommand
+{
+    void Execute()
+    {
+        Execute(null);
+    }
+
+    void Execute(string prefix)
+    {
+        IList<CCommand> cmds = CRegistery.ListCommands(prefix);
+        foreach (CCommand cmd in cmds)
+        {
+            CVarCommand cvarCmd = ClassUtils.as(cmd, CVarCommand.class);
+            if (cvarCmd != null)
+            {
+                cvarCmd.SetDefault();
+            }
+        }
+    }
+
+    @Override
+    protected string[] AutoCompleteArgs(string commandLine, string prefix)
+    {
+        IList<CVar> vars = CRegistery.ListVars(prefix);
+        if (vars.Count == 0)
+        {
+            return null;
+        }
+        
+        string[] values = new string[vars.Count];
+        for (int i = 0; i < vars.Count; ++i)
+        {
+            values[i] = StringUtils.C(vars[i].Name, ColorCode.TableVar);
+        }
+        return values;
+    }
+}

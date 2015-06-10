@@ -3,7 +3,7 @@ package com.spacemadness.lunar.console;
 /**
  * Created by alementuev on 5/29/15.
  */
-class CAliasCommand extends CCommand
+public class CAliasCommand extends CCommand
 {
     public CAliasCommand(String name, String alias)
     {

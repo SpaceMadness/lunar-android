@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * Created by alementuev on 5/29/15.
  */
-class CRegistery
+public class CRegistery
 {
     private static Map<String, CCommand> m_commandsLookup = new HashMap<String, CCommand>(); // FIXME: rename
     private static List<CCommand> m_commands = new ArrayList<CCommand>(); // FIXME: rename and use linked list
@@ -86,7 +86,7 @@ class CRegistery
         });
     }
 
-    static List<CCommand> ListCommands(ListCommandsFilter<CCommand> filter)
+    public static List<CCommand> ListCommands(ListCommandsFilter<CCommand> filter)
     {
         return ListCommands(ReusableLists.NextAutoRecycleList(CCommand.class), filter);
     }
@@ -114,7 +114,7 @@ class CRegistery
         return ShouldListCommand(cmd, prefix, CommandListOptions.None);
     }
 
-    static boolean ShouldListCommand(CCommand cmd, String prefix, int options)
+    public static boolean ShouldListCommand(CCommand cmd, String prefix, int options)
     {
         if (cmd.IsDebug() && (options & CommandListOptions.Debug) == 0)
         {

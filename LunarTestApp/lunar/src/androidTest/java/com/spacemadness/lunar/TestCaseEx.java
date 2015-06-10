@@ -20,6 +20,7 @@ public class TestCaseEx extends TestCase
     protected void setUp() throws Exception
     {
         super.setUp();
+
         result = new ArrayList<>();
     }
 

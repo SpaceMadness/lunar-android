@@ -3,7 +3,7 @@ package com.spacemadness.lunar.console;
 import com.spacemadness.lunar.utils.ObjectUtils;
 import com.spacemadness.lunar.utils.StringUtils;
 
-public class CVar // FIXME: IEquatable<CVar>
+public class CVar
 {
     private final String m_name;
     private final CVarType m_type;
@@ -133,7 +133,6 @@ public class CVar // FIXME: IEquatable<CVar>
 
     //////////////////////////////////////////////////////////////////////////////
     // Equality
-
 
     @Override
     public boolean equals(Object o)

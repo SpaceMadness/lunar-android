@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 /**
  * Created by alementuev on 5/29/15.
  */
-class CVarCommand extends CCommand
+public class CVarCommand extends CCommand
 {
     public final CVar cvar;
 
