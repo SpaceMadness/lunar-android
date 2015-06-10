@@ -5,7 +5,8 @@ import com.spacemadness.lunar.utils.NotImplementedException;
 import java.util.Collection;
 import java.util.List;
 
-import static com.spacemadness.lunar.utils.StringUtils.*;
+import static com.spacemadness.lunar.utils.StringUtils.IsNullOrEmpty;
+import static com.spacemadness.lunar.utils.StringUtils.ToString;
 
 public class Assert // FIXME: rename methods to assert*
 {

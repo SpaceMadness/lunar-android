@@ -1,7 +1,5 @@
 package com.spacemadness.lunar.debug;
 
-import com.spacemadness.lunar.utils.NotImplementedException;
-
 public class Log
 {
     private static final String TAG = "Lunar";

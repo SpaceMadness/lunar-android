@@ -68,7 +68,8 @@ public class Cmd_man extends CCommand
         String[] values = new String[commands.size()];
         for (int i = 0; i < commands.size(); ++i)
         {
-            values[i] = StringUtils.C(commands.get(i).Name, commands.get(i).ColorCode);
+            final CCommand command = commands.get(i);
+            values[i] = StringUtils.C(command.Name, ((CCommand) command).ColorCode());
         }
         return values;
     }

@@ -16,6 +16,7 @@
 package com.spacemadness.lunar.console.commands;
 
 import com.spacemadness.lunar.console.CCommand;
+import com.spacemadness.lunar.console.CCommandNotifications;
 import com.spacemadness.lunar.console.CRegistery;
 import com.spacemadness.lunar.console.annotations.Command;
 
@@ -28,7 +29,7 @@ public class Cmd_unalias extends CCommand
         {
             
             PostNotification(
-                CCommandNotifications.CAliasesChanged, 
+                CCommandNotifications.CAliasesChanged,
                 CCommandNotifications.KeyName, name,
                 CCommandNotifications.KeyManualMode, this.IsManualMode
             );

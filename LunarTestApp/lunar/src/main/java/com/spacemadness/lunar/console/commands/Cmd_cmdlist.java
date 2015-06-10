@@ -46,7 +46,7 @@ public class Cmd_cmdlist extends CCommand
             for (int i = 0; i < commands.size(); ++i)
             {
                 CCommand cmd = commands.get(i);
-                names[i] = StringUtils.C(cmd.Name, cmd.ColorCode);
+                names[i] = StringUtils.C(cmd.Name, cmd.ColorCode());
             }
             Print(names);
         }

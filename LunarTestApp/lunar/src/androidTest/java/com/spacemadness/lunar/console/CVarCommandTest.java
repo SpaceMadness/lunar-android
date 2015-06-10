@@ -1,5 +1,7 @@
 package com.spacemadness.lunar.console;
 
+import com.spacemadness.lunar.console.commands.reset;
+
 /**
  * Created by weee on 6/10/15.
  */

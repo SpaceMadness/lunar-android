@@ -2,20 +2,20 @@ package com.spacemadness.lunar.console;
 
 import android.util.Log;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.List;
-
 import com.spacemadness.lunar.ColorCode;
 import com.spacemadness.lunar.utils.ArrayUtils;
 import com.spacemadness.lunar.utils.NotImplementedException;
 import com.spacemadness.lunar.utils.ReusableList;
 import com.spacemadness.lunar.utils.ReusableLists;
 import com.spacemadness.lunar.utils.StringUtils;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by alementuev on 5/28/15.
@@ -1372,14 +1372,13 @@ public abstract class CCommand implements Comparable<CCommand>
 
     protected boolean IsManualMode; // FIXME { get; set; }
 
-    ColorCode ColorCode()
+    public ColorCode ColorCode()
     {
         return ColorCode.TableCommand;
     }
 
     //////////////////////////////////////////////////////////////////////////////
     // Comparable
-
 
     @Override
     public int compareTo(CCommand another)

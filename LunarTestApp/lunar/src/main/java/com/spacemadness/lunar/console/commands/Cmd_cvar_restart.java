@@ -59,7 +59,7 @@ public class Cmd_cvar_restart extends CCommand
         String[] values = new String[vars.size()];
         for (int i = 0; i < vars.size(); ++i)
         {
-            values[i] = StringUtils.C(vars.get(i).Name, ColorCode.TableVar);
+            values[i] = StringUtils.C(vars.get(i).Name(), ColorCode.TableVar);
         }
         return values;
     }

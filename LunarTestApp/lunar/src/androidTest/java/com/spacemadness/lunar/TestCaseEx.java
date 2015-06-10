@@ -4,8 +4,6 @@ import com.spacemadness.lunar.utils.StringUtils;
 
 import junit.framework.TestCase;
 
-import static junit.framework.Assert.*;
-
 import java.util.ArrayList;
 import java.util.List;
 

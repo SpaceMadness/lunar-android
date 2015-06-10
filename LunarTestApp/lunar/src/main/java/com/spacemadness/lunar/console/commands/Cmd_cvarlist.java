@@ -8,9 +8,12 @@ import com.spacemadness.lunar.console.CVar;
 import com.spacemadness.lunar.console.CommandListOptions;
 import com.spacemadness.lunar.console.annotations.Command;
 import com.spacemadness.lunar.console.annotations.CommandOption;
-import com.spacemadness.lunar.utils.StringUtils;
 
 import java.util.List;
+
+import static com.spacemadness.lunar.utils.StringUtils.Arg;
+import static com.spacemadness.lunar.utils.StringUtils.C;
+import static com.spacemadness.lunar.utils.StringUtils.TryFormat;
 
 @Command(Name="cvarlist", Description="Lists all available cvars and their values.")
 public class Cmd_cvarlist extends CCommand
@@ -47,7 +50,7 @@ public class Cmd_cvarlist extends CCommand
                 String[] names = new String[vars.size()];
                 for (int i = 0; i < vars.size(); ++i)
                 {
-                    names[i] = StringUtils.C(vars.get(i).Name(), ColorCode.TableVar);
+                    names[i] = C(vars.get(i).Name(), ColorCode.TableVar);
                 }
                 Print(names);
             }
@@ -57,12 +60,12 @@ public class Cmd_cvarlist extends CCommand
                 for (int i = 0; i < vars.size(); ++i)
                 {
                     CVar cvar = vars.get(i);
-                    result.AppendFormat("  %s %s", StringUtils.C(cvar.Name(), ColorCode.TableVar), StringUtils.Arg(cvar.Value()));
+                    result.append(TryFormat("  %s %s", C(cvar.Name(), ColorCode.TableVar), Arg(cvar.Value())));
                     
                     // TODO: better color highlight
                     if (!cvar.IsDefault())
                     {
-                        result.AppendFormat(" %s %s", StringUtils.C("default", ColorCode.TableVar), cvar.DefaultValue());
+                        result.append(TryFormat(" %s %s", C("default", ColorCode.TableVar), cvar.DefaultValue()));
                     }
                     
                     if (i < vars.size() - 1)

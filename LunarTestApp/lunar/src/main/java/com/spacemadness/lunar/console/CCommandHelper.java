@@ -15,21 +15,30 @@
 
 package com.spacemadness.lunar.console;
 
+import com.spacemadness.lunar.utils.FileUtils;
+import com.spacemadness.lunar.utils.NotImplementedException;
+import com.spacemadness.lunar.utils.StringUtils;
+
 public class CCommandHelper
 {
-    public static String CreateCommandLine(String[] args, int startIndex = 0)
+    public static String CreateCommandLine(String[] args)
     {
-        StringBuilder buffer = StringBuilderPool.NextAutoRecycleBuilder();
-        for (int i = startIndex; i < args.Length; ++i)
+        return CreateCommandLine(args, 0);
+    }
+
+    public static String CreateCommandLine(String[] args, int startIndex)
+    {
+        StringBuilder buffer = new StringBuilder();
+        for (int i = startIndex; i < args.length; ++i)
         {
-            buffer.Append(StringUtils.Arg(args[i]));
-            if (i < args.Length - 1)
+            buffer.append(StringUtils.Arg(args[i]));
+            if (i < args.length - 1)
             {
-                buffer.Append(' ');
+                buffer.append(' ');
             }
         }
 
-        return buffer.ToString();
+        return buffer.toString();
     }
 
     public static String GetConfigPath(String filename)
@@ -40,11 +49,13 @@ public class CCommandHelper
             return path;
         }
 
-        return System.IO.Path.Combine(ConfigPath, path);
+        // return System.IO.Path.Combine(ConfigPath, path);
+        throw new NotImplementedException();
     }
 
-    public static String ConfigPath
+    public static String ConfigPath()
     {
-        get { return System.IO.Path.Combine(FileUtils.DataPath, "configs"); }
+        // return System.IO.Path.Combine(FileUtils.DataPath, "configs");
+        throw new NotImplementedException(); // FIXME
     }
 }

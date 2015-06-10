@@ -17,28 +17,14 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by weee on 6/10/15.
- */
 public class FileUtils
 {
-    public static boolean FileExists(String path)
-    {
-        if (path == null)
-        {
-            throw new NullPointerException("Path is null");
-        }
-
-        return new File(path).exists();
-    }
-
     public static List<String> Read(String path) throws FileNotFoundException, IOException
     {
         return Read(path, new ArrayList<String>());
@@ -108,5 +94,47 @@ public class FileUtils
                 stream.close();
             }
         }
+    }
+
+    public static boolean FileExists(String path)
+    {
+        if (path == null)
+        {
+            throw new NullPointerException("Path is null");
+        }
+
+        return new File(path).exists();
+    }
+
+    public static String getFilenameNoExt(String filename)
+    {
+        if (filename == null)
+        {
+            throw new NullPointerException("Filename is null");
+        }
+
+        int dotIndex = filename.lastIndexOf('.');
+        return dotIndex != -1 ? filename.substring(0, dotIndex) : filename;
+    }
+
+    public static String getFileExt(String filename)
+    {
+        if (filename == null)
+        {
+            throw new NullPointerException("Filename is null");
+        }
+
+        int dotIndex = filename.lastIndexOf('.');
+        return dotIndex != -1 ? filename.substring(dotIndex) : "";
+    }
+
+    public static String ChangeExtension(String filename, String extension)
+    {
+        throw new NotImplementedException();
+    }
+
+    public static boolean IsPathRooted(String path)
+    {
+        throw new NotImplementedException();
     }
 }

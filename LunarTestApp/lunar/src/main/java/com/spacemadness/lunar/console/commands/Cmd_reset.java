@@ -8,6 +8,8 @@ import com.spacemadness.lunar.console.CVarCommand;
 import com.spacemadness.lunar.console.annotations.Command;
 import com.spacemadness.lunar.utils.StringUtils;
 
+import java.util.List;
+
 @Command(Name="reset", Description="Resets cvar to its default value.")
 public class Cmd_reset extends CCommand
 {
@@ -23,19 +25,20 @@ public class Cmd_reset extends CCommand
         cmd.SetDefault();
         return true;
     }
-    
-    protected override String[] AutoCompleteArgs(String commandLine, String prefix)
+
+    @Override
+    protected String[] AutoCompleteArgs(String commandLine, String prefix)
     {
         List<CVar> vars = CRegistery.ListVars(prefix);
-        if (vars.Count == 0)
+        if (vars.size() == 0)
         {
             return null;
         }
         
-        String[] values = new String[vars.Count];
-        for (int i = 0; i < vars.Count; ++i)
+        String[] values = new String[vars.size()];
+        for (int i = 0; i < vars.size(); ++i)
         {
-            values[i] = StringUtils.C(vars[i].Name, ColorCode.TableVar);
+            values[i] = StringUtils.C(vars.get(i).Name(), ColorCode.TableVar);
         }
         return values;
     }

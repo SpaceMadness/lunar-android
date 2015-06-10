@@ -3,8 +3,6 @@ package com.spacemadness.lunar.console;
 import com.spacemadness.lunar.ColorCode;
 import com.spacemadness.lunar.utils.StringUtils;
 
-import java.util.regex.Pattern;
-
 /**
  * Created by alementuev on 5/29/15.
  */

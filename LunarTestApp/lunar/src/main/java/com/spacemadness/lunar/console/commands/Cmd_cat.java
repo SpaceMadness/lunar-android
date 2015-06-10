@@ -16,6 +16,7 @@
 package com.spacemadness.lunar.console.commands;
 
 import com.spacemadness.lunar.console.CCommand;
+import com.spacemadness.lunar.console.CCommandHelper;
 import com.spacemadness.lunar.console.annotations.Command;
 import com.spacemadness.lunar.console.annotations.CommandOption;
 import com.spacemadness.lunar.utils.FileUtils;

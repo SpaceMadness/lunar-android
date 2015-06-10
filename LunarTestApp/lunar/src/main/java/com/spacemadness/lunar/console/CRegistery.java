@@ -253,7 +253,7 @@ public class CRegistery
         return outList;
     }
 
-    static CVarCommand FindCvarCommand(String name)
+    public static CVarCommand FindCvarCommand(String name)
     {
         for (CCommand cmd : m_commands)
         {

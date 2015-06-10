@@ -16,6 +16,7 @@
 package com.spacemadness.lunar.console.commands;
 
 import com.spacemadness.lunar.console.CCommand;
+import com.spacemadness.lunar.console.CCommandHelper;
 import com.spacemadness.lunar.console.CFlags;
 import com.spacemadness.lunar.console.CRegistery;
 import com.spacemadness.lunar.console.CVar;
@@ -61,7 +62,6 @@ public class Cmd_writeconfig extends CCommand
     
     private static void ListCvars(List<String> lines)
     {
-
         List<CVar> cvars = CRegistery.ListVars(new ListCommandsFilter<CVarCommand>() {
             @Override
             public boolean accept(CVarCommand command) {
