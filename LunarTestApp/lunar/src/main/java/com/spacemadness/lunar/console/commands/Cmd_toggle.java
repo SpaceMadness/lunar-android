@@ -7,7 +7,7 @@ import com.spacemadness.lunar.console.CVarCommand;
 import com.spacemadness.lunar.console.annotations.Command;
 import com.spacemadness.lunar.utils.StringUtils;
 
-@Command("toggle", Description="Toggles boolean cvar value.")
+@Command(Name="toggle", Description="Toggles boolean cvar value.")
 public class Cmd_toggle extends CCommand
 {
     boolean Execute(String cvarName)

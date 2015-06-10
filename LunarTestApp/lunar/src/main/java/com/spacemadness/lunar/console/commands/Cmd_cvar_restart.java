@@ -15,13 +15,18 @@
 
 package com.spacemadness.lunar.console.commands;
 
+import com.spacemadness.lunar.ColorCode;
 import com.spacemadness.lunar.console.CCommand;
 import com.spacemadness.lunar.console.CRegistery;
+import com.spacemadness.lunar.console.CVar;
 import com.spacemadness.lunar.console.CVarCommand;
 import com.spacemadness.lunar.console.annotations.Command;
 import com.spacemadness.lunar.utils.ClassUtils;
+import com.spacemadness.lunar.utils.StringUtils;
 
-@Command("cvar_restart", Description="Resets all cvars to their default values.")
+import java.util.List;
+
+@Command(Name="cvar_restart", Description="Resets all cvars to their default values.")
 public class Cmd_cvar_restart extends CCommand
 {
     void Execute()
@@ -32,7 +37,7 @@ public class Cmd_cvar_restart extends CCommand
     void Execute(String prefix)
     {
         List<CCommand> cmds = CRegistery.ListCommands(prefix);
-        foreach (CCommand cmd in cmds)
+        for (CCommand cmd : cmds)
         {
             CVarCommand cvarCmd = ClassUtils.as(cmd, CVarCommand.class);
             if (cvarCmd != null)
@@ -46,15 +51,15 @@ public class Cmd_cvar_restart extends CCommand
     protected String[] AutoCompleteArgs(String commandLine, String prefix)
     {
         List<CVar> vars = CRegistery.ListVars(prefix);
-        if (vars.Count == 0)
+        if (vars.size() == 0)
         {
             return null;
         }
         
-        String[] values = new String[vars.Count];
-        for (int i = 0; i < vars.Count; ++i)
+        String[] values = new String[vars.size()];
+        for (int i = 0; i < vars.size(); ++i)
         {
-            values[i] = StringUtils.C(vars[i].Name, ColorCode.TableVar);
+            values[i] = StringUtils.C(vars.get(i).Name, ColorCode.TableVar);
         }
         return values;
     }

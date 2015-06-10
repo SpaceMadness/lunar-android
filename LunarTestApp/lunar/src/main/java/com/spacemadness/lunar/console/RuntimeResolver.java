@@ -46,7 +46,7 @@ class RuntimeResolver // TODO: remove this class
                         }
                         else
                         {
-                            Log.e("Unable to register command: name={0} type={1}", commandName, type);
+                            Log.e("Unable to register command: name=%s type=%s", commandName, type);
                         }
                     }
                 }
@@ -58,7 +58,7 @@ class RuntimeResolver // TODO: remove this class
             
             foreach (Exception ex in e.LoaderExceptions)
             {
-                message.AppendFormat("\n\t{0}", ex.Message);
+                message.AppendFormat("\n\t%s", ex.Message);
             }
             
             throw new LunarRuntimeResolverException(message.ToString(), e);
@@ -124,7 +124,7 @@ class RuntimeResolver // TODO: remove this class
             }
             else
             {
-                throw new CCommandParseException("Invalid value '{0}' for type '{1}'", token, type);
+                throw new CCommandParseException("Invalid value '%s' for type '%s'", token, type);
             }
         }
 

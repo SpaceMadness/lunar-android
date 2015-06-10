@@ -3,7 +3,7 @@ package com.spacemadness.lunar.console;
 /**
  * Created by alementuev on 5/29/15.
  */
-class CCommandNotifications
+public class CCommandNotifications
 {
     public static final String CVarValueChanged = "CVarValueChanged";
     public static final String CVarValueChangedKeyVar        = "var"; // CVar

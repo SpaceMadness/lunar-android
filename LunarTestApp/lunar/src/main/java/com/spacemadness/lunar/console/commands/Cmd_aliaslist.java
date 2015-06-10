@@ -20,32 +20,40 @@ import com.spacemadness.lunar.console.CCommand;
 import com.spacemadness.lunar.console.CRegistery;
 import com.spacemadness.lunar.console.annotations.Command;
 import com.spacemadness.lunar.console.annotations.CommandOption;
+import com.spacemadness.lunar.utils.StringUtils;
 
-@Command("aliaslist", Description="List current aliases")
+import java.util.List;
+
+@Command(Name="aliaslist", Description="List current aliases")
 public class Cmd_aliaslist extends CCommand
 {
     @CommandOption(Name="short", ShortName="s", Description="Outputs only names")
     private boolean shortList;
-    
-    boolean Execute(String prefix = null)
+
+    boolean Execute()
+    {
+        return Execute(null);
+    }
+
+    boolean Execute(String prefix)
     {
         List<CAliasCommand> cmds = CRegistery.ListAliases(prefix);
-        if (cmds.Count > 0)
+        if (cmds.size() > 0)
         {
             if (shortList)
             {
-                String[] names = new String[cmds.Count];
-                for (int i = 0; i < cmds.Count; ++i)
+                String[] names = new String[cmds.size()];
+                for (int i = 0; i < cmds.size(); ++i)
                 {
-                    names[i] = cmds[i].Name;
+                    names[i] = cmds.get(i).Name;
                 }
                 Print(names);
             }
             else
             {
-                foreach (CAliasCommand cmd in cmds)
+                for (CAliasCommand cmd : cmds)
                 {
-                    PrintIndent("{0} {1}", cmd.Name, cmd.Alias);
+                    PrintIndent("%s %s", cmd.Name, cmd.Alias);
                 }
             }
         }
@@ -57,14 +65,14 @@ public class Cmd_aliaslist extends CCommand
     {
         List<CAliasCommand> aliases = CRegistery.ListAliases();
         
-        for (int i = 0; i < aliases.Count; ++i)
+        for (int i = 0; i < aliases.size(); ++i)
         {
-            lines.Add(ToString(aliases[i]));
+            lines.add(ToString(aliases.get(i)));
         }
     }
     
     private static String ToString(CAliasCommand cmd)
     {
-        return String.Format("alias {0} {1}", cmd.Name, StringUtils.Arg(cmd.Alias));
+        return String.format("alias %s %s", cmd.Name, StringUtils.Arg(cmd.Alias));
     }
 }

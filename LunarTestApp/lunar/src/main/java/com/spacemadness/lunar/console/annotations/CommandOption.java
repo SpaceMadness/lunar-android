@@ -5,7 +5,7 @@ package com.spacemadness.lunar.console.annotations;
  */
 public @interface CommandOption
 {
-    String Name();
-    String ShortName();
-    String Description();
+    String Name() default "";
+    String ShortName() default "";
+    String Description() default "";
 }

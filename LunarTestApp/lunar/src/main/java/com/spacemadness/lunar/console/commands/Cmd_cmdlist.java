@@ -16,7 +16,7 @@ import java.util.List;
  * Created by weee on 6/10/15.
  */
 
-@Command("cmdlist", Description="Lists all available terminal commands.")
+@Command(Name="cmdlist", Description="Lists all available terminal commands.")
 public class Cmd_cmdlist extends CCommand
 {
     @CommandOption(Name="all", ShortName="a", Description="List all commands (including system)")

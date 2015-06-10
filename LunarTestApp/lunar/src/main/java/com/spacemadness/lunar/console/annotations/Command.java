@@ -5,6 +5,6 @@ package com.spacemadness.lunar.console.annotations;
  */
 public @interface Command
 {
-    String value();
-    String Description();
+    String Name();
+    String Description() default "";
 }

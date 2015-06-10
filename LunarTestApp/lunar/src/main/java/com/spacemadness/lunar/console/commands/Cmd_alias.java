@@ -17,11 +17,14 @@ package com.spacemadness.lunar.console.commands;
 
 import com.spacemadness.lunar.console.CAliasCommand;
 import com.spacemadness.lunar.console.CCommand;
+import com.spacemadness.lunar.console.CCommandNotifications;
 import com.spacemadness.lunar.console.CRegistery;
 import com.spacemadness.lunar.console.annotations.Command;
 import com.spacemadness.lunar.utils.StringUtils;
 
-@Command("alias", Description="Creates an alias name for command(s)")
+import java.util.List;
+
+@Command(Name="alias", Description="Creates an alias name for command(s)")
 public class Cmd_alias extends CCommand
 {
     void Execute(String name, String commands)
@@ -29,7 +32,7 @@ public class Cmd_alias extends CCommand
         CRegistery.AddAlias(name, StringUtils.UnArg(commands));
         
         PostNotification(
-            CCommandNotifications.CAliasesChanged, 
+            CCommandNotifications.CAliasesChanged,
             CCommandNotifications.KeyName, name,
             CCommandNotifications.KeyManualMode, this.IsManualMode
         );
@@ -39,14 +42,14 @@ public class Cmd_alias extends CCommand
     {
         List<CAliasCommand> aliases = CRegistery.ListAliases();
         
-        for (int i = 0; i < aliases.Count; ++i)
+        for (int i = 0; i < aliases.size(); ++i)
         {
-            lines.Add(ToString(aliases[i]));
+            lines.add(ToString(aliases.get(i)));
         }
     }
     
     private static String ToString(CAliasCommand cmd)
     {
-        return String.Format("alias {0} {1}", cmd.Name, StringUtils.Arg(cmd.Alias));
+        return String.format("alias %s %s", cmd.Name, StringUtils.Arg(cmd.Alias));
     }
 }

@@ -16,75 +16,81 @@
 package com.spacemadness.lunar.console.commands;
 
 import com.spacemadness.lunar.console.CCommand;
+import com.spacemadness.lunar.console.CFlags;
 import com.spacemadness.lunar.console.CRegistery;
 import com.spacemadness.lunar.console.CVar;
+import com.spacemadness.lunar.console.CVarCommand;
+import com.spacemadness.lunar.console.ListCommandsFilter;
 import com.spacemadness.lunar.console.annotations.Command;
+import com.spacemadness.lunar.utils.FileUtils;
 import com.spacemadness.lunar.utils.StringUtils;
 
-@Command("writeconfig", Description="Writes a config file.")
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
+@Command(Name="writeconfig", Description="Writes a config file.")
 public class Cmd_writeconfig extends CCommand
 {
-    void Execute(String filename)
+    boolean Execute(String filename)
     {
-        List<String> lines = ReusableLists.NextAutoRecycleList<String>();
+        List<String> lines = new ArrayList<String>();
         
         // cvars
         ListCvars(lines);
-        
-        // bindings
-        ListBindings(lines);
         
         // aliases
         ListAliases(lines);
         
         String path = CCommandHelper.GetConfigPath(filename);
-        FileUtils.Write(path, lines);
+
+        try
+        {
+            FileUtils.Write(path, lines);
+            return true;
+        }
+        catch (IOException e)
+        {
+            if (this.IsManualMode)
+            {
+                PrintError("Can't write config: %s", e.getMessage());
+            }
+            return false;
+        }
     }
     
     private static void ListCvars(List<String> lines)
     {
-        List<CVar> cvars = CRegistery.ListVars(delegate(CVarCommand cmd)
-        {
-            return !cmd.IsDefault && !cmd.HasFlag(CFlags.NoArchive);
+
+        List<CVar> cvars = CRegistery.ListVars(new ListCommandsFilter<CVarCommand>() {
+            @Override
+            public boolean accept(CVarCommand command) {
+                return !command.IsDefault() && !command.HasFlag(CFlags.NoArchive);
+            }
         });
         
-        if (cvars.Count > 0)
+        if (cvars.size() > 0)
         {
-            lines.Add("// cvars");
+            lines.add("// cvars");
         }
-        
-        for (int i = 0; i < cvars.Count; ++i)
+
+        for (CVar var : cvars)
         {
-            CVar c = cvars[i];
-            if (c.Value != null)
+            if (var.Value() != null)
             {
-                lines.Add(String.Format("{0} {1}", c.Name, StringUtils.Arg(c.Value)));
+                lines.add(String.format("%s %s", var.Name(), StringUtils.Arg(var.Value())));
             }
             else
             {
-                lines.Add("null " + c.Name);
+                lines.add("null " + var.Name());
             }
-        }
-    }
-    
-    private static void ListBindings(List<String> lines)
-    {
-        List<CBinding> bindings = CBindings.List();
-        if (bindings.Count > 0)
-        {
-            lines.Add("// key bindings");
-        }
-        
-        for (int i = 0; i < bindings.Count; ++i)
-        {
-            lines.Add(String.Format("bind {0} {1}", bindings[i].shortCut.ToString(), StringUtils.Arg(bindings[i].cmdKeyDown)));
         }
     }
     
     private static void ListAliases(List<String> lines)
     {
-        lines.Add("");
-        lines.Add("// aliases");
+        lines.add("");
+        lines.add("// aliases");
         Cmd_alias.ListAliasesConfig(lines);
     }
 }

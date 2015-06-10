@@ -26,7 +26,7 @@ public class CVarCommand extends CCommand
     {
         if (args.length == 0)
         {
-            PrintIndent("{0} is:\"{1}\" default:\"{2}\"", StringUtils.C(cvar.Name(), ColorCode.TableVar), cvar.Value(), cvar.DefaultValue());
+            PrintIndent("%s is:\"%s\" default:\"%s\"", StringUtils.C(cvar.Name(), ColorCode.TableVar), cvar.Value(), cvar.DefaultValue());
             return false;
         }
 
@@ -132,7 +132,7 @@ public class CVarCommand extends CCommand
             {
             }
 
-            PrintError("Invalid float \"{0}\"", args[0]);
+            PrintError("Invalid float \"%s\"", args[0]);
             return false;
         }
 
@@ -143,7 +143,7 @@ public class CVarCommand extends CCommand
                 int value = Integer.parseInt(args[0]);
                 if (cvar.IsBool() && value != 0 && value != 1)
                 {
-                    PrintError("Invalid value \"{0}\" only \"0\" and \"1\" are permitted", args[0]);
+                    PrintError("Invalid value \"%s\" only \"0\" and \"1\" are permitted", args[0]);
                     return false;
                 }
 
@@ -154,7 +154,7 @@ public class CVarCommand extends CCommand
             {
             }
 
-            PrintError("Invalid int \"{0}\"", args[0]);
+            PrintError("Invalid int \"%s\"", args[0]);
             return false;
         }
 

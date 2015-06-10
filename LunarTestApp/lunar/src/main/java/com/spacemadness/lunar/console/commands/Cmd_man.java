@@ -19,10 +19,13 @@ import com.spacemadness.lunar.console.CAliasCommand;
 import com.spacemadness.lunar.console.CCommand;
 import com.spacemadness.lunar.console.CRegistery;
 import com.spacemadness.lunar.console.CVarCommand;
+import com.spacemadness.lunar.console.ListCommandsFilter;
 import com.spacemadness.lunar.console.annotations.Command;
 import com.spacemadness.lunar.utils.StringUtils;
 
-@Command("man", Description="Prints command usage")
+import java.util.List;
+
+@Command(Name="man", Description="Prints command usage")
 public class Cmd_man extends CCommand
 {
     boolean Execute(String command)
@@ -30,38 +33,42 @@ public class Cmd_man extends CCommand
         CCommand cmd = CRegistery.FindCommand(command);
         if (cmd == null)
         {
-            PrintError("{0}: command not found \"{1}\"", this.Name, command);
+            PrintError("%s: command not found \"%s\"", this.Name, command);
             return false;
         }
         
-        cmd.Delegate = this.Delegate;
+        cmd.Delegate(this.Delegate());
         cmd.PrintUsage(true);
-        cmd.Delegate = null;
+        cmd.Delegate(null);
         
         return true;
     }
 
     @Override
-    protected String[] AutoCompleteArgs(String commandLine, String token)
+    protected String[] AutoCompleteArgs(String commandLine, final String token)
     {
         // TODO: add unit tests
-        
-        List<CCommand> commands = CRegistery.ListCommands(delegate(CCommand command)
+
+        List<CCommand> commands = CRegistery.ListCommands(new ListCommandsFilter<CCommand>()
         {
-            return !(command instanceof CVarCommand) &&
-                   !(command instanceof CAliasCommand) &&
-                   CRegistery.ShouldListCommand(command, token);
+            @Override
+            public boolean accept(CCommand command)
+            {
+                return !(command instanceof CVarCommand) &&
+                        !(command instanceof CAliasCommand) &&
+                        CRegistery.ShouldListCommand(command, token);
+            }
         });
-        
-        if (commands.Count == 0)
+
+        if (commands.size() == 0)
         {
             return null;
         }
         
-        String[] values = new String[commands.Count];
-        for (int i = 0; i < commands.Count; ++i)
+        String[] values = new String[commands.size()];
+        for (int i = 0; i < commands.size(); ++i)
         {
-            values[i] = StringUtils.C(commands[i].Name, commands[i].ColorCode);
+            values[i] = StringUtils.C(commands.get(i).Name, commands.get(i).ColorCode);
         }
         return values;
     }

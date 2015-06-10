@@ -16,9 +16,14 @@
 package com.spacemadness.lunar.console.commands;
 
 import com.spacemadness.lunar.console.CCommand;
+import com.spacemadness.lunar.console.CCommandNotifications;
 import com.spacemadness.lunar.console.annotations.Command;
+import com.spacemadness.lunar.utils.FileUtils;
 
-@Command("exec", Description="Executes a config file.")
+import java.io.IOException;
+import java.util.List;
+
+@Command(Name="exec", Description="Executes a config file.")
 public class Cmd_exec extends CCommand
 {
     boolean Execute(String filename)
@@ -33,8 +38,12 @@ public class Cmd_exec extends CCommand
             return false;
         }
         
-        List<String> lines = FileUtils.Read(path);
-        if (lines == null)
+        List<String> lines = null;
+        try
+        {
+            lines = FileUtils.Read(path);
+        }
+        catch (IOException e)
         {
             if (this.IsManualMode)
             {
@@ -43,10 +52,10 @@ public class Cmd_exec extends CCommand
             return false;
         }
         
-        foreach (String line in lines)
+        for (String line : lines)
         {
-            String trim = line.Trim();
-            if (trim.Length == 0 || trim.StartsWith("//"))
+            String trim = line.trim();
+            if (trim.length() == 0 || trim.startsWith("//"))
             {
                 continue;
             }

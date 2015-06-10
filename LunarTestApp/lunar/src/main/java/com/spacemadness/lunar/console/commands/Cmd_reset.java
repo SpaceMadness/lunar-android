@@ -8,7 +8,7 @@ import com.spacemadness.lunar.console.CVarCommand;
 import com.spacemadness.lunar.console.annotations.Command;
 import com.spacemadness.lunar.utils.StringUtils;
 
-@Command("reset", Description="Resets cvar to its default value.")
+@Command(Name="reset", Description="Resets cvar to its default value.")
 public class Cmd_reset extends CCommand
 {
     boolean Execute(String name)
@@ -16,7 +16,7 @@ public class Cmd_reset extends CCommand
         CVarCommand cmd = CRegistery.FindCvarCommand(name);
         if (cmd == null)
         {
-            PrintError("Can't find cvar: '{0}'", name);
+            PrintError("Can't find cvar: '%s'", name);
             return false;
         }
         

@@ -69,12 +69,22 @@ public class CRegistery
         m_commandsLookup.clear();
     }
 
-    static List<CCommand> ListCommands(String prefix, int options)
+    public static List<CCommand> ListCommands()
     {
-        return ListCommands(ReusableLists.NextAutoRecycleList(CCommand.class), prefix, options);
+        return ListCommands((String) null);
     }
 
-    static List<CCommand> ListCommands(List<CCommand> outList, final String prefix, final int options)
+    public static List<CCommand> ListCommands(String prefix)
+    {
+        return ListCommands(prefix, 0);
+    }
+
+    public static List<CCommand> ListCommands(String prefix, int options)
+    {
+        return ListCommands(new ArrayList<CCommand>(), prefix, options);
+    }
+
+    public static List<CCommand> ListCommands(List<CCommand> outList, final String prefix, final int options)
     {
         return ListCommands(outList, new ListCommandsFilter<CCommand>()
         {
@@ -88,7 +98,7 @@ public class CRegistery
 
     public static List<CCommand> ListCommands(ListCommandsFilter<CCommand> filter)
     {
-        return ListCommands(ReusableLists.NextAutoRecycleList(CCommand.class), filter);
+        return ListCommands(new ArrayList<CCommand>(), filter);
     }
 
     static List<CCommand> ListCommands(List<CCommand> outList, ListCommandsFilter<CCommand> filter)
@@ -109,7 +119,7 @@ public class CRegistery
         return outList;
     }
 
-    static boolean ShouldListCommand(CCommand cmd, String prefix)
+    public static boolean ShouldListCommand(CCommand cmd, String prefix)
     {
         return ShouldListCommand(cmd, prefix, CommandListOptions.None);
     }
@@ -197,6 +207,11 @@ public class CRegistery
         return cmd != null && Unregister(cmd);
     }
 
+    public static List<CVar> ListVars(String prefix)
+    {
+        return ListVars(prefix, 0);
+    }
+
     public static List<CVar> ListVars(String prefix, int options)
     {
         return ListVars(ReusableLists.NextAutoRecycleList(CVar.class), prefix, options);
@@ -214,12 +229,12 @@ public class CRegistery
         });
     }
 
-    static List<CVar> ListVars(ListCommandsFilter<CVarCommand> filter)
+    public static List<CVar> ListVars(ListCommandsFilter<CVarCommand> filter)
     {
         return ListVars(ReusableLists.NextAutoRecycleList(CVar.class), filter);
     }
 
-    static List<CVar> ListVars(List<CVar> outList, ListCommandsFilter<CVarCommand> filter)
+    public static List<CVar> ListVars(List<CVar> outList, ListCommandsFilter<CVarCommand> filter)
     {
         if (filter == null)
         {
@@ -296,12 +311,22 @@ public class CRegistery
         return cmd != null && Unregister(cmd);
     }
 
-    static List<CAliasCommand> ListAliases(String prefix, int options)
+    public static List<CAliasCommand> ListAliases()
+    {
+        return ListAliases(null);
+    }
+
+    public static List<CAliasCommand> ListAliases(String prefix)
+    {
+        return ListAliases(prefix, 0);
+    }
+
+    public static List<CAliasCommand> ListAliases(String prefix, int options)
     {
         return ListAliases(ReusableLists.NextAutoRecycleList(CAliasCommand.class), prefix, options);
     }
 
-    static List<CAliasCommand> ListAliases(List<CAliasCommand> outList, String prefix, int options)
+    public static List<CAliasCommand> ListAliases(List<CAliasCommand> outList, String prefix, int options)
     {
         for (CCommand cmd : m_commands)
         {

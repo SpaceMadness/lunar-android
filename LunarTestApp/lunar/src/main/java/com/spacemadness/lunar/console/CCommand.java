@@ -146,7 +146,7 @@ public abstract class CCommand implements Comparable<CCommand>
         {
             if (argsList.Count() != 1)
             {
-                PrintError("Unexpected arguments count {0}", argsList.Count());
+                PrintError("Unexpected arguments count %s", argsList.Count());
                 PrintUsage();
                 return false;
             }
@@ -154,7 +154,7 @@ public abstract class CCommand implements Comparable<CCommand>
             String arg = argsList.get(0);
             if (ArrayUtils.IndexOf(m_values, arg) == -1)
             {
-                PrintError("Unexpected argument '{0}'", arg);
+                PrintError("Unexpected argument '%s'", arg);
                 PrintUsage();
                 return false;
             }
@@ -167,7 +167,7 @@ public abstract class CCommand implements Comparable<CCommand>
                 Option opt = m_options.get(i);
                 if (opt.IsRequired && !opt.IsHandled)
                 {
-                    PrintError("Missing required option --{0}{1}", opt.Name, opt.ShortName != null ? "(-" + opt.ShortName + ")" : "");
+                    PrintError("Missing required option --%s%s", opt.Name, opt.ShortName != null ? "(-" + opt.ShortName + ")" : "");
                     PrintUsage();
                     return false;
                 }
@@ -337,7 +337,7 @@ public abstract class CCommand implements Comparable<CCommand>
                             return false;
                         }
 
-                        throw new CCommandParseException("'{0}' is an invalid value for the array option '{1}'", value, opt.Name);
+                        throw new CCommandParseException("'%s' is an invalid value for the array option '%s'", value, opt.Name);
                     }
                 }
 
@@ -361,7 +361,7 @@ public abstract class CCommand implements Comparable<CCommand>
                         return false;
                     }
 
-                    throw new CCommandParseException("'{0}' is an invalid value for the option '{1}'", value, opt.Name);
+                    throw new CCommandParseException("'%s' is an invalid value for the option '%s'", value, opt.Name);
                 }
             }
 
@@ -422,13 +422,13 @@ public abstract class CCommand implements Comparable<CCommand>
 
         if (m_optionsLookup.containsKey(name))
         {
-            Log.e("Option already registered: {0}", name);
+            Log.e("Option already registered: %s", name);
             return;
         }
 
         if (shortName != null && m_optionsLookup.containsKey(name))
         {
-            Log.e("Short option already registered: {0}", shortName);
+            Log.e("Short option already registered: %s", shortName);
             return;
         }
 
@@ -1101,10 +1101,10 @@ public abstract class CCommand implements Comparable<CCommand>
 
                 if (opt.ShortName != null)
                 {
-                    buffer.AppendFormat("-{0}|", StringUtils.C(opt.ShortName, ColorCode.TableVar));
+                    buffer.AppendFormat("-%s|", StringUtils.C(opt.ShortName, ColorCode.TableVar));
                 }
 
-                buffer.AppendFormat("--{0}", StringUtils.C(opt.Name, ColorCode.TableVar));
+                buffer.AppendFormat("--%s", StringUtils.C(opt.Name, ColorCode.TableVar));
 
                 if (opt.Type != typeof(boolean))
                 {
@@ -1124,7 +1124,7 @@ public abstract class CCommand implements Comparable<CCommand>
                     }
                     else
                     {
-                        buffer.AppendFormat(" <{0}>", UsageOptionName(opt));
+                        buffer.AppendFormat(" <%s>", UsageOptionName(opt));
                     }
                 }
 
@@ -1245,7 +1245,7 @@ public abstract class CCommand implements Comparable<CCommand>
         throw new NotImplementedException();
     }
 
-    void ClearTerminal()
+    protected void ClearTerminal()
     {
         m_delegate.ClearTerminal();
     }
@@ -1260,7 +1260,7 @@ public abstract class CCommand implements Comparable<CCommand>
         return m_delegate.ExecuteCommandLine(commandLine, manualMode);
     }
 
-    void PostNotification(String name, Object... data)
+    protected void PostNotification(String name, Object... data)
     {
         m_delegate.PostNotification(this, name, data);
     }
@@ -1315,12 +1315,12 @@ public abstract class CCommand implements Comparable<CCommand>
         m_values = values;
     }
 
-    ICCommandDelegate Delegate() // FIXME
+    public ICCommandDelegate Delegate() // FIXME
     {
         return m_delegate;
     }
 
-    void Delegate(ICCommandDelegate value) // FIXME
+    public void Delegate(ICCommandDelegate value) // FIXME
     {
         m_delegate = value != null ? value : NullCommandDelegate.Instance;
     }
@@ -1370,7 +1370,7 @@ public abstract class CCommand implements Comparable<CCommand>
         SetFlag(CCommandFlags.PlayModeOnly, value);
     }
 
-    boolean IsManualMode; // FIXME { get; set; }
+    protected boolean IsManualMode; // FIXME { get; set; }
 
     ColorCode ColorCode()
     {

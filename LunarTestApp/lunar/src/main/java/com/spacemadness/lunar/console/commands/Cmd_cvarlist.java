@@ -1,5 +1,6 @@
 package com.spacemadness.lunar.console.commands;
 
+import com.spacemadness.lunar.ColorCode;
 import com.spacemadness.lunar.Config;
 import com.spacemadness.lunar.console.CCommand;
 import com.spacemadness.lunar.console.CRegistery;
@@ -9,7 +10,9 @@ import com.spacemadness.lunar.console.annotations.Command;
 import com.spacemadness.lunar.console.annotations.CommandOption;
 import com.spacemadness.lunar.utils.StringUtils;
 
-@Command("cvarlist", Description="Lists all available cvars and their values.")
+import java.util.List;
+
+@Command(Name="cvarlist", Description="Lists all available cvars and their values.")
 public class Cmd_cvarlist extends CCommand
 {
     @CommandOption(Name="short", ShortName="s", Description="Outputs only names")
@@ -37,38 +40,38 @@ public class Cmd_cvarlist extends CCommand
         
         // TODO: refactoring
         List<CVar> vars = CRegistery.ListVars(prefix, options);
-        if (vars.Count > 0)
+        if (vars.size() > 0)
         {
             if (shortList)
             {
-                String[] names = new String[vars.Count];
-                for (int i = 0; i < vars.Count; ++i)
+                String[] names = new String[vars.size()];
+                for (int i = 0; i < vars.size(); ++i)
                 {
-                    names[i] = StringUtils.C(vars[i].Name, ColorCode.TableVar);
+                    names[i] = StringUtils.C(vars.get(i).Name(), ColorCode.TableVar);
                 }
                 Print(names);
             }
             else
             {
                 StringBuilder result = new StringBuilder();
-                for (int i = 0; i < vars.Count; ++i)
+                for (int i = 0; i < vars.size(); ++i)
                 {
-                    CVar cvar = vars[i];
-                    result.AppendFormat("  {0} {1}", StringUtils.C(cvar.Name, ColorCode.TableVar), StringUtils.Arg(cvar.Value));
+                    CVar cvar = vars.get(i);
+                    result.AppendFormat("  %s %s", StringUtils.C(cvar.Name(), ColorCode.TableVar), StringUtils.Arg(cvar.Value()));
                     
                     // TODO: better color highlight
-                    if (!cvar.IsDefault)
+                    if (!cvar.IsDefault())
                     {
-                        result.AppendFormat(" {0} {1}", StringUtils.C("default", ColorCode.TableVar), cvar.DefaultValue);
+                        result.AppendFormat(" %s %s", StringUtils.C("default", ColorCode.TableVar), cvar.DefaultValue());
                     }
                     
-                    if (i < vars.Count - 1)
+                    if (i < vars.size() - 1)
                     {
-                        result.Append('\n');
+                        result.append('\n');
                     }
                 }
                 
-                Print(result.ToString());
+                Print(result.toString());
             }
         }
         

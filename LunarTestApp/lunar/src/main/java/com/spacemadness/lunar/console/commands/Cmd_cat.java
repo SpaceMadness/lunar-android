@@ -18,21 +18,30 @@ package com.spacemadness.lunar.console.commands;
 import com.spacemadness.lunar.console.CCommand;
 import com.spacemadness.lunar.console.annotations.Command;
 import com.spacemadness.lunar.console.annotations.CommandOption;
+import com.spacemadness.lunar.utils.FileUtils;
 
-@Command("cat", Description="Prints the content of a config file")
+import java.io.IOException;
+import java.util.List;
+
+@Command(Name="cat", Description="Prints the content of a config file")
 public class Cmd_cat extends CCommand
 {
     @CommandOption(ShortName="v")
     boolean verbose;
 
-    boolean Execute(String filename = null)
+    boolean Execute()
+    {
+        return Execute(null);
+    }
+
+    boolean Execute(String filename)
     {
         String name = filename != null ? filename : "default.cfg";
         
         String path = CCommandHelper.GetConfigPath(name);
         if (!FileUtils.FileExists(path))
         {
-            PrintError("Can't find config file: '{0}'", path);
+            PrintError("Can't find config file: '%s'", path);
             return false;
         }
 
@@ -41,12 +50,19 @@ public class Cmd_cat extends CCommand
             Print(path);
         }
 
-        List<String> lines = FileUtils.Read(path);
-        foreach (String line in lines)
+        try
         {
-            PrintIndent(line);
+            List<String> lines = FileUtils.Read(path);
+            for (String line : lines) {
+                PrintIndent(line);
+            }
+
+            return true;
         }
-        
-        return true;
+        catch (IOException e)
+        {
+            PrintError("Can't read config: %s", e.getMessage());
+            return false;
+        }
     }
 }
