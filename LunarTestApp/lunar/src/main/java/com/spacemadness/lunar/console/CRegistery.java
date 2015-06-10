@@ -1,11 +1,10 @@
 package com.spacemadness.lunar.console;
 
 import com.spacemadness.lunar.utils.ClassUtils;
-import com.spacemadness.lunar.utils.LinkedList;
-import com.spacemadness.lunar.utils.LinkedListNode;
 import com.spacemadness.lunar.utils.ReusableLists;
 import com.spacemadness.lunar.utils.StringUtils;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,8 +14,8 @@ import java.util.Map;
  */
 class CRegistery
 {
-    private static Map<String, CCommand> m_commandsLookup = new HashMap<String, CCommand>(); // TODO: use fast list
-    private static LinkedList<CCommand> m_commands = new LinkedList<CCommand>(); // TODO: rename
+    private static Map<String, CCommand> m_commandsLookup = new HashMap<String, CCommand>(); // FIXME: rename
+    private static List<CCommand> m_commands = new ArrayList<CCommand>(); // FIXME: rename and use linked list
 
     //////////////////////////////////////////////////////////////////////////////
     // Commands resolver
@@ -52,16 +51,13 @@ class CRegistery
     {
         boolean unregistered = false;
 
-        for (LinkedListNode<CCommand> node = m_commands.First(); node != null;)
+        for (int i = m_commands.size() - 1; i >= 0; --i)
         {
-            LinkedListNode<CCommand> next = node.Next();
-            CCommand cmd = node.value;
+            CCommand cmd = m_commands.get(i);
             if (filter.accept(cmd))
             {
                 unregistered |= Unregister(cmd);
             }
-
-            node = next;
         }
 
         return unregistered;
@@ -141,9 +137,9 @@ class CRegistery
     private static boolean AddCommand(CCommand cmd)
     {
         String name = cmd.Name;
-        for (LinkedListNode<CCommand> node = m_commands.First(); node != null; node = node.Next())
+        for (int i = 0; i < m_commands.size(); ++i)
         {
-            CCommand otherCmd = node.value;
+            CCommand otherCmd = m_commands.get(i);
             if (cmd == otherCmd)
             {
                 return false; // no duplicates
@@ -153,19 +149,19 @@ class CRegistery
             int compare = name.compareTo(otherName);
             if (compare < 0)
             {
-                m_commands.AddBefore(node, cmd);
+                m_commands.add(i, cmd);
                 m_commandsLookup.put(cmd.Name, cmd);
                 return true;
             }
 
             if (compare == 0)
             {
-                node.value = cmd;
+                m_commands.set(i, cmd);
                 return true;
             }
         }
 
-        m_commands.AddLast(cmd);
+        m_commands.add(cmd);
         m_commandsLookup.put(cmd.Name, cmd);
 
         return true;
@@ -173,7 +169,7 @@ class CRegistery
 
     private static boolean RemoveCommand(CCommand command)
     {
-        if (m_commands.Remove(command))
+        if (m_commands.remove(command))
         {
             m_commandsLookup.remove(command.Name);
             return true;
