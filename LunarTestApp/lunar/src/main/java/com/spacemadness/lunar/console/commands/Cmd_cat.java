@@ -23,13 +23,13 @@ import com.spacemadness.lunar.console.annotations.CommandOption;
 public class Cmd_cat extends CCommand
 {
     @CommandOption(ShortName="v")
-    bool verbose;
+    boolean verbose;
 
-    bool Execute(string filename = null)
+    boolean Execute(String filename = null)
     {
-        string name = filename != null ? filename : "default.cfg";
+        String name = filename != null ? filename : "default.cfg";
         
-        string path = CCommandHelper.GetConfigPath(name);
+        String path = CCommandHelper.GetConfigPath(name);
         if (!FileUtils.FileExists(path))
         {
             PrintError("Can't find config file: '{0}'", path);
@@ -41,8 +41,8 @@ public class Cmd_cat extends CCommand
             Print(path);
         }
 
-        IList<string> lines = FileUtils.Read(path);
-        foreach (string line in lines)
+        List<String> lines = FileUtils.Read(path);
+        foreach (String line in lines)
         {
             PrintIndent(line);
         }

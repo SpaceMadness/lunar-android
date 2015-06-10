@@ -24,7 +24,7 @@ import com.spacemadness.lunar.utils.StringUtils;
 @Command("alias", Description="Creates an alias name for command(s)")
 public class Cmd_alias extends CCommand
 {
-    void Execute(string name, string commands)
+    void Execute(String name, String commands)
     {
         CRegistery.AddAlias(name, StringUtils.UnArg(commands));
         
@@ -35,9 +35,9 @@ public class Cmd_alias extends CCommand
         );
     }
     
-    public static void ListAliasesConfig(IList<string> lines)
+    public static void ListAliasesConfig(List<String> lines)
     {
-        IList<CAliasCommand> aliases = CRegistery.ListAliases();
+        List<CAliasCommand> aliases = CRegistery.ListAliases();
         
         for (int i = 0; i < aliases.Count; ++i)
         {
@@ -45,8 +45,8 @@ public class Cmd_alias extends CCommand
         }
     }
     
-    private static string ToString(CAliasCommand cmd)
+    private static String ToString(CAliasCommand cmd)
     {
-        return string.Format("alias {0} {1}", cmd.Name, StringUtils.Arg(cmd.Alias));
+        return String.Format("alias {0} {1}", cmd.Name, StringUtils.Arg(cmd.Alias));
     }
 }

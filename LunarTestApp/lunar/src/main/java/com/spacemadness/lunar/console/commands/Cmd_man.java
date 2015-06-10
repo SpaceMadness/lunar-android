@@ -25,7 +25,7 @@ import com.spacemadness.lunar.utils.StringUtils;
 @Command("man", Description="Prints command usage")
 public class Cmd_man extends CCommand
 {
-    bool Execute(string command)
+    boolean Execute(String command)
     {
         CCommand cmd = CRegistery.FindCommand(command);
         if (cmd == null)
@@ -42,11 +42,11 @@ public class Cmd_man extends CCommand
     }
 
     @Override
-    protected string[] AutoCompleteArgs(string commandLine, string token)
+    protected String[] AutoCompleteArgs(String commandLine, String token)
     {
         // TODO: add unit tests
         
-        IList<CCommand> commands = CRegistery.ListCommands(delegate(CCommand command)
+        List<CCommand> commands = CRegistery.ListCommands(delegate(CCommand command)
         {
             return !(command instanceof CVarCommand) &&
                    !(command instanceof CAliasCommand) &&
@@ -58,7 +58,7 @@ public class Cmd_man extends CCommand
             return null;
         }
         
-        string[] values = new string[commands.Count];
+        String[] values = new String[commands.Count];
         for (int i = 0; i < commands.Count; ++i)
         {
             values[i] = StringUtils.C(commands[i].Name, commands[i].ColorCode);

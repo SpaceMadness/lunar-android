@@ -25,16 +25,16 @@ import com.spacemadness.lunar.console.annotations.CommandOption;
 public class Cmd_aliaslist extends CCommand
 {
     @CommandOption(Name="short", ShortName="s", Description="Outputs only names")
-    private bool shortList;
+    private boolean shortList;
     
-    bool Execute(string prefix = null)
+    boolean Execute(String prefix = null)
     {
-        IList<CAliasCommand> cmds = CRegistery.ListAliases(prefix);
+        List<CAliasCommand> cmds = CRegistery.ListAliases(prefix);
         if (cmds.Count > 0)
         {
             if (shortList)
             {
-                string[] names = new string[cmds.Count];
+                String[] names = new String[cmds.Count];
                 for (int i = 0; i < cmds.Count; ++i)
                 {
                     names[i] = cmds[i].Name;
@@ -53,9 +53,9 @@ public class Cmd_aliaslist extends CCommand
         return true;
     }
     
-    public static void ListAliasesConfig(IList<string> lines)
+    public static void ListAliasesConfig(List<String> lines)
     {
-        IList<CAliasCommand> aliases = CRegistery.ListAliases();
+        List<CAliasCommand> aliases = CRegistery.ListAliases();
         
         for (int i = 0; i < aliases.Count; ++i)
         {
@@ -63,8 +63,8 @@ public class Cmd_aliaslist extends CCommand
         }
     }
     
-    private static string ToString(CAliasCommand cmd)
+    private static String ToString(CAliasCommand cmd)
     {
-        return string.Format("alias {0} {1}", cmd.Name, StringUtils.Arg(cmd.Alias));
+        return String.Format("alias {0} {1}", cmd.Name, StringUtils.Arg(cmd.Alias));
     }
 }

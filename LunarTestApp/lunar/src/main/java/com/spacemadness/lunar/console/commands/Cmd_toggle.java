@@ -10,7 +10,7 @@ import com.spacemadness.lunar.utils.StringUtils;
 @Command("toggle", Description="Toggles boolean cvar value.")
 public class Cmd_toggle extends CCommand
 {
-    bool Execute(string cvarName)
+    boolean Execute(String cvarName)
     {
         CVarCommand cmd = CRegistery.FindCvarCommand(cvarName);
         if (cmd == null)
@@ -29,9 +29,9 @@ public class Cmd_toggle extends CCommand
         return true;
     }
     
-    protected override string[] AutoCompleteArgs(string commandLine, string prefix)
+    protected override String[] AutoCompleteArgs(String commandLine, String prefix)
     {
-        IList<CVar> vars = CRegistery.ListVars(delegate(CVarCommand cmd)
+        List<CVar> vars = CRegistery.ListVars(delegate(CVarCommand cmd)
         {
             return cmd.IsBool && CRegistery.ShouldListCommand(cmd, prefix);
         });
@@ -41,7 +41,7 @@ public class Cmd_toggle extends CCommand
             return null;
         }
         
-        string[] values = new string[vars.Count];
+        String[] values = new String[vars.Count];
         for (int i = 0; i < vars.Count; ++i)
         {
             values[i] = StringUtils.C(vars[i].Name, ColorCode.TableVar);

@@ -11,7 +11,7 @@ import com.spacemadness.lunar.utils.StringUtils;
 @Command("reset", Description="Resets cvar to its default value.")
 public class Cmd_reset extends CCommand
 {
-    bool Execute(string name)
+    boolean Execute(String name)
     {
         CVarCommand cmd = CRegistery.FindCvarCommand(name);
         if (cmd == null)
@@ -24,15 +24,15 @@ public class Cmd_reset extends CCommand
         return true;
     }
     
-    protected override string[] AutoCompleteArgs(string commandLine, string prefix)
+    protected override String[] AutoCompleteArgs(String commandLine, String prefix)
     {
-        IList<CVar> vars = CRegistery.ListVars(prefix);
+        List<CVar> vars = CRegistery.ListVars(prefix);
         if (vars.Count == 0)
         {
             return null;
         }
         
-        string[] values = new string[vars.Count];
+        String[] values = new String[vars.Count];
         for (int i = 0; i < vars.Count; ++i)
         {
             values[i] = StringUtils.C(vars[i].Name, ColorCode.TableVar);

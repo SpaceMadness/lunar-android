@@ -29,9 +29,9 @@ public class Cmd_cvar_restart extends CCommand
         Execute(null);
     }
 
-    void Execute(string prefix)
+    void Execute(String prefix)
     {
-        IList<CCommand> cmds = CRegistery.ListCommands(prefix);
+        List<CCommand> cmds = CRegistery.ListCommands(prefix);
         foreach (CCommand cmd in cmds)
         {
             CVarCommand cvarCmd = ClassUtils.as(cmd, CVarCommand.class);
@@ -43,15 +43,15 @@ public class Cmd_cvar_restart extends CCommand
     }
 
     @Override
-    protected string[] AutoCompleteArgs(string commandLine, string prefix)
+    protected String[] AutoCompleteArgs(String commandLine, String prefix)
     {
-        IList<CVar> vars = CRegistery.ListVars(prefix);
+        List<CVar> vars = CRegistery.ListVars(prefix);
         if (vars.Count == 0)
         {
             return null;
         }
         
-        string[] values = new string[vars.Count];
+        String[] values = new String[vars.Count];
         for (int i = 0; i < vars.Count; ++i)
         {
             values[i] = StringUtils.C(vars[i].Name, ColorCode.TableVar);

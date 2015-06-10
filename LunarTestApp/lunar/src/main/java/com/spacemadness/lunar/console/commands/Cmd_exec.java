@@ -21,9 +21,9 @@ import com.spacemadness.lunar.console.annotations.Command;
 @Command("exec", Description="Executes a config file.")
 public class Cmd_exec extends CCommand
 {
-    bool Execute(string filename)
+    boolean Execute(String filename)
     {
-        string path = CCommandHelper.GetConfigPath(filename);
+        String path = CCommandHelper.GetConfigPath(filename);
         if (!FileUtils.FileExists(path))
         {
             if (this.IsManualMode)
@@ -33,7 +33,7 @@ public class Cmd_exec extends CCommand
             return false;
         }
         
-        IList<string> lines = FileUtils.Read(path);
+        List<String> lines = FileUtils.Read(path);
         if (lines == null)
         {
             if (this.IsManualMode)
@@ -43,9 +43,9 @@ public class Cmd_exec extends CCommand
             return false;
         }
         
-        foreach (string line in lines)
+        foreach (String line in lines)
         {
-            string trim = line.Trim();
+            String trim = line.Trim();
             if (trim.Length == 0 || trim.StartsWith("//"))
             {
                 continue;

@@ -24,9 +24,9 @@ import com.spacemadness.lunar.utils.StringUtils;
 @Command("writeconfig", Description="Writes a config file.")
 public class Cmd_writeconfig extends CCommand
 {
-    void Execute(string filename)
+    void Execute(String filename)
     {
-        IList<string> lines = ReusableLists.NextAutoRecycleList<string>();
+        List<String> lines = ReusableLists.NextAutoRecycleList<String>();
         
         // cvars
         ListCvars(lines);
@@ -37,13 +37,13 @@ public class Cmd_writeconfig extends CCommand
         // aliases
         ListAliases(lines);
         
-        string path = CCommandHelper.GetConfigPath(filename);
+        String path = CCommandHelper.GetConfigPath(filename);
         FileUtils.Write(path, lines);
     }
     
-    private static void ListCvars(IList<string> lines)
+    private static void ListCvars(List<String> lines)
     {
-        IList<CVar> cvars = CRegistery.ListVars(delegate(CVarCommand cmd)
+        List<CVar> cvars = CRegistery.ListVars(delegate(CVarCommand cmd)
         {
             return !cmd.IsDefault && !cmd.HasFlag(CFlags.NoArchive);
         });
@@ -58,7 +58,7 @@ public class Cmd_writeconfig extends CCommand
             CVar c = cvars[i];
             if (c.Value != null)
             {
-                lines.Add(string.Format("{0} {1}", c.Name, StringUtils.Arg(c.Value)));
+                lines.Add(String.Format("{0} {1}", c.Name, StringUtils.Arg(c.Value)));
             }
             else
             {
@@ -67,9 +67,9 @@ public class Cmd_writeconfig extends CCommand
         }
     }
     
-    private static void ListBindings(IList<string> lines)
+    private static void ListBindings(List<String> lines)
     {
-        IList<CBinding> bindings = CBindings.List();
+        List<CBinding> bindings = CBindings.List();
         if (bindings.Count > 0)
         {
             lines.Add("// key bindings");
@@ -77,11 +77,11 @@ public class Cmd_writeconfig extends CCommand
         
         for (int i = 0; i < bindings.Count; ++i)
         {
-            lines.Add(string.Format("bind {0} {1}", bindings[i].shortCut.ToString(), StringUtils.Arg(bindings[i].cmdKeyDown)));
+            lines.Add(String.Format("bind {0} {1}", bindings[i].shortCut.ToString(), StringUtils.Arg(bindings[i].cmdKeyDown)));
         }
     }
     
-    private static void ListAliases(IList<string> lines)
+    private static void ListAliases(List<String> lines)
     {
         lines.Add("");
         lines.Add("// aliases");

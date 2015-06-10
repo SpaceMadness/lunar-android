@@ -13,17 +13,17 @@ import com.spacemadness.lunar.utils.StringUtils;
 public class Cmd_cvarlist extends CCommand
 {
     @CommandOption(Name="short", ShortName="s", Description="Outputs only names")
-    private bool shortList;
+    private boolean shortList;
     
     @CommandOption(Name="all", ShortName="a", Description="List all vars (including system)")
-    private bool includeSystem;
+    private boolean includeSystem;
 
-    bool Execute()
+    boolean Execute()
     {
         return Execute(null);
     }
 
-    bool Execute(string prefix)
+    boolean Execute(String prefix)
     {
         int options = CommandListOptions.None;
         if (Config.isDebugBuild)
@@ -36,12 +36,12 @@ public class Cmd_cvarlist extends CCommand
         }
         
         // TODO: refactoring
-        IList<CVar> vars = CRegistery.ListVars(prefix, options);
+        List<CVar> vars = CRegistery.ListVars(prefix, options);
         if (vars.Count > 0)
         {
             if (shortList)
             {
-                string[] names = new string[vars.Count];
+                String[] names = new String[vars.Count];
                 for (int i = 0; i < vars.Count; ++i)
                 {
                     names[i] = StringUtils.C(vars[i].Name, ColorCode.TableVar);
