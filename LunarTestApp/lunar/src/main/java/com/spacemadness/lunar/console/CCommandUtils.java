@@ -1,5 +1,6 @@
 package com.spacemadness.lunar.console;
 
+import com.spacemadness.lunar.core.ArrayIterator;
 import com.spacemadness.lunar.utils.NotImplementedException;
 import com.spacemadness.lunar.utils.StringUtils;
 
@@ -50,24 +51,23 @@ class CCommandUtils
         return false;
     }
 
-    public static boolean Invoke(Object target, Method method, String[] invokeArgs)
+    public static boolean Invoke(Object target, Method method, String[] invokeArgs) throws InvocationTargetException, IllegalAccessException
     {
-//        Class<?>[] parameters = method.getParameterTypes();
-//        if (parameters.length == 0)
-//        {
-//            return Invoke(target, method, EMPTY_INVOKE_ARGS);
-//        }
-//
-//        List<Object> invokeList = new ArrayList<Object>(invokeArgs.length);
-//
-//        Iterator<String> iter = new ArrayIterator<String>(invokeArgs);
-//        for (Class<?> param : parameters)
-//        {
-//            invokeList.add(ResolveInvokeParameter(param, iter));
-//        }
-//
-//        return Invoke(target, method, invokeList.toArray());
-        throw new NotImplementedException();
+        Class<?>[] parameters = method.getParameterTypes();
+        if (parameters.length == 0)
+        {
+            return Invoke(target, method, EMPTY_INVOKE_ARGS);
+        }
+
+        List<Object> invokeList = new ArrayList<Object>(invokeArgs.length);
+
+        Iterator<String> iter = new ArrayIterator<String>(invokeArgs);
+        for (Class<?> param : parameters)
+        {
+            invokeList.add(ResolveInvokeParameter(param, iter));
+        }
+
+        return Invoke(target, method, invokeList.toArray());
     }
 
     private static boolean Invoke(Object target, Method method, Object[] args) throws InvocationTargetException, IllegalAccessException

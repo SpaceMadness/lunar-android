@@ -97,7 +97,7 @@ public abstract class CCommand implements Comparable<CCommand>
         return false;
     }
 
-    private boolean ExecuteGuarded(List<String> tokens, String commandLine)
+    private boolean ExecuteGuarded(List<String> tokens, String commandLine) throws Exception
     {
         ResetOptions();
 
@@ -200,7 +200,6 @@ public abstract class CCommand implements Comparable<CCommand>
         }
 
         return CCommandUtils.Invoke(this, methods[0], args);
-
     }
 
     private Option ParseOption(Iterator<String> iter, String name)
