@@ -1,7 +1,6 @@
 package com.spacemadness.lunar.console;
 
-import com.spacemadness.lunar.utils.ReusableLists;
-
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -15,7 +14,7 @@ class CommandTokenizer
 
     public static List<String> Tokenize(String str)
     {
-        List<String> list = ReusableLists.NextAutoRecycleList(String.class);
+        List<String> list = new ArrayList<String>();
         Tokenize(str, list);
         return list;
     }

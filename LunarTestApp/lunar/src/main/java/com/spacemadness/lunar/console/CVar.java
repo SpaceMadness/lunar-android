@@ -78,6 +78,9 @@ public class CVar
         m_type = type;
         m_flags = flags;
 
+        m_value = new CValue();
+        m_defaultValue = new CValue();
+
         Register(this);
     }
 

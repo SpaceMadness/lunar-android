@@ -1,7 +1,6 @@
 package com.spacemadness.lunar.console;
 
 import com.spacemadness.lunar.utils.ClassUtils;
-import com.spacemadness.lunar.utils.ReusableLists;
 import com.spacemadness.lunar.utils.StringUtils;
 
 import java.util.ArrayList;
@@ -214,7 +213,7 @@ public class CRegistery
 
     public static List<CVar> ListVars(String prefix, int options)
     {
-        return ListVars(ReusableLists.NextAutoRecycleList(CVar.class), prefix, options);
+        return ListVars(new ArrayList<CVar>(), prefix, options);
     }
 
     public static List<CVar> ListVars(List<CVar> outList, final String prefix, final int options)
@@ -231,7 +230,7 @@ public class CRegistery
 
     public static List<CVar> ListVars(ListCommandsFilter<CVarCommand> filter)
     {
-        return ListVars(ReusableLists.NextAutoRecycleList(CVar.class), filter);
+        return ListVars(new ArrayList<CVar>(), filter);
     }
 
     public static List<CVar> ListVars(List<CVar> outList, ListCommandsFilter<CVarCommand> filter)
@@ -323,7 +322,7 @@ public class CRegistery
 
     public static List<CAliasCommand> ListAliases(String prefix, int options)
     {
-        return ListAliases(ReusableLists.NextAutoRecycleList(CAliasCommand.class), prefix, options);
+        return ListAliases(new ArrayList<CAliasCommand>(), prefix, options);
     }
 
     public static List<CAliasCommand> ListAliases(List<CAliasCommand> outList, String prefix, int options)

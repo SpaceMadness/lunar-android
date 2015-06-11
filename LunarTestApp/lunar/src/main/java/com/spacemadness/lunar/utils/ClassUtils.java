@@ -4,6 +4,9 @@ import com.spacemadness.lunar.debug.Assert;
 import com.spacemadness.lunar.debug.Log;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ClassUtils
 {
@@ -57,5 +60,34 @@ public class ClassUtils
             Log.logCrit("Unable to instantiate class %s: %s", cls, e.getMessage());
         }
         return null;
+    }
+
+    public static Method[] ListInstanceMethods(Class<?> cls, MethodFilter filter)
+    {
+        if (cls == null)
+        {
+            throw new NullPointerException("Class is null");
+        }
+
+        if (filter == null)
+        {
+            throw new NullPointerException("Filter is null");
+        }
+
+        List<Method> result = new ArrayList<Method>();
+        for (Method method : cls.getDeclaredMethods())
+        {
+            if (filter.accept(method))
+            {
+                result.add(method);
+            }
+        }
+
+        return ArrayUtils.toArray(result, Method.class);
+    }
+
+    public interface MethodFilter
+    {
+        boolean accept(Method method);
     }
 }

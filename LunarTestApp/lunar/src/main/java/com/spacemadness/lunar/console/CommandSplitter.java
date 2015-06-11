@@ -1,7 +1,6 @@
 package com.spacemadness.lunar.console;
 
-import com.spacemadness.lunar.utils.ReusableLists;
-
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,7 +15,7 @@ class CommandSplitter
 
     public static List<String> Split(String str)
     {
-        List<String> list = ReusableLists.NextAutoRecycleList(String.class);
+        List<String> list = new ArrayList<String>();
         Split(str, list);
         return list;
     }

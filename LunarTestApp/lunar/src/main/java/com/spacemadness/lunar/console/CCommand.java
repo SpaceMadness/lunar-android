@@ -1,14 +1,14 @@
 package com.spacemadness.lunar.console;
 
-import android.util.Log;
-
 import com.spacemadness.lunar.ColorCode;
+import com.spacemadness.lunar.debug.Log;
 import com.spacemadness.lunar.utils.ArrayUtils;
+import com.spacemadness.lunar.utils.ClassUtils;
 import com.spacemadness.lunar.utils.NotImplementedException;
-import com.spacemadness.lunar.utils.ReusableList;
-import com.spacemadness.lunar.utils.ReusableLists;
 import com.spacemadness.lunar.utils.StringUtils;
 
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -85,6 +85,10 @@ public abstract class CCommand implements Comparable<CCommand>
             }
         }
         */
+        catch (NotImplementedException e)
+        {
+            throw e;
+        }
         catch (Exception e)
         {
             PrintError(e, "Error while executing command");
@@ -105,14 +109,7 @@ public abstract class CCommand implements Comparable<CCommand>
             PrintPrompt(commandLine);
         }
 
-        // FIXME: remove play-only functionality
-        // if (this.IsPlayModeOnly && !Runtime.IsPlaying)
-        // {
-        //    PrintError("Command is available in the play mode only");
-        //    return false;
-        // }
-
-        ReusableList<String> argsList = ReusableLists.NextAutoRecycleList(String.class);
+        List<String> argsList = new ArrayList<String>();
         while (iter.hasNext())
         {
             String token = StringUtils.UnArg(iter.next());
@@ -131,11 +128,11 @@ public abstract class CCommand implements Comparable<CCommand>
             else
             {
                 // consume the rest of the args
-                argsList.Add(token);
+                argsList.add(token);
                 while (iter.hasNext())
                 {
                     token = StringUtils.UnArg(iter.next());
-                    argsList.Add(token);
+                    argsList.add(token);
                 }
 
                 break;
@@ -144,9 +141,9 @@ public abstract class CCommand implements Comparable<CCommand>
 
         if (m_values != null)
         {
-            if (argsList.Count() != 1)
+            if (argsList.size() != 1)
             {
-                PrintError("Unexpected arguments count %s", argsList.Count());
+                PrintError("Unexpected arguments count %s", argsList.size());
                 PrintUsage();
                 return false;
             }
@@ -174,21 +171,25 @@ public abstract class CCommand implements Comparable<CCommand>
             }
         }
 
-        /*
-        String[] args = argsList.Count() > 0 ? argsList.ToArray() : EMPTY_COMMAND_ARGS;
-        MethodInfo[] methods = ClassUtils.ListInstanceMethods(GetCommandType(), delegate(MethodInfo method)
+        final String[] args = argsList.size() > 0 ? ArrayUtils.toArray(argsList, String.class) : EMPTY_COMMAND_ARGS;
+
+        Method[] methods = ClassUtils.ListInstanceMethods(GetCommandType(), new ClassUtils.MethodFilter()
         {
-            if (method.Name != "Execute")
+            @Override
+            public boolean accept(Method method)
             {
-                return false;
-            }
+                if (!method.getName().equals("Execute"))
+                {
+                    return false;
+                }
 
-            if (method.IsAbstract)
-            {
-                return false;
-            }
+                if (Modifier.isAbstract(method.getModifiers()))
+                {
+                    return false;
+                }
 
-            return CCommandUtils.CanInvokeMethodWithArgsCount(method, args.Length);
+                return CCommandUtils.CanInvokeMethodWithArgsCount(method, args.length);
+            }
         });
 
         if (methods.length != 1)
@@ -199,9 +200,7 @@ public abstract class CCommand implements Comparable<CCommand>
         }
 
         return CCommandUtils.Invoke(this, methods[0], args);
-        */
 
-        throw new NotImplementedException();
     }
 
     private Option ParseOption(Iterator<String> iter, String name)
@@ -448,7 +447,7 @@ public abstract class CCommand implements Comparable<CCommand>
 
     List<Option> ListShortOptions(String prefix)
     {
-        return ListShortOptions(ReusableLists.NextAutoRecycleList(Option.class), prefix);
+        return ListShortOptions(new ArrayList<Option>(), prefix);
     }
 
     List<Option> ListShortOptions(List<Option> outList)
@@ -479,7 +478,7 @@ public abstract class CCommand implements Comparable<CCommand>
 
     List<Option> ListOptions(String prefix)
     {
-        return ListOptions(ReusableLists.NextAutoRecycleList(Option.class), prefix);
+        return ListOptions(new ArrayList<Option>(), prefix);
     }
 
     List<Option> ListOptions(List<Option> outList)
@@ -1207,7 +1206,7 @@ public abstract class CCommand implements Comparable<CCommand>
             return new String[] { " " + StringUtils.Join(m_values, "|") };
         }
 
-        MethodInfo[] executeMethods = ClassUtils.ListInstanceMethods(GetCommandType(), delegate(MethodInfo method)
+        Method[] executeMethods = ClassUtils.ListInstanceMethods(GetCommandType(), delegate(Method method)
         {
             if (method.Name != "Execute")
             {

@@ -1,5 +1,9 @@
 package com.spacemadness.lunar.utils;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.Type;
+import java.util.List;
+
 /**
  * Created by alementuev on 6/1/15.
  */
@@ -165,5 +169,21 @@ public class ArrayUtils
         }
 
         return -1;
+    }
+
+    public static <T> T[] toArray(List<T> list, Class<T> cls)
+    {
+        if (list == null)
+        {
+            throw new NullPointerException("List is null");
+        }
+
+        if (cls == null)
+        {
+            throw new NullPointerException("Class is null");
+        }
+
+        T[] array = (T[]) Array.newInstance(cls, list.size());
+        return list.toArray(array);
     }
 }
