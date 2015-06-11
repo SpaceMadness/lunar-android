@@ -13,7 +13,7 @@ import java.util.List;
 @Command(Name="reset", Description="Resets cvar to its default value.")
 public class Cmd_reset extends CCommand
 {
-    boolean Execute(String name)
+    boolean execute(String name)
     {
         CVarCommand cmd = CRegistery.FindCvarCommand(name);
         if (cmd == null)

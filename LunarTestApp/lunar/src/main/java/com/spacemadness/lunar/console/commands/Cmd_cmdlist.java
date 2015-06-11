@@ -22,12 +22,12 @@ public class Cmd_cmdlist extends CCommand
     @CommandOption(Name="all", ShortName="a", Description="List all commands (including system)")
     private boolean includeSystem;
 
-    boolean Execute()
+    boolean execute()
     {
-        return Execute(null);
+        return execute(null);
     }
 
-    boolean Execute(final String prefix)
+    boolean execute(final String prefix)
     {
         final int options = getOptions();
 

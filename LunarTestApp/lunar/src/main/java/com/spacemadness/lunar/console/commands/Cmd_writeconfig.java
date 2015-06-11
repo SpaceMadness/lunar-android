@@ -33,7 +33,7 @@ import java.util.List;
 @Command(Name="writeconfig", Description="Writes a config file.")
 public class Cmd_writeconfig extends CCommand
 {
-    boolean Execute(String filename)
+    boolean execute(String filename)
     {
         List<String> lines = new ArrayList<String>();
         

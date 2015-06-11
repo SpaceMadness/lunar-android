@@ -14,7 +14,7 @@ import java.util.List;
 @Command(Name="toggle", Description="Toggles boolean cvar value.")
 public class Cmd_toggle extends CCommand
 {
-    boolean Execute(String cvarName)
+    boolean execute(String cvarName)
     {
         CVarCommand cmd = CRegistery.FindCvarCommand(cvarName);
         if (cmd == null)

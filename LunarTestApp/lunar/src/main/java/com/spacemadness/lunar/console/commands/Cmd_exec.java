@@ -27,7 +27,7 @@ import java.util.List;
 @Command(Name="exec", Description="Executes a config file.")
 public class Cmd_exec extends CCommand
 {
-    boolean Execute(String filename)
+    boolean execute(String filename)
     {
         String path = CCommandHelper.GetConfigPath(filename);
         if (!FileUtils.FileExists(path))

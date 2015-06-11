@@ -17,7 +17,7 @@ public class CAliasCommand extends CCommand
         this.Alias = alias;
     }
 
-    private boolean Execute()
+    private boolean execute()
     {
         return ExecCommand(this.Alias, true);
     }

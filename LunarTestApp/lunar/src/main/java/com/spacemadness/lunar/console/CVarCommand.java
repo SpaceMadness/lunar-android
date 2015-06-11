@@ -20,7 +20,7 @@ public class CVarCommand extends CCommand
         this.IsSystem(cvar.IsSystem());
     }
 
-    boolean Execute(String[] args)
+    boolean execute(String[] args)
     {
         if (args.length == 0)
         {

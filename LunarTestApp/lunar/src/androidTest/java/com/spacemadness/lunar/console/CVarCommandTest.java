@@ -21,21 +21,21 @@ public class CVarCommandTest extends CCommandTest
         assertEquals(0.0f, cvar.FloatValue());
         assertEquals("0", cvar.Value());
 
-        Execute("var 1");
+        execute("var 1");
         assertFalse(cvar.IsDefault());
         assertEquals(true, cvar.BoolValue());
         assertEquals(1, cvar.IntValue());
         assertEquals(1.0f, cvar.FloatValue());
         assertEquals("1", cvar.Value());
 
-        Execute("var 0");
+        execute("var 0");
         assertTrue(cvar.IsDefault());
         assertEquals(false, cvar.BoolValue());
         assertEquals(0, cvar.IntValue());
         assertEquals(0.0f, cvar.FloatValue());
         assertEquals("0", cvar.Value());
 
-        Execute("reset var");
+        execute("reset var");
         assertTrue(cvar.IsDefault());
         assertEquals(false, cvar.BoolValue());
         assertEquals(0, cvar.IntValue());
@@ -57,21 +57,21 @@ public class CVarCommandTest extends CCommandTest
         assertEquals(1.0f, cvar.FloatValue());
         assertEquals("1", cvar.Value());
 
-        Execute("var 0");
+        execute("var 0");
         assertFalse(cvar.IsDefault());
         assertEquals(false, cvar.BoolValue());
         assertEquals(0, cvar.IntValue());
         assertEquals(0.0f, cvar.FloatValue());
         assertEquals("0", cvar.Value());
 
-        Execute("var 1");
+        execute("var 1");
         assertTrue(cvar.IsDefault());
         assertEquals(true, cvar.BoolValue());
         assertEquals(1, cvar.IntValue());
         assertEquals(1.0f, cvar.FloatValue());
         assertEquals("1", cvar.Value());
 
-        Execute("reset var");
+        execute("reset var");
         assertTrue(cvar.IsDefault());
         assertEquals(true, cvar.BoolValue());
         assertEquals(1, cvar.IntValue());
@@ -90,25 +90,25 @@ public class CVarCommandTest extends CCommandTest
         assertEquals(128.0f, cvar.FloatValue());
         assertEquals("128", cvar.Value());
 
-        Execute("var -128");
+        execute("var -128");
         assertFalse(cvar.IsDefault());
         assertEquals(-128, cvar.IntValue());
         assertEquals(-128.0f, cvar.FloatValue());
         assertEquals("-128", cvar.Value());
 
-        Execute("var 128");
+        execute("var 128");
         assertTrue(cvar.IsDefault());
         assertEquals(128, cvar.IntValue());
         assertEquals(128.0f, cvar.FloatValue());
         assertEquals("128", cvar.Value());
 
-        Execute("var 0");
+        execute("var 0");
         assertFalse(cvar.IsDefault());
         assertEquals(0, cvar.IntValue());
         assertEquals(0.0f, cvar.FloatValue());
         assertEquals("0", cvar.Value());
 
-        Execute("reset var");
+        execute("reset var");
         assertTrue(cvar.IsDefault());
         assertEquals(128, cvar.IntValue());
         assertEquals(128.0f, cvar.FloatValue());
@@ -126,25 +126,25 @@ public class CVarCommandTest extends CCommandTest
         assertEquals(3.14f, cvar.FloatValue());
         assertEquals("3.14", cvar.Value());
 
-        Execute("var -3.14");
+        execute("var -3.14");
         assertFalse(cvar.IsDefault());
         assertEquals(-3, cvar.IntValue());
         assertEquals(-3.14f, cvar.FloatValue());
         assertEquals("-3.14", cvar.Value());
 
-        Execute("var 3.14");
+        execute("var 3.14");
         assertTrue(cvar.IsDefault());
         assertEquals(3, cvar.IntValue());
         assertEquals(3.14f, cvar.FloatValue());
         assertEquals("3.14", cvar.Value());
 
-        Execute("var 0");
+        execute("var 0");
         assertFalse(cvar.IsDefault());
         assertEquals(0, cvar.IntValue());
         assertEquals(0.0f, cvar.FloatValue());
         assertEquals("0", cvar.Value());
 
-        Execute("reset var");
+        execute("reset var");
         assertTrue(cvar.IsDefault());
         assertEquals(3, cvar.IntValue());
         assertEquals(3.14f, cvar.FloatValue());
@@ -159,19 +159,19 @@ public class CVarCommandTest extends CCommandTest
         assertEquals("Default string", cvar.DefaultValue());
         assertEquals("Default string", cvar.Value());
 
-        Execute("var 'Some string'");
+        execute("var 'Some string'");
         assertFalse(cvar.IsDefault());
         assertEquals("Some string", cvar.Value());
 
-        Execute("var 'Default string'");
+        execute("var 'Default string'");
         assertTrue(cvar.IsDefault());
         assertEquals("Default string", cvar.Value());
 
-        Execute("var 'Some other string'");
+        execute("var 'Some other string'");
         assertFalse(cvar.IsDefault());
         assertEquals("Some other string", cvar.Value());
 
-        Execute("reset var");
+        execute("reset var");
         assertTrue(cvar.IsDefault());
         assertEquals("Default string", cvar.Value());
     }
@@ -184,11 +184,11 @@ public class CVarCommandTest extends CCommandTest
         assertNull(cvar.DefaultValue());
         assertNull(cvar.Value());
 
-        Execute("var 'Some string'");
+        execute("var 'Some string'");
         assertFalse(cvar.IsDefault());
         assertEquals("Some string", cvar.Value());
 
-        Execute("reset var");
+        execute("reset var");
         assertTrue(cvar.IsDefault());
         assertNull(cvar.Value());
     }

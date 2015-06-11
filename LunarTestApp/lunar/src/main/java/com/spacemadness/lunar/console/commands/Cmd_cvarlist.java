@@ -24,12 +24,12 @@ public class Cmd_cvarlist extends CCommand
     @CommandOption(Name="all", ShortName="a", Description="List all vars (including system)")
     private boolean includeSystem;
 
-    boolean Execute()
+    boolean execute()
     {
-        return Execute(null);
+        return execute(null);
     }
 
-    boolean Execute(String prefix)
+    boolean execute(String prefix)
     {
         int options = CommandListOptions.None;
         if (Config.isDebugBuild)

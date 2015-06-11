@@ -10,6 +10,8 @@ import java.util.List;
 
 public class ClassUtils
 {
+    private static final Class<?>[] EMPTY_PARAMS = new Class<?>[0];
+
     /**
      * Tries to cast the object to the specified class. Fires an assertion and
      * return null if class cast is impossible.
@@ -51,7 +53,7 @@ public class ClassUtils
         {
             if (cls != null)
             {
-                Constructor<? extends T> defaultConstructor = cls.getConstructor();
+                Constructor<? extends T> defaultConstructor = cls.getDeclaredConstructor(EMPTY_PARAMS);
                 return as(defaultConstructor.newInstance(), cls);
             }
         }

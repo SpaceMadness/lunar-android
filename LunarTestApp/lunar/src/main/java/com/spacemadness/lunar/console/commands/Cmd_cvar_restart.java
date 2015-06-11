@@ -29,12 +29,12 @@ import java.util.List;
 @Command(Name="cvar_restart", Description="Resets all cvars to their default values.")
 public class Cmd_cvar_restart extends CCommand
 {
-    void Execute()
+    void execute()
     {
-        Execute(null);
+        execute(null);
     }
 
-    void Execute(String prefix)
+    void execute(String prefix)
     {
         List<CCommand> cmds = CRegistery.ListCommands(prefix);
         for (CCommand cmd : cmds)

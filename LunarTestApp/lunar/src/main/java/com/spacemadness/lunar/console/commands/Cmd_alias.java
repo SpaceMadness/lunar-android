@@ -27,7 +27,7 @@ import java.util.List;
 @Command(Name="alias", Description="Creates an alias name for command(s)")
 public class Cmd_alias extends CCommand
 {
-    void Execute(String name, String commands)
+    void execute(String name, String commands)
     {
         CRegistery.AddAlias(name, StringUtils.UnArg(commands));
         

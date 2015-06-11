@@ -178,7 +178,7 @@ public abstract class CCommand implements Comparable<CCommand>
             @Override
             public boolean accept(Method method)
             {
-                if (!method.getName().equals("Execute"))
+                if (!method.getName().equals("execute"))
                 {
                     return false;
                 }
@@ -1075,7 +1075,7 @@ public abstract class CCommand implements Comparable<CCommand>
         }
         else
         {
-            buffer.append(StringUtils.C("'Execute' method is not resolved", ColorCode.Error));
+            buffer.append(StringUtils.C("'execute' method is not resolved", ColorCode.Error));
         }
 
         Print(buffer.toString());
@@ -1208,7 +1208,7 @@ public abstract class CCommand implements Comparable<CCommand>
 
         Method[] executeMethods = ClassUtils.ListInstanceMethods(GetCommandType(), delegate(Method method)
         {
-            if (method.Name != "Execute")
+            if (method.Name != "execute")
             {
                 return false;
             }

@@ -23,7 +23,7 @@ import com.spacemadness.lunar.console.annotations.Command;
 @Command(Name="unalias", Description="Remove an alias name for command(s)")
 public class Cmd_unalias extends CCommand
 {
-    void Execute(String name)
+    void execute(String name)
     {
         if (CRegistery.RemoveAlias(name))
         {

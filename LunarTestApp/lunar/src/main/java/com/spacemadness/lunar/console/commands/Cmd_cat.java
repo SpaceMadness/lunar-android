@@ -30,12 +30,12 @@ public class Cmd_cat extends CCommand
     @CommandOption(ShortName="v")
     boolean verbose;
 
-    boolean Execute()
+    boolean execute()
     {
-        return Execute(null);
+        return execute(null);
     }
 
-    boolean Execute(String filename)
+    boolean execute(String filename)
     {
         String name = filename != null ? filename : "default.cfg";
         

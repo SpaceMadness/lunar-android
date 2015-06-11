@@ -21,7 +21,7 @@ import com.spacemadness.lunar.console.annotations.Command;
 @Command(Name="clear", Description="Clears current terminal window.")
 public class Cmd_clear extends CCommand
 {
-    void Execute()
+    void execute()
     {
         ClearTerminal();
     }

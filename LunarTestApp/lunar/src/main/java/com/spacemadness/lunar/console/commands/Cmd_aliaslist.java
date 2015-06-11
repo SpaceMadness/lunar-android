@@ -30,12 +30,12 @@ public class Cmd_aliaslist extends CCommand
     @CommandOption(Name="short", ShortName="s", Description="Outputs only names")
     private boolean shortList;
 
-    boolean Execute()
+    boolean execute()
     {
-        return Execute(null);
+        return execute(null);
     }
 
-    boolean Execute(String prefix)
+    boolean execute(String prefix)
     {
         List<CAliasCommand> cmds = CRegistery.ListAliases(prefix);
         if (cmds.size() > 0)

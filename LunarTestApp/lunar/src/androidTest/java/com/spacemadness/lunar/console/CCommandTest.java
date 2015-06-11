@@ -98,12 +98,12 @@ public class CCommandTest extends TestCaseEx implements ICCommandDelegate
         }
     }
 
-    protected boolean Execute(String format, Object... args)
+    protected boolean execute(String format, Object... args)
     {
-        return Execute(String.format(format, args));
+        return execute(String.format(format, args));
     }
 
-    protected boolean Execute(String commandLine)
+    protected boolean execute(String commandLine)
     {
         return m_commandProcessor.TryExecute(commandLine, true);
     }

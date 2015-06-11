@@ -16,7 +16,7 @@ class CCommandUtils
 {
     private static final Object[] EMPTY_INVOKE_ARGS = new Object[0];
 
-    public static boolean CanInvokeMethodWithArgsCount(Method method, int argsCount)
+    static boolean CanInvokeMethodWithArgsCount(Method method, int argsCount)
     {
         if (method == null)
         {
@@ -24,30 +24,27 @@ class CCommandUtils
         }
 
         Class<?> returnType = method.getReturnType();
-        if (!Boolean.class.equals(returnType) && !Void.class.equals(returnType))
+        if (!boolean.class.equals(returnType) && !void.class.equals(returnType))
         {
             return false;
         }
 
         Class<?>[] parameters = method.getParameterTypes();
 
-        int realParamsLength = 0;
-        for (Class<?> paramType : parameters)
-        {
-            // if (paramType == typeof(Vector2)) realParamsLength += 2;
-            //else if (paramType == typeof(Vector3)) realParamsLength += 3;
-            //else if (paramType == typeof(Vector4)) realParamsLength += 4;
-            realParamsLength += 1;
-        }
-
-        if (realParamsLength == argsCount)
+        if (parameters.length == argsCount)
         {
             return true;
         }
 
-        if (realParamsLength == 1 && parameters[0].isArray())
+        if (parameters.length > 0)
         {
-            return true; // a single array param
+            if (parameters[parameters.length - 1].isArray()) // last param is array
+            {
+                if (argsCount >= parameters.length - 1)
+                {
+                    return true;
+                }
+            }
         }
 
         return false;

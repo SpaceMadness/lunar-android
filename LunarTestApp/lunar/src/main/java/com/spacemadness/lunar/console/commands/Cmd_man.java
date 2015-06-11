@@ -28,7 +28,7 @@ import java.util.List;
 @Command(Name="man", Description="Prints command usage")
 public class Cmd_man extends CCommand
 {
-    boolean Execute(String command)
+    boolean execute(String command)
     {
         CCommand cmd = CRegistery.FindCommand(command);
         if (cmd == null)
