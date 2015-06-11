@@ -1,6 +1,10 @@
 package com.spacemadness.lunar.console;
 
 import com.spacemadness.lunar.core.ArrayIterator;
+import com.spacemadness.lunar.core.BooleanList;
+import com.spacemadness.lunar.core.FloatList;
+import com.spacemadness.lunar.core.IntList;
+import com.spacemadness.lunar.utils.ArrayUtils;
 import com.spacemadness.lunar.utils.NotImplementedException;
 import com.spacemadness.lunar.utils.StringUtils;
 
@@ -74,7 +78,7 @@ class CCommandUtils
     {
         if (boolean.class.equals(method.getReturnType()))
         {
-            return (Boolean) method.invoke(target, args);
+            return (boolean) method.invoke(target, args);
         }
 
         method.invoke(target, args);
@@ -130,7 +134,7 @@ class CCommandUtils
             {
                 values.add(NextArg(iter));
             }
-            return values.toArray();
+            return ArrayUtils.toArray(values, String.class);
         }
 
         if (String.class.equals(type))
@@ -153,10 +157,9 @@ class CCommandUtils
             return NextBoolArg(iter);
         }
 
-
         if (int[].class.equals(type))
         {
-            List<Integer> values = new ArrayList<Integer>();
+            IntList values = new IntList();
             while (iter.hasNext())
             {
                 values.add(NextIntArg(iter));
@@ -166,7 +169,7 @@ class CCommandUtils
 
         if (float[].class.equals(type))
         {
-            List<Float> values = new ArrayList<Float>();
+            FloatList values = new FloatList();
             while (iter.hasNext())
             {
                 values.add(NextFloatArg(iter));
@@ -176,7 +179,7 @@ class CCommandUtils
 
         if (boolean[].class.equals(type))
         {
-            List<Boolean> values = new ArrayList<Boolean>();
+            BooleanList values = new BooleanList();
             while (iter.hasNext())
             {
                 values.add(NextBoolArg(iter));
