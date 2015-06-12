@@ -8,8 +8,8 @@ public class CVar
     private final String m_name;
     private final CVarType m_type;
 
-    private CValue m_value;
-    private CValue m_defaultValue;
+    private final CValue m_value;
+    private final CValue m_defaultValue;
 
     private int m_flags;
 
@@ -25,7 +25,7 @@ public class CVar
         this(name, CVarType.Boolean, flags);
 
         this.IntValue(defaultValue ? 1 : 0);
-        m_defaultValue = m_value;
+        m_defaultValue.copyFrom(m_value);
     }
 
     public CVar(String name, int defaultValue)
@@ -38,7 +38,7 @@ public class CVar
         this(name, CVarType.Integer, flags);
 
         this.IntValue(defaultValue);
-        m_defaultValue = m_value;
+        m_defaultValue.copyFrom(m_value);
     }
 
     public CVar(String name, float defaultValue)
@@ -51,7 +51,7 @@ public class CVar
         this(name, CVarType.Float, flags);
 
         this.FloatValue(defaultValue);
-        m_defaultValue = m_value;
+        m_defaultValue.copyFrom(m_value);
     }
 
     public CVar(String name, String defaultValue)
@@ -64,7 +64,7 @@ public class CVar
         this(name, CVarType.String, flags);
 
         this.Value(defaultValue);
-        m_defaultValue = m_value;
+        m_defaultValue.copyFrom(m_value);
     }
 
     private CVar(String name, CVarType type, int flags)
@@ -266,7 +266,7 @@ public class CVar
     public void IsDefault(boolean value)
     {
         boolean changed = this.IsDefault() ^ value;
-        m_value = m_defaultValue;
+        m_value.copyFrom(m_defaultValue);
 
         if (changed)
         {

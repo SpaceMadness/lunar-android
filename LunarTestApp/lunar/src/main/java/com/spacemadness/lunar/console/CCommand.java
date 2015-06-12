@@ -28,6 +28,7 @@ public abstract class CCommand implements Comparable<CCommand>
 
     private List<Option> m_options;
     private String[] m_values;
+    private Method[] executeMethods;
 
     private ICCommandDelegate m_delegate;
 
@@ -173,7 +174,46 @@ public abstract class CCommand implements Comparable<CCommand>
 
         final String[] args = argsList.size() > 0 ? ArrayUtils.toArray(argsList, String.class) : EMPTY_COMMAND_ARGS;
 
-        Method[] methods = ClassUtils.ListInstanceMethods(GetCommandType(), new ClassUtils.MethodFilter()
+        Method executeMethod = resolveExecuteMethod(args);
+        if (executeMethod == null)
+        {
+            PrintError("Wrong arguments");
+            PrintUsage();
+            return false;
+        }
+
+        return CCommandUtils.Invoke(this, executeMethod, args);
+    }
+
+    private Method resolveExecuteMethod(String[] args)
+    {
+        if (executeMethods == null)
+        {
+            executeMethods = resolveExecuteMethods();
+        }
+
+        Method method = null;
+        for (int i = 0; i < executeMethods.length; ++i)
+        {
+            if (CCommandUtils.CanInvokeMethodWithArgsCount(executeMethods[i], args.length))
+            {
+                if (method != null) // multiple methods found
+                {
+                    return null;
+                }
+
+                method = executeMethods[i];
+            }
+        }
+
+        return method;
+    }
+
+    private Method[] resolveExecuteMethods()
+    {
+        List<Method> result = new ArrayList<Method>();
+
+        ClassUtils.MethodFilter filter = new ClassUtils.MethodFilter()
         {
             @Override
             public boolean accept(Method method)
@@ -188,18 +228,19 @@ public abstract class CCommand implements Comparable<CCommand>
                     return false;
                 }
 
-                return CCommandUtils.CanInvokeMethodWithArgsCount(method, args.length);
+                Class<?> returnType = method.getReturnType();
+                return boolean.class.equals(returnType) || void.class.equals(returnType);
             }
-        });
+        };
 
-        if (methods.length != 1)
+        Class<?> type = GetCommandType();
+        while (type != null)
         {
-            PrintError("Wrong arguments");
-            PrintUsage();
-            return false;
+            ClassUtils.ListInstanceMethods(result, type, filter);
+            type = type.getSuperclass();
         }
 
-        return CCommandUtils.Invoke(this, methods[0], args);
+        return ArrayUtils.toArray(result, Method.class);
     }
 
     private Option ParseOption(Iterator<String> iter, String name)

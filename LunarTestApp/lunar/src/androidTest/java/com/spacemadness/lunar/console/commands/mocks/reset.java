@@ -1,4 +1,4 @@
-package com.spacemadness.lunar.console.commands;//  Copyright 2015 SpaceMadness.
+//  Copyright 2015 SpaceMadness.
 // 
 //  Lunar is licensed under the Apache License, 
 //  Version 2.0 (the "License"); you may not use this file except in compliance 
@@ -12,6 +12,10 @@ package com.spacemadness.lunar.console.commands;//  Copyright 2015 SpaceMadness.
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 //
+
+package com.spacemadness.lunar.console.commands.mocks;
+
+import com.spacemadness.lunar.console.commands.Cmd_reset;
 
 /**
  * Created by weee on 6/10/15.

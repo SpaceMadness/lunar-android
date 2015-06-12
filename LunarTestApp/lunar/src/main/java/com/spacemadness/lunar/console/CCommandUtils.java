@@ -28,12 +28,6 @@ class CCommandUtils
             throw new NullPointerException("Method is null");
         }
 
-        Class<?> returnType = method.getReturnType();
-        if (!boolean.class.equals(returnType) && !void.class.equals(returnType))
-        {
-            return false;
-        }
-
         Class<?>[] parameters = method.getParameterTypes();
 
         if (parameters.length == argsCount)
@@ -76,6 +70,8 @@ class CCommandUtils
 
     private static boolean Invoke(Object target, Method method, Object[] args) throws InvocationTargetException, IllegalAccessException
     {
+        method.setAccessible(true);
+
         if (boolean.class.equals(method.getReturnType()))
         {
             return (boolean) method.invoke(target, args);

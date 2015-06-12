@@ -18,7 +18,19 @@ public class CCommandTest extends TestCaseEx implements ICCommandDelegate
     protected void setUp() throws Exception
     {
         super.setUp();
+        runSetup();
+    }
 
+    @Override
+    protected void tearDown() throws Exception
+    {
+        super.tearDown();
+
+        runTearDown();
+    }
+
+    protected void runSetup()
+    {
         this.IsTrackConsoleLog = false;
         this.IsTrackTerminalLog = false;
 
@@ -28,11 +40,8 @@ public class CCommandTest extends TestCaseEx implements ICCommandDelegate
         m_commandProcessor.CommandDelegate(this);
     }
 
-    @Override
-    protected void tearDown() throws Exception
+    private void runTearDown()
     {
-        super.tearDown();
-
         CRegistery.Clear();
 
         m_commandProcessor = null;
@@ -111,6 +120,11 @@ public class CCommandTest extends TestCaseEx implements ICCommandDelegate
     protected void AddResult(String format, Object... args)
     {
         getResultList().add(StringUtils.RemoveRichTextTags(String.format(format, args)));
+    }
+
+    protected void OverrideDebugMode(boolean flag)
+    {
+
     }
 
     //////////////////////////////////////////////////////////////////////////////

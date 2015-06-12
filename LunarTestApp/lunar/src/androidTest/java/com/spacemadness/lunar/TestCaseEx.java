@@ -24,15 +24,20 @@ public class TestCaseEx extends TestCase
 
     protected void assertResult(String... expected)
     {
+        assertResult(result, expected);
+    }
+
+    protected void assertResult(List<String> actual, String... expected)
+    {
         assertEquals("Expected: " + StringUtils.Join(expected) +
-                "\nActual: " + StringUtils.Join(result),
-                expected.length, result.size());
+                        "\nActual: " + StringUtils.Join(actual),
+                expected.length, actual.size());
 
         for (int i = 0; i < expected.length; ++i)
         {
             assertEquals("Expected: " + StringUtils.Join(expected) +
-                            "\nActual: " + StringUtils.Join(result),
-                    expected[i], result.get(i));
+                            "\nActual: " + StringUtils.Join(actual),
+                    expected[i], actual.get(i));
         }
     }
 

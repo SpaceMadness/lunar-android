@@ -1,6 +1,6 @@
 package com.spacemadness.lunar.console;
 
-import com.spacemadness.lunar.console.commands.reset;
+import com.spacemadness.lunar.console.commands.mocks.reset;
 
 /**
  * Created by weee on 6/10/15.
@@ -142,7 +142,7 @@ public class CVarCommandTest extends CCommandTest
         assertFalse(cvar.IsDefault());
         assertEquals(0, cvar.IntValue());
         assertEquals(0.0f, cvar.FloatValue());
-        assertEquals("0", cvar.Value());
+        assertEquals("0.0", cvar.Value());
 
         execute("reset var");
         assertTrue(cvar.IsDefault());
@@ -194,9 +194,9 @@ public class CVarCommandTest extends CCommandTest
     }
 
     @Override
-    protected void setUp() throws Exception
+    protected void runSetup()
     {
-        super.setUp();
+        super.runSetup();
 
         RegisterCommands(new reset());
     }

@@ -66,6 +66,13 @@ public class ClassUtils
 
     public static Method[] ListInstanceMethods(Class<?> cls, MethodFilter filter)
     {
+        List<Method> result = new ArrayList<Method>();
+        ListInstanceMethods(result, cls, filter);
+        return ArrayUtils.toArray(result, Method.class);
+    }
+
+    public static List<Method> ListInstanceMethods(List<Method> outList, Class<?> cls, MethodFilter filter)
+    {
         if (cls == null)
         {
             throw new NullPointerException("Class is null");
@@ -76,16 +83,15 @@ public class ClassUtils
             throw new NullPointerException("Filter is null");
         }
 
-        List<Method> result = new ArrayList<Method>();
         for (Method method : cls.getDeclaredMethods())
         {
             if (filter.accept(method))
             {
-                result.add(method);
+                outList.add(method);
             }
         }
 
-        return ArrayUtils.toArray(result, Method.class);
+        return outList;
     }
 
     public interface MethodFilter
