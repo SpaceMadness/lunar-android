@@ -1,77 +1,153 @@
 package com.spacemadness.lunar.console;
 
+import android.util.Log;
+
+import com.spacemadness.lunar.console.annotations.Command;
+import static com.spacemadness.lunar.utils.ClassUtils.*;
 import com.spacemadness.lunar.utils.NotImplementedException;
 
+import static com.spacemadness.lunar.utils.StringUtils.*;
+
+import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
+
+import dalvik.system.DexFile;
+import dalvik.system.PathClassLoader;
 
 /**
  * Created by alementuev on 5/28/15.
  */
 class RuntimeResolver // TODO: remove this class
 {
-    public static List<CCommand> ResolveCommands()
-    {
-        /*
-        List<CCommand> list = new ArrayList<CCommand>();
+    private static final String TAG = PathClassLoader.class.getSimpleName();
+    private static final Field dexField;
 
+    static
+    {
+        dexField = resolveDexField();
+    }
+
+    private static Field resolveDexField()
+    {
         try
         {
-            foreach (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
-            {
-                foreach (Type type in assembly.GetTypes())
-                {
-                    Object[] attrs = type.GetCustomAttributes(typeof(CCommandAttribute), true);
-                    if (attrs != null && attrs.Length == 1)
-                    {
-                        CCommandAttribute cmdAttr = (CCommandAttribute)attrs[0];
-                        String commandName = cmdAttr.Name;
-                        if (!IsCorrectPlatform(cmdAttr.Flags))
-                        {
-                            Debug.LogWarning("Skipping command: " + commandName);
-                            continue;
-                        }
+            Field dexField = PathClassLoader.class.getDeclaredField("mDexs");
+            dexField.setAccessible(true);
+            return dexField;
+        }
+        catch (Exception e)
+        {
+            Log.e(TAG, "Can't init runtime resolver: " + e.getMessage());
+        }
 
-                        CCommand command = ClassUtils.CreateInstance<CCommand>(type);
-                        if (command != null)
+        return null;
+    }
+
+    public static List<CCommand> ResolveCommands()
+    {
+        try
+        {
+            return ResolveCommandsGuarded();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    public static List<CCommand> ResolveCommandsGuarded() throws Exception
+    {
+        List<CCommand> list = new ArrayList<CCommand>();
+
+        PathClassLoader classLoader = (PathClassLoader) Thread.currentThread().getContextClassLoader();
+        DexFile[] dexFiles = (DexFile[]) dexField.get(classLoader);
+        for (DexFile dex : dexFiles)
+        {
+            Enumeration<String> entries = dex.entries();
+            while (entries.hasMoreElements())
+            {
+                String className = entries.nextElement();
+
+                Class<?> aClass = Class.forName(className, false, classLoader);
+                if (aClass != null)
+                {
+                    process(aClass);
+                }
+            }
+        }
+
+        /*
+        for (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
+        {
+            foreach (Type type in assembly.GetTypes())
+            {
+                Object[] attrs = type.GetCustomAttributes(typeof(CCommandAttribute), true);
+                if (attrs != null && attrs.Length == 1)
+                {
+                    CCommandAttribute cmdAttr = (CCommandAttribute)attrs[0];
+                    String commandName = cmdAttr.Name;
+                    if (!IsCorrectPlatform(cmdAttr.Flags))
+                    {
+                        Debug.LogWarning("Skipping command: " + commandName);
+                        continue;
+                    }
+
+                    CCommand command = CreateInstance<CCommand>(type);
+                    if (command != null)
+                    {
+                        command.Name = commandName;
+                        command.Description = cmdAttr.Description;
+                        if (cmdAttr.Values != null)
                         {
-                            command.Name = commandName;
-                            command.Description = cmdAttr.Description;
-                            if (cmdAttr.Values != null)
-                            {
-                                command.Values = cmdAttr.Values.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                            }
-                            command.Flags |= cmdAttr.Flags;
-                            ResolveOptions(command);
-                            list.Add(command);
+                            command.Values = cmdAttr.Values.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
                         }
-                        else
-                        {
-                            Log.e("Unable to register command: name=%s type=%s", commandName, type);
-                        }
+                        command.Flags |= cmdAttr.Flags;
+                        ResolveOptions(command);
+                        list.Add(command);
+                    }
+                    else
+                    {
+                        Log.e("Unable to register command: name=%s type=%s", commandName, type);
                     }
                 }
             }
         }
-        catch (ReflectionTypeLoadException e)
-        {
-            StringBuilder message = new StringBuilder("Unable to resolve Lunar commands:");
-            
-            foreach (Exception ex in e.LoaderExceptions)
-            {
-                message.AppendFormat("\n\t%s", ex.Message);
-            }
-            
-            throw new LunarRuntimeResolverException(message.ToString(), e);
-        }
-        catch (Exception e)
-        {
-            throw new LunarRuntimeResolverException("Unable to resolve Lunar commands", e);
-        }
-
-        return list;
         */
 
-        throw new NotImplementedException();
+        return list;
+    }
+
+    private static CCommand process(Class<?> aClass)
+    {
+        Command annotation = aClass.getAnnotation(Command.class);
+        if (annotation == null)
+        {
+            return null;
+        }
+
+        Object instance = tryNewInstance(aClass);
+        CCommand command = as(instance, CCommand.class);
+        if (command == null)
+        {
+            return null;
+        }
+
+        command.Name = annotation.Name();
+        command.Description = nullOrNonEmpty(annotation.Description());
+
+        if (!IsNullOrEmpty(annotation.Values()))
+        {
+            command.Values(annotation.Values().split("\\s*,\\s*")); // FIXME: add error checking
+        }
+        command.Flags |= annotation.Flags();
+
+        ResolveOptions(command);
+
+        return command;
     }
 
     public static void ResolveOptions(CCommand command)

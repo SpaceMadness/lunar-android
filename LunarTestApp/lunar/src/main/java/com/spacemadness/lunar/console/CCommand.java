@@ -1399,16 +1399,6 @@ public abstract class CCommand implements Comparable<CCommand>
         SetFlag(CCommandFlags.Debug, value);
     }
 
-    public boolean IsPlayModeOnly()
-    {
-        return HasFlag(CCommandFlags.PlayModeOnly);
-    }
-
-    public void IsPlayModeOnly(boolean value)
-    {
-        SetFlag(CCommandFlags.PlayModeOnly, value);
-    }
-
     protected boolean IsManualMode; // FIXME { get; set; }
 
     public ColorCode ColorCode()

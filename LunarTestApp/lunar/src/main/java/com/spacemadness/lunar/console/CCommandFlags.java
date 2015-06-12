@@ -9,5 +9,4 @@ public class CCommandFlags
     public static final int Debug        = 1 << 0;
     public static final int Hidden       = 1 << 1;
     public static final int System       = 1 << 2;
-    public static final int PlayModeOnly = 1 << 3;
 }
