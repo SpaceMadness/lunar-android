@@ -708,4 +708,28 @@ public class StringUtilsTest extends TestCase
 
         Assert.assertNull(StringUtils.GetSuggestedText("aa1111", values));
     }
+
+    //////////////////////////////////////////////////////////////////////////////
+    // Null and empty
+
+    public void testIsNullOrEmpty()
+    {
+        assertTrue(StringUtils.IsNullOrEmpty(null));
+        assertTrue(StringUtils.IsNullOrEmpty(""));
+        assertFalse(StringUtils.IsNullOrEmpty("Some string"));
+    }
+
+    public void testNullOrNonEmpty()
+    {
+        assertNull(StringUtils.nullOrNonEmpty(null));
+        assertNull(StringUtils.nullOrNonEmpty(""));
+        assertSame("Some string", StringUtils.nullOrNonEmpty("Some string"));
+    }
+
+    public void testNonNullOrEmpty()
+    {
+        assertEquals("", StringUtils.nullOrNonEmpty(null));
+        assertSame("", StringUtils.nullOrNonEmpty(""));
+        assertSame("Some string", StringUtils.nullOrNonEmpty("Some string"));
+    }
 }

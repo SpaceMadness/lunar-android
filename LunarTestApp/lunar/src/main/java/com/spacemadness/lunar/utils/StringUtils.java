@@ -614,7 +614,12 @@ public class StringUtils
         return str == null || str.length() == 0;
     }
 
-    static String NonNullOrEmpty(String str)
+    public static String nullOrNonEmpty(String str)
+    {
+        return IsNullOrEmpty(str) ? null : str;
+    }
+
+    public static String NonNullOrEmpty(String str)
     {
         return str != null ? str : "";
     }
