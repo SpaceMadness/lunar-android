@@ -2,7 +2,7 @@ package com.spacemadness.lunar.console;
 
 import junit.framework.TestCase;
 
-import static com.spacemadness.lunar.console.CCommandUtils.*;
+import static com.spacemadness.lunar.console.CCommandUtils.CanInvokeMethodWithArgsCount;
 
 public class CCommandUtilsTest extends TestCase {
 
