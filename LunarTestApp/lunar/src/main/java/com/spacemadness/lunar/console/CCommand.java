@@ -241,8 +241,15 @@ public abstract class CCommand implements Comparable<CCommand>
         Option option = FindOption(name);
         if (option != null)
         {
-            ParseOption(iter, option);
-            return option;
+            try
+            {
+                ParseOption(iter, option);
+                return option;
+            }
+            catch (IllegalAccessException e)
+            {
+                throw new CCommandException(e);
+            }
         }
         else
         {
@@ -250,53 +257,52 @@ public abstract class CCommand implements Comparable<CCommand>
         }
     }
 
-    private void ParseOption(Iterator<String> iter, Option opt)
+    private void ParseOption(Iterator<String> iter, Option opt) throws IllegalAccessException
     {
-        /*
-        Type type = opt.Target.FieldType;
+        Class<?> type = opt.Target.getType();
         opt.IsHandled = true;
 
-        if (type == typeof(int))
+        if (int.class.equals(type))
         {
             Object value = CCommandUtils.NextIntArg(iter);
             CheckValue(opt, value);
-            opt.Target.SetValue(this, value);
+            opt.Target.set(this, value);
         }
-        else if (type == typeof(boolean))
+        else if (boolean.class.equals(type))
         {
-            opt.Target.SetValue(this, true);
+            opt.Target.set(this, true);
         }
-        else if (type == typeof(float))
+        else if (float.class.equals(type))
         {
             Object value = CCommandUtils.NextFloatArg(iter);
             CheckValue(opt, value);
-            opt.Target.SetValue(this, value);
+            opt.Target.set(this, value);
         }
-        else if (type == typeof(String))
+        else if (String.class.equals(type))
         {
             String value = CCommandUtils.NextArg(iter);
             CheckValue(opt, value);
-            opt.Target.SetValue(this, value);
+            opt.Target.set(this, value);
         }
-        else if (type == typeof(String[]))
+        else if (String[].class.equals(type))
         {
-            String[] arr = (String[]) opt.Target.GetValue(this);
+            String[] arr = (String[]) opt.Target.get(this);
             if (arr == null)
             {
-                throw new CCommandException("Field should be initialized: " + opt.Target.Name);
+                throw new CCommandException("Field should be initialized: " + opt.Target.getName());
             }
 
-            for (int i = 0; i < arr.Length; ++i)
+            for (int i = 0; i < arr.length; ++i)
             {
                 arr[i] = CCommandUtils.NextArg(iter);
             }
         }
-        else if (type == typeof(int[]))
+        else if (int[].class.equals(type))
         {
-            int[] arr = (int[]) opt.Target.GetValue(this);
+            int[] arr = (int[]) opt.Target.get(this);
             if (arr == null)
             {
-                throw new CCommandException("Field should be initialized: " + opt.Target.Name);
+                throw new CCommandException("Field should be initialized: " + opt.Target.getName());
             }
 
             for (int i = 0; i < arr.length; ++i)
@@ -304,12 +310,12 @@ public abstract class CCommand implements Comparable<CCommand>
                 arr[i] = CCommandUtils.NextIntArg(iter);
             }
         }
-        else if (type == typeof(float[]))
+        else if (float[].class.equals(type))
         {
-            float[] arr = (float[]) opt.Target.GetValue(this);
+            float[] arr = (float[]) opt.Target.get(this);
             if (arr == null)
             {
-                throw new CCommandException("Field should be initialized: " + opt.Target.Name);
+                throw new CCommandException("Field should be initialized: " + opt.Target.getName());
             }
 
             for (int i = 0; i < arr.length; ++i)
@@ -317,12 +323,12 @@ public abstract class CCommand implements Comparable<CCommand>
                 arr[i] = CCommandUtils.NextFloatArg(iter);
             }
         }
-        else if (type == typeof(boolean[]))
+        else if (boolean[].class.equals(type))
         {
-            boolean[] arr = (boolean[]) opt.Target.GetValue(this);
+            boolean[] arr = (boolean[]) opt.Target.get(this);
             if (arr == null)
             {
-                throw new CCommandException("Field should be initialized: " + opt.Target.Name);
+                throw new CCommandException("Field should be initialized: " + opt.Target.getName());
             }
 
             for (int i = 0; i < arr.length; ++i)
@@ -334,9 +340,6 @@ public abstract class CCommand implements Comparable<CCommand>
         {
             throw new CCommandException("Unsupported field type: " + type);
         }
-        */
-
-        throw new NotImplementedException();
     }
 
     private boolean SkipOption(Iterator<String> iter, String name)
@@ -352,7 +355,7 @@ public abstract class CCommand implements Comparable<CCommand>
 
         if (type.IsArray)
         {
-            Array arr = (Array) opt.Target.GetValue(this);
+            Array arr = (Array) opt.Target.get(this);
             if (arr != null)
             {
                 int length = arr.Length;
@@ -400,7 +403,7 @@ public abstract class CCommand implements Comparable<CCommand>
             return false;
         }
 
-        if (type == typeof(boolean))
+        if (boolean.class.equals(type))
         {
             return true;
         }
@@ -488,20 +491,21 @@ public abstract class CCommand implements Comparable<CCommand>
         return ListShortOptions(outList, null);
     }
 
-    List<Option> ListShortOptions(List<Option> outList, String prefix)
+    List<Option> ListShortOptions(List<Option> outList, final String prefix)
     {
-        /*
         if (!StringUtils.IsNullOrEmpty(prefix))
         {
-            return ListOptions(outList, delegate(Option opt) {
-                return StringUtils.StartsWithIgnoreCase(opt.ShortName, prefix);
+            return ListOptions(outList, new ListOptionsFilter()
+            {
+                @Override
+                public boolean accept(Option opt)
+                {
+                    return StringUtils.StartsWithIgnoreCase(opt.ShortName, prefix);
+                }
             });
         }
 
         return ListOptions(outList, DefaultListShortOptionsFilter);
-        */
-
-        throw new NotImplementedException(); // FIXME
     }
 
     List<Option> ListOptions()
@@ -606,12 +610,12 @@ public abstract class CCommand implements Comparable<CCommand>
         if (type.IsArray)
         {
             Array source = (Array)opt.DefaultValue;
-            Array target = (Array)opt.Target.GetValue(this);
+            Array target = (Array)opt.Target.get(this);
             Array.Copy(source, target, source.Length);
         }
         else
         {
-            opt.Target.SetValue(this, opt.DefaultValue);
+            opt.Target.set(this, opt.DefaultValue);
         }
         opt.IsHandled = false;
         */
@@ -1194,7 +1198,7 @@ public abstract class CCommand implements Comparable<CCommand>
         Type type = opt.Type;
         if (type != null && type.IsArray)
         {
-            Array arr = (Array) opt.Target.GetValue(this);
+            Array arr = (Array) opt.Target.get(this);
             if (arr != null)
             {
                 int length = arr.Length;
@@ -1437,7 +1441,7 @@ public abstract class CCommand implements Comparable<CCommand>
         static boolean IsValidValue(Class<?> type, String value)
         {
             /*
-            if (type == typeof(String))
+            if (String.class.equals(type))
             {
                 if (value.StartsWith("--")) // can't be long option
                 {
@@ -1450,12 +1454,12 @@ public abstract class CCommand implements Comparable<CCommand>
                 return true;
             }
 
-            if (type == typeof(int))
+            if (int.class.equals(type))
             {
                 return StringUtils.IsInteger(value);
             }
 
-            if (type == typeof(float))
+            if (float.class.equals(type))
             {
                 return StringUtils.IsNumeric(value);
             }

@@ -16,4 +16,9 @@ class CCommandException extends RuntimeException
     {
         this(StringUtils.TryFormat(format, args));
     }
+
+    public CCommandException(Throwable cause)
+    {
+        super(cause);
+    }
 }
