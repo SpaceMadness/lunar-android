@@ -5,6 +5,7 @@ import com.spacemadness.lunar.debug.Log;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +58,10 @@ public class ClassUtils
                 Constructor<? extends T> defaultConstructor = cls.getDeclaredConstructor(EMPTY_PARAMS);
                 return as(defaultConstructor.newInstance(), cls);
             }
+        }
+        catch (InvocationTargetException e)
+        {
+            Log.logCrit("Unable to instantiate class %s: %s", cls, e.getCause().getMessage());
         }
         catch (Exception e)
         {

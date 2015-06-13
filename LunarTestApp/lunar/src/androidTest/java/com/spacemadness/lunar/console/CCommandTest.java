@@ -1,6 +1,7 @@
 package com.spacemadness.lunar.console;
 
 import com.spacemadness.lunar.TestCaseEx;
+import com.spacemadness.lunar.utils.ClassUtils;
 import com.spacemadness.lunar.utils.NotImplementedException;
 import com.spacemadness.lunar.utils.StringUtils;
 
@@ -99,9 +100,27 @@ public class CCommandTest extends TestCaseEx implements ICCommandDelegate
     //////////////////////////////////////////////////////////////////////////////
     // Helpers
 
-    protected void RegisterCommands(Class<? extends CCommand>... commands)
+    protected void RegisterCommands(Class<? extends CCommand>... classes)
     {
-        throw new NotImplementedException();
+        for (Class<? extends CCommand> cls : classes)
+        {
+            CCommand command = ClassUtils.tryNewInstance(cls);
+            if (command == null)
+            {
+                throw new IllegalArgumentException("Can't create class instance: " + cls.getName());
+            }
+
+            String commandName = cls.getSimpleName();
+            if (commandName.startsWith("Cmd_"))
+            {
+                commandName = commandName.substring("Cmd_".length());
+            }
+
+            command.Name = commandName;
+            command.IsHidden(true);
+
+            CRegistery.Register(command);
+        }
     }
 
     protected void RegisterCommands(CCommand... commands)
