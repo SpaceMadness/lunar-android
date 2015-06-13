@@ -1,6 +1,7 @@
 package com.spacemadness.lunar.utils;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -184,6 +185,16 @@ public class ArrayUtils
 
         T[] array = (T[]) Array.newInstance(cls, list.size());
         return list.toArray(array);
+    }
+
+    public static <T> List<T> toList(T... array)
+    {
+        List<T> list = new ArrayList<>(array.length);
+        for (int i = 0; i < array.length; ++i)
+        {
+            list.add(array[i]);
+        }
+        return list;
     }
 
     public static Object clone(Object array, Class<?> componentType)

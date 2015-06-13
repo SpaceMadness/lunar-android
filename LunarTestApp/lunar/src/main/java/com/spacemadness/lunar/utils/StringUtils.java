@@ -705,4 +705,132 @@ public class StringUtils
         }
         return builder.toString();
     }
+
+    public static String Join(boolean[] array)
+    {
+        return Join(array, ",");
+    }
+
+    public static String Join(boolean[] array, String separator)
+    {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < array.length; ++i)
+        {
+            builder.append(array[i]);
+            if (i < array.length-1) builder.append(separator);
+        }
+        return builder.toString();
+    }
+
+    public static String Join(byte[] array)
+    {
+        return Join(array, ",");
+    }
+
+    public static String Join(byte[] array, String separator)
+    {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < array.length; ++i)
+        {
+            builder.append(array[i]);
+            if (i < array.length-1) builder.append(separator);
+        }
+        return builder.toString();
+    }
+
+    public static String Join(short[] array)
+    {
+        return Join(array, ",");
+    }
+
+    public static String Join(short[] array, String separator)
+    {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < array.length; ++i)
+        {
+            builder.append(array[i]);
+            if (i < array.length-1) builder.append(separator);
+        }
+        return builder.toString();
+    }
+
+    public static String Join(char[] array)
+    {
+        return Join(array, ",");
+    }
+
+    public static String Join(char[] array, String separator)
+    {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < array.length; ++i)
+        {
+            builder.append(array[i]);
+            if (i < array.length-1) builder.append(separator);
+        }
+        return builder.toString();
+    }
+
+    public static String Join(int[] array)
+    {
+        return Join(array, ",");
+    }
+
+    public static String Join(int[] array, String separator)
+    {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < array.length; ++i)
+        {
+            builder.append(array[i]);
+            if (i < array.length-1) builder.append(separator);
+        }
+        return builder.toString();
+    }
+
+    public static String Join(long[] array)
+    {
+        return Join(array, ",");
+    }
+
+    public static String Join(long[] array, String separator)
+    {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < array.length; ++i)
+        {
+            builder.append(array[i]);
+            if (i < array.length-1) builder.append(separator);
+        }
+        return builder.toString();
+    }
+
+    public static String Join(float[] array)
+    {
+        return Join(array, ",");
+    }
+
+    public static String Join(float[] array, String separator)
+    {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < array.length; ++i)
+        {
+            builder.append(array[i]);
+            if (i < array.length-1) builder.append(separator);
+        }
+        return builder.toString();
+    }
+
+    public static String Join(double[] array)
+    {
+        return Join(array, ",");
+    }
+
+    public static String Join(double[] array, String separator)
+    {
+        StringBuilder builder = new StringBuilder();
+        for (int i = 0; i < array.length; ++i)
+        {
+            builder.append(array[i]);
+            if (i < array.length-1) builder.append(separator);
+        }
+        return builder.toString();
+    }
 }

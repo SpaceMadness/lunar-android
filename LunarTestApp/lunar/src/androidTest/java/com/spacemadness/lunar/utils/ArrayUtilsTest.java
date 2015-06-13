@@ -42,6 +42,33 @@ public class ArrayUtilsTest extends TestCase
         assertTrue(Arrays.equals(expected, actual));
     }
 
+    public void testToArrayEmpty() throws Exception
+    {
+        List<String> list = new ArrayList<String>();
+        String[] expected = { };
+        String[] actual = ArrayUtils.toArray(list, String.class);
+
+        assertTrue(Arrays.equals(expected, actual));
+    }
+
+    public void testToList() throws Exception
+    {
+        List<String> expected = new ArrayList<>();
+        expected.add("1");
+        expected.add("2");
+        expected.add("3");
+
+        List<String> actual = ArrayUtils.toList("1", "2", "3");
+        assertEquals(expected, actual);
+    }
+
+    public void testToListEmpty() throws Exception
+    {
+        List<String> expected = new ArrayList<>();
+        List<String> actual = ArrayUtils.toList(new String[0]);
+        assertEquals(expected, actual);
+    }
+
     public void testClone()
     {
         int[] intArrayExpected = { 1, 2, 3 };
