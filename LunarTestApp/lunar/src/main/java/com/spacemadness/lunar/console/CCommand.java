@@ -18,9 +18,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by alementuev on 5/28/15.
- */
 public abstract class CCommand implements Comparable<CCommand>
 {
     private static final String[] EMPTY_COMMAND_ARGS = new String[0];
@@ -36,6 +33,7 @@ public abstract class CCommand implements Comparable<CCommand>
     public CCommand()
     {
         this.Delegate(null);
+        ResolveOptions();
     }
 
     public CCommand(String name)
@@ -49,14 +47,9 @@ public abstract class CCommand implements Comparable<CCommand>
         this.Name = name;
     }
 
-    static void ResolveOptions(CCommand command) throws IllegalAccessException
+    private void ResolveOptions()
     {
-        RuntimeResolver.ResolveOptions(command);
-    }
-
-    static void ResolveOptions(CCommand command, Class<? extends CCommand> commandType) throws IllegalAccessException
-    {
-        RuntimeResolver.ResolveOptions(command, commandType);
+        RuntimeResolver.ResolveOptions(this);
     }
 
     boolean ExecuteTokens(List<String> tokens)
@@ -74,8 +67,8 @@ public abstract class CCommand implements Comparable<CCommand>
         {
             PrintError(e.getMessage());
         }
-        /* // FIXME: handle invocation error
-        catch (TargetInvocationException e)
+        /*
+        catch (TargetInvocationException e) // FIXME: handle invocation error
         {
             if (e.InnerException is CCommandException)
             {

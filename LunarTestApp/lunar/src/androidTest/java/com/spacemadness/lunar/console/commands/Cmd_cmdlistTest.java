@@ -4,11 +4,6 @@ import com.spacemadness.lunar.console.CCommandFlags;
 import com.spacemadness.lunar.console.CCommandTest;
 import com.spacemadness.lunar.console.CFlags;
 import com.spacemadness.lunar.console.CVar;
-import com.spacemadness.lunar.console.commands.mocks.CCommandMock;
-import com.spacemadness.lunar.console.commands.mocks.alias;
-import com.spacemadness.lunar.console.commands.mocks.aliaslist;
-import com.spacemadness.lunar.console.commands.mocks.cmdlist;
-import com.spacemadness.lunar.console.commands.mocks.cvarlist;
 
 public class Cmd_cmdlistTest extends CCommandTest
 {
@@ -140,10 +135,13 @@ public class Cmd_cmdlistTest extends CCommandTest
         this.IsTrackTerminalLog = true;
 
         RegisterCommands(
-            new cmdlist(),
-            new cvarlist(),
-            new alias(),
-            new aliaslist(),
+            Cmd_cmdlist.class,
+            Cmd_cvarlist.class,
+            Cmd_alias.class,
+            Cmd_aliaslist.class
+        );
+
+        RegisterCommands(
             new cmd_hidden("hidden_cmd"),
             new cmd_system("cmd_system_1"),
             new cmd_system("cmd_system_12"),

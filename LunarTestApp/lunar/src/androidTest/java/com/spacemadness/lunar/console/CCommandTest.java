@@ -99,6 +99,11 @@ public class CCommandTest extends TestCaseEx implements ICCommandDelegate
     //////////////////////////////////////////////////////////////////////////////
     // Helpers
 
+    protected void RegisterCommands(Class<? extends CCommand>... commands)
+    {
+        throw new NotImplementedException();
+    }
+
     protected void RegisterCommands(CCommand... commands)
     {
         for (CCommand cmd : commands)

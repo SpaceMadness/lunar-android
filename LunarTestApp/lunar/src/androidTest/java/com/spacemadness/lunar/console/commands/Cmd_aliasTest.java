@@ -3,8 +3,6 @@ package com.spacemadness.lunar.console.commands;
 import com.spacemadness.lunar.console.CCommand;
 import com.spacemadness.lunar.console.CCommandTest;
 import com.spacemadness.lunar.console.CRegistery;
-import com.spacemadness.lunar.console.commands.mocks.alias;
-import com.spacemadness.lunar.console.commands.mocks.unalias;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,8 +90,11 @@ public class Cmd_aliasTest extends CCommandTest
     {
         super.runSetup();
 
-        CRegistery.Register(new alias());
-        CRegistery.Register(new unalias());
+        RegisterCommands(
+            Cmd_alias.class,
+            Cmd_unalias.class
+        );
+
         CRegistery.Register(new echo());
     }
 

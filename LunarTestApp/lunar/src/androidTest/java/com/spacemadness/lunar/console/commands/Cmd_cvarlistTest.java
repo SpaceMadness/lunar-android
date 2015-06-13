@@ -3,7 +3,6 @@ package com.spacemadness.lunar.console.commands;
 import com.spacemadness.lunar.console.CCommandTest;
 import com.spacemadness.lunar.console.CFlags;
 import com.spacemadness.lunar.console.CVar;
-import com.spacemadness.lunar.console.commands.mocks.cvarlist;
 
 public class Cmd_cvarlistTest extends CCommandTest
 {
@@ -127,7 +126,7 @@ public class Cmd_cvarlistTest extends CCommandTest
         this.IsTrackTerminalLog = true;
 
         RegisterCommands(
-            new cvarlist()
+            Cmd_cvarlist.class
         );
 
         new CVar("cvar_normal_1",  "value_normal_1");

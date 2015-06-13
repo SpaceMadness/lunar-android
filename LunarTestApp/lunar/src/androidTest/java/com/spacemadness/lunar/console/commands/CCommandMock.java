@@ -1,4 +1,4 @@
-package com.spacemadness.lunar.console.commands.mocks;
+package com.spacemadness.lunar.console.commands;
 
 import com.spacemadness.lunar.console.CCommand;
 

@@ -1,6 +1,6 @@
 package com.spacemadness.lunar.console;
 
-import com.spacemadness.lunar.console.commands.mocks.reset;
+import com.spacemadness.lunar.console.commands.Cmd_reset;
 
 /**
  * Created by weee on 6/10/15.
@@ -198,6 +198,6 @@ public class CVarCommandTest extends CCommandTest
     {
         super.runSetup();
 
-        RegisterCommands(new reset());
+        RegisterCommands(Cmd_reset.class);
     }
 }

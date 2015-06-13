@@ -53,13 +53,7 @@ class RuntimeResolver // TODO: remove this class
                 return false;
             }
 
-            CommandOption annotation = field.getAnnotation(CommandOption.class);
-            if (annotation == null)
-            {
-                return false;
-            }
-
-            return false;
+            return field.getAnnotation(CommandOption.class) != null;
         }
     };
 
@@ -114,44 +108,6 @@ class RuntimeResolver // TODO: remove this class
             }
         }
 
-        /*
-        for (Assembly assembly in AppDomain.CurrentDomain.GetAssemblies())
-        {
-            foreach (Type type in assembly.GetTypes())
-            {
-                Object[] attrs = type.GetCustomAttributes(typeof(CCommandAttribute), true);
-                if (attrs != null && attrs.Length == 1)
-                {
-                    CCommandAttribute cmdAttr = (CCommandAttribute)attrs[0];
-                    String commandName = cmdAttr.Name;
-                    if (!IsCorrectPlatform(cmdAttr.Flags))
-                    {
-                        Debug.LogWarning("Skipping command: " + commandName);
-                        continue;
-                    }
-
-                    CCommand command = CreateInstance<CCommand>(type);
-                    if (command != null)
-                    {
-                        command.Name = commandName;
-                        command.Description = cmdAttr.Description;
-                        if (cmdAttr.Values != null)
-                        {
-                            command.Values = cmdAttr.Values.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-                        }
-                        command.Flags |= cmdAttr.Flags;
-                        ResolveOptions(command);
-                        list.Add(command);
-                    }
-                    else
-                    {
-                        Log.e("Unable to register command: name=%s type=%s", commandName, type);
-                    }
-                }
-            }
-        }
-        */
-
         return list;
     }
 
@@ -184,31 +140,32 @@ class RuntimeResolver // TODO: remove this class
         return command;
     }
 
-    public static void ResolveOptions(CCommand command) throws IllegalAccessException
+    public static void ResolveOptions(CCommand command)
     {
-        ResolveOptions(command, command.getClass());
-    }
-
-    public static void ResolveOptions(CCommand command, Class<? extends CCommand> commandType) throws IllegalAccessException
-    {
-        List<Field> optionFields = ClassUtils.listFields(commandType, OPTIONS_FIELD_FILTER, true);
-        for (Field optionField : optionFields)
+        try
         {
-            final CommandOption attr = optionField.getAnnotation(CommandOption.class);
-
-            String name = IsNullOrEmpty(attr.Name()) ? optionField.getName() : attr.Name();
-
-            CCommand.Option option = new CCommand.Option(optionField, name, nullOrNonEmpty(attr.Description()));
-            if (!IsNullOrEmpty(attr.Values()))
+            List<Field> optionFields = ClassUtils.listFields(command.getClass(), OPTIONS_FIELD_FILTER, true);
+            for (Field optionField : optionFields)
             {
-                option.Values = ParseValues(attr.Values(), optionField.getType());
+                final CommandOption attr = optionField.getAnnotation(CommandOption.class);
+
+                String name = IsNullOrEmpty(attr.Name()) ? optionField.getName() : attr.Name();
+
+                CCommand.Option option = new CCommand.Option(optionField, name, nullOrNonEmpty(attr.Description()));
+                if (!IsNullOrEmpty(attr.Values())) {
+                    option.Values = ParseValues(attr.Values(), optionField.getType());
+                }
+
+                option.ShortName = nullOrNonEmpty(attr.ShortName());
+                option.IsRequired = attr.Required();
+                option.DefaultValue = GetDefaultValue(command, optionField);
+
+                command.AddOption(option);
             }
-
-            option.ShortName = nullOrNonEmpty(attr.ShortName());
-            option.IsRequired = attr.Required();
-            option.DefaultValue = GetDefaultValue(command, optionField);
-
-            command.AddOption(option);
+        }
+        catch (Exception e)
+        {
+            throw new OptionsResolveException(e);
         }
     }
 

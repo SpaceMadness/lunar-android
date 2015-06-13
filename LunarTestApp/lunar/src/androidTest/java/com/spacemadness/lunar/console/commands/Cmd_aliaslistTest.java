@@ -1,8 +1,6 @@
 package com.spacemadness.lunar.console.commands;
 
 import com.spacemadness.lunar.console.CCommandTest;
-import com.spacemadness.lunar.console.commands.mocks.alias;
-import com.spacemadness.lunar.console.commands.mocks.aliaslist;
 
 public class Cmd_aliaslistTest extends CCommandTest
 {
@@ -50,8 +48,8 @@ public class Cmd_aliaslistTest extends CCommandTest
         this.IsTrackTerminalLog = true;
 
         RegisterCommands(
-            new alias(),
-            new aliaslist()
+            Cmd_alias.class,
+            Cmd_aliaslist.class
         );
 
         execute("alias cmd_alias1 cmdlist");
