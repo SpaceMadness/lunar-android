@@ -411,7 +411,7 @@ public class CommandOptionsTest extends CCommandTest
             m_delegate = del;
         }
 
-        void Execute(String[] args)
+        void execute(String[] args)
         {
             m_delegate.onExecute(this, args);
         }
@@ -448,7 +448,7 @@ public class CommandOptionsTest extends CCommandTest
         @CommandOption()
         public String[] strings = { "one", "two" };
 
-        void Execute(String[] args)
+        void execute(String[] args)
         {
             ExecutionDelegate.onExecute(this, args);
         }
@@ -467,7 +467,7 @@ public class CommandOptionsTest extends CCommandTest
         @CommandOption(ShortName="o123")
         public String op123;
 
-        void Execute()
+        void execute()
         {
         }
     }

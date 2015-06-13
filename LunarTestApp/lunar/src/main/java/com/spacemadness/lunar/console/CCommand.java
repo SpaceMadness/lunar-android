@@ -7,6 +7,7 @@ import com.spacemadness.lunar.utils.ClassUtils;
 import com.spacemadness.lunar.utils.NotImplementedException;
 import com.spacemadness.lunar.utils.StringUtils;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -588,7 +589,7 @@ public abstract class CCommand implements Comparable<CCommand>
         return m_optionsLookup != null ? m_optionsLookup.get(name) : null;
     }
 
-    private void ResetOptions()
+    private void ResetOptions() throws IllegalAccessException
     {
         if (m_options != null)
         {
@@ -603,23 +604,18 @@ public abstract class CCommand implements Comparable<CCommand>
         }
     }
 
-    private void ResetOption(Option opt)
+    private void ResetOption(Option opt) throws IllegalAccessException
     {
-        /*
-        Type type = opt.Target.FieldType;
-        if (type.IsArray)
+        Class<?> type = opt.Target.getType();
+        if (type.isArray() && opt.DefaultValue != null)
         {
-            Array source = (Array)opt.DefaultValue;
-            Array target = (Array)opt.Target.get(this);
-            Array.Copy(source, target, source.Length);
+            System.arraycopy(opt.DefaultValue, 0, opt.Target.get(this), 0, Array.getLength(opt.DefaultValue));
         }
         else
         {
             opt.Target.set(this, opt.DefaultValue);
         }
         opt.IsHandled = false;
-        */
-        throw new NotImplementedException(); // FIXME
     }
 
     //////////////////////////////////////////////////////////////////////////////
