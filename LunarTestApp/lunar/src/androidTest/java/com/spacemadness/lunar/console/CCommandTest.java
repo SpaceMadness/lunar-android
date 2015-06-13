@@ -70,7 +70,7 @@ public class CCommandTest extends TestCaseEx implements ICCommandDelegate
     }
 
     @Override
-    public void LogTerminal(Exception e, String message)
+    public void LogTerminal(Throwable e, String message)
     {
         throw new NotImplementedException();
     }

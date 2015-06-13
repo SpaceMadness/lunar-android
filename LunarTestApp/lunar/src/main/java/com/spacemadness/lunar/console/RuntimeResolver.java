@@ -147,6 +147,11 @@ class RuntimeResolver // TODO: remove this class
             List<Field> optionFields = ClassUtils.listFields(command.getClass(), OPTIONS_FIELD_FILTER, true);
             for (Field optionField : optionFields)
             {
+                if (Modifier.isPrivate(optionField.getModifiers()))
+                {
+                    optionField.setAccessible(true);
+                }
+
                 final CommandOption attr = optionField.getAnnotation(CommandOption.class);
 
                 String name = IsNullOrEmpty(attr.Name()) ? optionField.getName() : attr.Name();

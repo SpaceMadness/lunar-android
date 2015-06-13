@@ -8,6 +8,7 @@ import com.spacemadness.lunar.utils.NotImplementedException;
 import com.spacemadness.lunar.utils.StringUtils;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -67,19 +68,17 @@ public abstract class CCommand implements Comparable<CCommand>
         {
             PrintError(e.getMessage());
         }
-        /*
-        catch (TargetInvocationException e) // FIXME: handle invocation error
+        catch (InvocationTargetException e)
         {
-            if (e.InnerException is CCommandException)
+            if (e.getCause() instanceof CCommandException)
             {
-                PrintError(e.InnerException.Message);
+                PrintError(e.getCause().getMessage());
             }
             else
             {
-                PrintError(e.InnerException, "Error while executing command");
+                PrintError(e.getCause(), "Error while executing command");
             }
         }
-        */
         catch (NotImplementedException e)
         {
             throw e;
@@ -520,19 +519,20 @@ public abstract class CCommand implements Comparable<CCommand>
         return ListOptions(outList, (String)null);
     }
 
-    List<Option> ListOptions(List<Option> outList, String prefix)
+    List<Option> ListOptions(List<Option> outList, final String prefix)
     {
-        /*
         if (!StringUtils.IsNullOrEmpty(prefix))
         {
-            return ListOptions(outList, delegate(Option opt) {
-                return StringUtils.StartsWithIgnoreCase(opt.Name, prefix);
+            return ListOptions(outList, new ListOptionsFilter()
+            {
+                @Override
+                public boolean accept(Option opt)
+                {
+                    return StringUtils.StartsWithIgnoreCase(opt.Name, prefix);
+                }
             });
         }
         return ListOptions(outList, DefaultListOptionsFilter);
-        */
-
-        throw new NotImplementedException(); // FIXME
     }
 
     List<Option> ListOptions(List<Option> outList, ListOptionsFilter filter)
@@ -1038,7 +1038,7 @@ public abstract class CCommand implements Comparable<CCommand>
     /// <summary>
     /// Prints exceptions.
     /// </summary>
-    protected void PrintError(Exception e)
+    protected void PrintError(Throwable e)
     {
         PrintError(e, null);
     }
@@ -1046,7 +1046,7 @@ public abstract class CCommand implements Comparable<CCommand>
     /// <summary>
     /// Prints exceptions.
     /// </summary>
-    protected void PrintError(Exception e, String format, Object... args)
+    protected void PrintError(Throwable e, String format, Object... args)
     {
         PrintError(e, StringUtils.TryFormat(format, args));
     }
@@ -1054,7 +1054,7 @@ public abstract class CCommand implements Comparable<CCommand>
     /// <summary>
     /// Prints exceptions.
     /// </summary>
-    protected void PrintError(Exception e, String message)
+    protected void PrintError(Throwable e, String message)
     {
         m_delegate.LogTerminal(e, message);
     }

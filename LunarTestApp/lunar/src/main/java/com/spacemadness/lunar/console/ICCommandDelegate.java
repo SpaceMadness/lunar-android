@@ -7,7 +7,7 @@ public interface ICCommandDelegate
 {
     void LogTerminal(String message);
     void LogTerminal(String[] table);
-    void LogTerminal(Exception e, String message);
+    void LogTerminal(Throwable e, String message);
 
     void ClearTerminal();
 
