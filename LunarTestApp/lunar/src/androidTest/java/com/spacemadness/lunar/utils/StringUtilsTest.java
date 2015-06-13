@@ -728,8 +728,8 @@ public class StringUtilsTest extends TestCase
 
     public void testNonNullOrEmpty()
     {
-        assertEquals("", StringUtils.nullOrNonEmpty(null));
-        assertSame("", StringUtils.nullOrNonEmpty(""));
-        assertSame("Some string", StringUtils.nullOrNonEmpty("Some string"));
+        assertEquals("", StringUtils.NonNullOrEmpty(null));
+        assertSame("", StringUtils.NonNullOrEmpty(""));
+        assertSame("Some string", StringUtils.NonNullOrEmpty("Some string"));
     }
 }
