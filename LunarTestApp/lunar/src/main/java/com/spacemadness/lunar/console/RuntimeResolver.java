@@ -3,18 +3,25 @@ package com.spacemadness.lunar.console;
 import android.util.Log;
 
 import com.spacemadness.lunar.console.annotations.Command;
-import static com.spacemadness.lunar.utils.ClassUtils.*;
-import com.spacemadness.lunar.utils.NotImplementedException;
-
-import static com.spacemadness.lunar.utils.StringUtils.*;
+import com.spacemadness.lunar.console.annotations.CommandOption;
+import com.spacemadness.lunar.utils.ArrayUtils;
+import com.spacemadness.lunar.utils.ClassUtils;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.List;
 
 import dalvik.system.DexFile;
 import dalvik.system.PathClassLoader;
+
+import static com.spacemadness.lunar.utils.ClassUtils.FieldFilter;
+import static com.spacemadness.lunar.utils.ClassUtils.as;
+import static com.spacemadness.lunar.utils.ClassUtils.tryNewInstance;
+import static com.spacemadness.lunar.utils.StringUtils.IsNullOrEmpty;
+import static com.spacemadness.lunar.utils.StringUtils.nullOrNonEmpty;
 
 /**
  * Created by alementuev on 5/28/15.
@@ -28,6 +35,33 @@ class RuntimeResolver // TODO: remove this class
     {
         dexField = resolveDexField();
     }
+
+    private static final FieldFilter OPTIONS_FIELD_FILTER = new FieldFilter()
+    {
+        @Override
+        public boolean accept(Field field)
+        {
+            final int modifiers = field.getModifiers();
+
+            if (Modifier.isStatic(modifiers))
+            {
+                return false;
+            }
+
+            if (Modifier.isFinal(modifiers))
+            {
+                return false;
+            }
+
+            CommandOption annotation = field.getAnnotation(CommandOption.class);
+            if (annotation == null)
+            {
+                return false;
+            }
+
+            return false;
+        }
+    };
 
     private static Field resolveDexField()
     {
@@ -121,7 +155,7 @@ class RuntimeResolver // TODO: remove this class
         return list;
     }
 
-    private static CCommand process(Class<?> aClass)
+    private static CCommand process(Class<?> aClass) throws IllegalAccessException
     {
         Command annotation = aClass.getAnnotation(Command.class);
         if (annotation == null)
@@ -150,51 +184,41 @@ class RuntimeResolver // TODO: remove this class
         return command;
     }
 
-    public static void ResolveOptions(CCommand command)
+    public static void ResolveOptions(CCommand command) throws IllegalAccessException
     {
         ResolveOptions(command, command.getClass());
     }
 
-    public static void ResolveOptions(CCommand command, Class<? extends CCommand> commandType)
+    public static void ResolveOptions(CCommand command, Class<? extends CCommand> commandType) throws IllegalAccessException
     {
-        /*
-        FieldInfo[] fields = commandType.GetFields(BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
-        for (int i = 0; i < fields.Length; ++i)
+        List<Field> optionFields = ClassUtils.listFields(commandType, OPTIONS_FIELD_FILTER, true);
+        for (Field optionField : optionFields)
         {
-            FieldInfo info = fields[i];
-            Object[] attributes = info.GetCustomAttributes(typeof(CCommandOptionAttribute), true);
-            if (attributes.Length == 1)
+            final CommandOption attr = optionField.getAnnotation(CommandOption.class);
+
+            String name = IsNullOrEmpty(attr.Name()) ? optionField.getName() : attr.Name();
+
+            CCommand.Option option = new CCommand.Option(optionField, name, nullOrNonEmpty(attr.Description()));
+            if (!IsNullOrEmpty(attr.Values()))
             {
-                CCommandOptionAttribute attr = (CCommandOptionAttribute)attributes[0];
-
-                String name = attr.Name != null ? attr.Name : info.Name;
-
-                Option option = new Option(info, name, attr.Description);
-                if (attr.Values != null)
-                {
-                    option.Values = ParseValues(attr.Values, info.FieldType);
-                }
-
-                option.ShortName = attr.ShortName;
-                option.IsRequired = attr.Required;
-                option.DefaultValue = GetDefaultValue(command, info);
-
-                command.AddOption(option);
+                option.Values = ParseValues(attr.Values(), optionField.getType());
             }
-        }
-        */
 
-        throw new NotImplementedException();
+            option.ShortName = nullOrNonEmpty(attr.ShortName());
+            option.IsRequired = attr.Required();
+            option.DefaultValue = GetDefaultValue(command, optionField);
+
+            command.AddOption(option);
+        }
     }
 
     private static String[] ParseValues(String str, Class<?> type)
     {
-        /*
-        String[] tokens = str.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-        for (int i = 0; i < tokens.Length; ++i)
+        String[] tokens = str.split("\\s*,\\s*");
+        for (int i = 0; i < tokens.length; ++i)
         {
-            String token = tokens[i].Trim();
-            if (Option.IsValidValue(type, token))
+            String token = tokens[i].trim();
+            if (CCommand.Option.IsValidValue(type, token))
             {
                 tokens[i] = token;
             }
@@ -204,25 +228,22 @@ class RuntimeResolver // TODO: remove this class
             }
         }
 
-        Array.Sort(tokens);
+        Arrays.sort(tokens);
 
         return tokens;
-        */
-
-        throw new NotImplementedException();
     }
 
-    private static Object GetDefaultValue(CCommand command, /*FieldInfo*/ Object info)
+    private static Object GetDefaultValue(CCommand command, Field field) throws IllegalAccessException
     {
-        /*
-        Object value = info.GetValue(command);
-        if (info.FieldType.IsValueType)
+        final Object value = field.get(command);
+        final Class<?> fieldType = field.getType();
+
+        if (value != null && fieldType.isArray())
         {
-            return value;
+            // we only need to copy value is it's an array type
+            return ArrayUtils.clone(value, fieldType.getComponentType());
         }
 
-        return value is ICloneable ? ((ICloneable)value).Clone() : value;
-        */
-        throw new NotImplementedException();
+        return value;
     }
 }

@@ -8,4 +8,7 @@ public @interface CommandOption
     String Name() default "";
     String ShortName() default "";
     String Description() default "";
+    String Values() default "";
+
+    boolean Required() default false;
 }

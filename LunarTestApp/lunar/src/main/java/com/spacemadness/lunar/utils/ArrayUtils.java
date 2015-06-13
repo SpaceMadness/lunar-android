@@ -185,4 +185,27 @@ public class ArrayUtils
         T[] array = (T[]) Array.newInstance(cls, list.size());
         return list.toArray(array);
     }
+
+    public static Object clone(Object array, Class<?> componentType)
+    {
+        if (array == null)
+        {
+            throw new NullPointerException("Array is null");
+        }
+
+        if (!array.getClass().isArray())
+        {
+            throw new IllegalArgumentException("Unexpected class: " + array.getClass());
+        }
+
+        if (componentType == null)
+        {
+            throw new NullPointerException("Component type is null");
+        }
+
+        int length = Array.getLength(array);
+        Object copy = Array.newInstance(componentType, length);
+        System.arraycopy(array, 0, copy, 0, length);
+        return copy;
+    }
 }

@@ -41,4 +41,19 @@ public class ArrayUtilsTest extends TestCase
 
         assertTrue(Arrays.equals(expected, actual));
     }
+
+    public void testClone()
+    {
+        int[] intArrayExpected = { 1, 2, 3 };
+        int[] intArrayActual = (int[]) ArrayUtils.clone(intArrayExpected, int.class);
+        assertTrue(Arrays.equals(intArrayExpected, intArrayActual));
+
+        String[] stringArrayExpected = { "1", "2", "3" };
+        String[] stringArrayActual = (String[]) ArrayUtils.clone(stringArrayExpected, String.class);
+        assertTrue(Arrays.equals(stringArrayExpected, stringArrayActual));
+
+        String[] stringArrayExpectedEmpty = {};
+        String[] stringArrayActualEmpty = (String[]) ArrayUtils.clone(stringArrayExpectedEmpty, String.class);
+        assertTrue(Arrays.equals(stringArrayExpectedEmpty, stringArrayActualEmpty));
+    }
 }

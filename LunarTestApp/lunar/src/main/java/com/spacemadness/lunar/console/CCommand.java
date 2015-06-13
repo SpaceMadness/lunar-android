@@ -7,6 +7,7 @@ import com.spacemadness.lunar.utils.ClassUtils;
 import com.spacemadness.lunar.utils.NotImplementedException;
 import com.spacemadness.lunar.utils.StringUtils;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -48,12 +49,12 @@ public abstract class CCommand implements Comparable<CCommand>
         this.Name = name;
     }
 
-    static void ResolveOptions(CCommand command)
+    static void ResolveOptions(CCommand command) throws IllegalAccessException
     {
         RuntimeResolver.ResolveOptions(command);
     }
 
-    static void ResolveOptions(CCommand command, Class<? extends CCommand> commandType)
+    static void ResolveOptions(CCommand command, Class<? extends CCommand> commandType) throws IllegalAccessException
     {
         RuntimeResolver.ResolveOptions(command, commandType);
     }
@@ -1417,11 +1418,11 @@ public abstract class CCommand implements Comparable<CCommand>
 
     //////////////////////////////////////////////////////////////////////////////
 
-    static class Option
+    public static class Option
     {
-        public Option(FieldInfo target, String name, String description)
+        public Option(Field field, String name, String description)
         {
-            Target = target;
+            Target = field;
             Name = name;
             Description = description;
         }
@@ -1480,7 +1481,7 @@ public abstract class CCommand implements Comparable<CCommand>
         //////////////////////////////////////////////////////////////////////////////
         // Properties
 
-        public FieldInfo Target; // FIXME: { get; private set; }
+        public Field Target; // FIXME: { get; private set; }
 
         public String Name; // FIXME: { get; protected set; }
         public String Description; // FIXME: { get; protected set; }
