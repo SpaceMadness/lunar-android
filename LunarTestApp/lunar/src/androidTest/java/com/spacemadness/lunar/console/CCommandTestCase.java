@@ -8,7 +8,7 @@ import com.spacemadness.lunar.utils.StringUtils;
 /**
  * Created by weee on 6/10/15.
  */
-public class CCommandTest extends TestCaseEx implements ICCommandDelegate
+public class CCommandTestCase extends TestCaseEx implements ICCommandDelegate
 {
     private CommandProcessor m_commandProcessor;
 

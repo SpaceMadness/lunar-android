@@ -1,10 +1,10 @@
 package com.spacemadness.lunar.console.commands;
 
-import com.spacemadness.lunar.console.CCommandTest;
+import com.spacemadness.lunar.console.CCommandTestCase;
 import com.spacemadness.lunar.console.CFlags;
 import com.spacemadness.lunar.console.CVar;
 
-public class Cmd_cvarlistTest extends CCommandTest
+public class Cmd_cvarlistTest extends CCommandTestCase
 {
     public void testListVars()
     {

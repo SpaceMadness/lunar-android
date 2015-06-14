@@ -6,7 +6,7 @@ import com.spacemadness.lunar.utils.ArrayUtils;
 
 import java.util.List;
 
-public class CommandOptionsTest extends CCommandTest
+public class CommandOptionsTest extends CCommandTestCase
 {
 	//////////////////////////////////////////////////////////////////////////////
 	// List options

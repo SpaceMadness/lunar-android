@@ -1,13 +1,13 @@
 package com.spacemadness.lunar.console.commands;
 
 import com.spacemadness.lunar.console.CCommand;
-import com.spacemadness.lunar.console.CCommandTest;
+import com.spacemadness.lunar.console.CCommandTestCase;
 import com.spacemadness.lunar.console.CRegistery;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Cmd_aliasTest extends CCommandTest
+public class Cmd_aliasTest extends CCommandTestCase
 {
     public void testSingleAlias()
     {

@@ -1,8 +1,8 @@
 package com.spacemadness.lunar.console.commands;
 
-import com.spacemadness.lunar.console.CCommandTest;
+import com.spacemadness.lunar.console.CCommandTestCase;
 
-public class Cmd_aliaslistTest extends CCommandTest
+public class Cmd_aliaslistTest extends CCommandTestCase
 {
     public void testListAliases()
     {

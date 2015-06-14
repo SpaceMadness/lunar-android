@@ -5,7 +5,7 @@ import com.spacemadness.lunar.console.commands.Cmd_reset;
 /**
  * Created by weee on 6/10/15.
  */
-public class CVarCommandTest extends CCommandTest
+public class CVarCommandTest extends CCommandTestCase
 {
 	public void testCvarBool()
     {
