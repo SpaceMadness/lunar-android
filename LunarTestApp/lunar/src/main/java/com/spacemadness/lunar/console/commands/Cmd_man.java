@@ -20,6 +20,7 @@ import com.spacemadness.lunar.console.CCommand;
 import com.spacemadness.lunar.console.CRegistery;
 import com.spacemadness.lunar.console.CVarCommand;
 import com.spacemadness.lunar.console.ListCommandsFilter;
+import com.spacemadness.lunar.console.annotations.Arg;
 import com.spacemadness.lunar.console.annotations.Command;
 import com.spacemadness.lunar.utils.StringUtils;
 
@@ -28,7 +29,7 @@ import java.util.List;
 @Command(Name="man", Description="Prints command usage")
 public class Cmd_man extends CCommand
 {
-    boolean execute(String command)
+    boolean execute(@Arg("command") String command)
     {
         CCommand cmd = CRegistery.FindCommand(command);
         if (cmd == null)

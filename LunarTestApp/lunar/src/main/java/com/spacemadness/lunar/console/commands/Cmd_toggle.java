@@ -6,6 +6,7 @@ import com.spacemadness.lunar.console.CRegistery;
 import com.spacemadness.lunar.console.CVar;
 import com.spacemadness.lunar.console.CVarCommand;
 import com.spacemadness.lunar.console.ListCommandsFilter;
+import com.spacemadness.lunar.console.annotations.Arg;
 import com.spacemadness.lunar.console.annotations.Command;
 import com.spacemadness.lunar.utils.StringUtils;
 
@@ -14,12 +15,12 @@ import java.util.List;
 @Command(Name="toggle", Description="Toggles boolean cvar value.")
 public class Cmd_toggle extends CCommand
 {
-    boolean execute(String cvarName)
+    boolean execute(@Arg("cvar") String cvar)
     {
-        CVarCommand cmd = CRegistery.FindCvarCommand(cvarName);
+        CVarCommand cmd = CRegistery.FindCvarCommand(cvar);
         if (cmd == null)
         {
-            PrintError("Can't find cvar '" + cvarName + "'");
+            PrintError("Can't find cvar '" + cvar + "'");
             return false;
         }
         

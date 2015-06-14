@@ -6,6 +6,7 @@ import com.spacemadness.lunar.console.CRegistery;
 import com.spacemadness.lunar.console.CVarCommand;
 import com.spacemadness.lunar.console.CommandListOptions;
 import com.spacemadness.lunar.console.ListCommandsFilter;
+import com.spacemadness.lunar.console.annotations.Arg;
 import com.spacemadness.lunar.console.annotations.Command;
 import com.spacemadness.lunar.console.annotations.CommandOption;
 import com.spacemadness.lunar.utils.StringUtils;
@@ -27,7 +28,7 @@ public class Cmd_cmdlist extends CCommand
         return execute(null);
     }
 
-    boolean execute(final String prefix)
+    boolean execute(@Arg("prefix") final String prefix)
     {
         final int options = getOptions();
 

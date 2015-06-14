@@ -18,6 +18,7 @@ package com.spacemadness.lunar.console.commands;
 import com.spacemadness.lunar.console.CAliasCommand;
 import com.spacemadness.lunar.console.CCommand;
 import com.spacemadness.lunar.console.CRegistery;
+import com.spacemadness.lunar.console.annotations.Arg;
 import com.spacemadness.lunar.console.annotations.Command;
 import com.spacemadness.lunar.console.annotations.CommandOption;
 import com.spacemadness.lunar.utils.StringUtils;
@@ -35,7 +36,7 @@ public class Cmd_aliaslist extends CCommand
         return execute(null);
     }
 
-    boolean execute(String prefix)
+    boolean execute(@Arg("prefix") String prefix)
     {
         List<CAliasCommand> cmds = CRegistery.ListAliases(prefix);
         if (cmds.size() > 0)

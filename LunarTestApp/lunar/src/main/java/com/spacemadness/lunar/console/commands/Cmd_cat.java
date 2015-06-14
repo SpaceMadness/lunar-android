@@ -17,6 +17,7 @@ package com.spacemadness.lunar.console.commands;
 
 import com.spacemadness.lunar.console.CCommand;
 import com.spacemadness.lunar.console.CCommandHelper;
+import com.spacemadness.lunar.console.annotations.Arg;
 import com.spacemadness.lunar.console.annotations.Command;
 import com.spacemadness.lunar.console.annotations.CommandOption;
 import com.spacemadness.lunar.utils.FileUtils;
@@ -35,7 +36,7 @@ public class Cmd_cat extends CCommand
         return execute(null);
     }
 
-    boolean execute(String filename)
+    boolean execute(@Arg("filename") String filename)
     {
         String name = filename != null ? filename : "default.cfg";
         

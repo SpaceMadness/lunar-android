@@ -5,6 +5,7 @@ import com.spacemadness.lunar.console.CCommand;
 import com.spacemadness.lunar.console.CRegistery;
 import com.spacemadness.lunar.console.CVar;
 import com.spacemadness.lunar.console.CVarCommand;
+import com.spacemadness.lunar.console.annotations.Arg;
 import com.spacemadness.lunar.console.annotations.Command;
 import com.spacemadness.lunar.utils.StringUtils;
 
@@ -13,7 +14,7 @@ import java.util.List;
 @Command(Name="reset", Description="Resets cvar to its default value.")
 public class Cmd_reset extends CCommand
 {
-    boolean execute(String name)
+    boolean execute(@Arg("name") String name)
     {
         CVarCommand cmd = CRegistery.FindCvarCommand(name);
         if (cmd == null)

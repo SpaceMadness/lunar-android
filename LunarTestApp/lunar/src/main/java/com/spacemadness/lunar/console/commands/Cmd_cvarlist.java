@@ -6,6 +6,7 @@ import com.spacemadness.lunar.console.CCommand;
 import com.spacemadness.lunar.console.CRegistery;
 import com.spacemadness.lunar.console.CVar;
 import com.spacemadness.lunar.console.CommandListOptions;
+import com.spacemadness.lunar.console.annotations.Arg;
 import com.spacemadness.lunar.console.annotations.Command;
 import com.spacemadness.lunar.console.annotations.CommandOption;
 
@@ -29,7 +30,7 @@ public class Cmd_cvarlist extends CCommand
         return execute(null);
     }
 
-    boolean execute(String prefix)
+    boolean execute(@Arg("prefix") String prefix)
     {
         int options = CommandListOptions.None;
         if (Config.isDebugBuild)

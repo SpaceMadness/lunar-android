@@ -18,12 +18,13 @@ package com.spacemadness.lunar.console.commands;
 import com.spacemadness.lunar.console.CCommand;
 import com.spacemadness.lunar.console.CCommandNotifications;
 import com.spacemadness.lunar.console.CRegistery;
+import com.spacemadness.lunar.console.annotations.Arg;
 import com.spacemadness.lunar.console.annotations.Command;
 
 @Command(Name="unalias", Description="Remove an alias name for command(s)")
 public class Cmd_unalias extends CCommand
 {
-    void execute(String name)
+    void execute(@Arg("name") String name)
     {
         if (CRegistery.RemoveAlias(name))
         {

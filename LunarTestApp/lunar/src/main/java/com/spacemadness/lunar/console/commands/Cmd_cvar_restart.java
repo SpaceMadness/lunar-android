@@ -20,6 +20,7 @@ import com.spacemadness.lunar.console.CCommand;
 import com.spacemadness.lunar.console.CRegistery;
 import com.spacemadness.lunar.console.CVar;
 import com.spacemadness.lunar.console.CVarCommand;
+import com.spacemadness.lunar.console.annotations.Arg;
 import com.spacemadness.lunar.console.annotations.Command;
 import com.spacemadness.lunar.utils.ClassUtils;
 import com.spacemadness.lunar.utils.StringUtils;
@@ -34,7 +35,7 @@ public class Cmd_cvar_restart extends CCommand
         execute(null);
     }
 
-    void execute(String prefix)
+    void execute(@Arg("prefix") String prefix)
     {
         List<CCommand> cmds = CRegistery.ListCommands(prefix);
         for (CCommand cmd : cmds)

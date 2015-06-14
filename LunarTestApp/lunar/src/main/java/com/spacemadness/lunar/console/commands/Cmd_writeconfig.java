@@ -22,6 +22,7 @@ import com.spacemadness.lunar.console.CRegistery;
 import com.spacemadness.lunar.console.CVar;
 import com.spacemadness.lunar.console.CVarCommand;
 import com.spacemadness.lunar.console.ListCommandsFilter;
+import com.spacemadness.lunar.console.annotations.Arg;
 import com.spacemadness.lunar.console.annotations.Command;
 import com.spacemadness.lunar.utils.FileUtils;
 import com.spacemadness.lunar.utils.StringUtils;
@@ -33,7 +34,7 @@ import java.util.List;
 @Command(Name="writeconfig", Description="Writes a config file.")
 public class Cmd_writeconfig extends CCommand
 {
-    boolean execute(String filename)
+    boolean execute(@Arg("filename") String filename)
     {
         List<String> lines = new ArrayList<String>();
         

@@ -19,6 +19,7 @@ import com.spacemadness.lunar.console.CAliasCommand;
 import com.spacemadness.lunar.console.CCommand;
 import com.spacemadness.lunar.console.CCommandNotifications;
 import com.spacemadness.lunar.console.CRegistery;
+import com.spacemadness.lunar.console.annotations.Arg;
 import com.spacemadness.lunar.console.annotations.Command;
 import com.spacemadness.lunar.utils.StringUtils;
 
@@ -27,7 +28,7 @@ import java.util.List;
 @Command(Name="alias", Description="Creates an alias name for command(s)")
 public class Cmd_alias extends CCommand
 {
-    void execute(String name, String commands)
+    void execute(@Arg("name") String name, @Arg("commands") String commands)
     {
         CRegistery.AddAlias(name, StringUtils.UnArg(commands));
         

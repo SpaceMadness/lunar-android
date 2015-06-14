@@ -18,6 +18,7 @@ package com.spacemadness.lunar.console.commands;
 import com.spacemadness.lunar.console.CCommand;
 import com.spacemadness.lunar.console.CCommandHelper;
 import com.spacemadness.lunar.console.CCommandNotifications;
+import com.spacemadness.lunar.console.annotations.Arg;
 import com.spacemadness.lunar.console.annotations.Command;
 import com.spacemadness.lunar.utils.FileUtils;
 
@@ -27,7 +28,7 @@ import java.util.List;
 @Command(Name="exec", Description="Executes a config file.")
 public class Cmd_exec extends CCommand
 {
-    boolean execute(String filename)
+    boolean execute(@Arg("filename") String filename)
     {
         String path = CCommandHelper.GetConfigPath(filename);
         if (!FileUtils.FileExists(path))
