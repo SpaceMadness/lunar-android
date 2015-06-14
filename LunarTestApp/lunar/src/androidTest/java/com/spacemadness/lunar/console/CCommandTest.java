@@ -118,6 +118,7 @@ public class CCommandTest extends TestCaseEx implements ICCommandDelegate
 
             command.Name = commandName;
             command.IsHidden(true);
+            RuntimeResolver.ResolveOptions(command);
 
             CRegistery.Register(command);
         }

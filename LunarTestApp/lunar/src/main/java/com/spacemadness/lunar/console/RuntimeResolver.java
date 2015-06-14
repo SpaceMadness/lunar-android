@@ -140,7 +140,7 @@ class RuntimeResolver // TODO: remove this class
         return command;
     }
 
-    public static void ResolveOptions(CCommand command)
+    static void ResolveOptions(CCommand command)
     {
         try
         {

@@ -409,6 +409,7 @@ public class CommandOptionsTest extends CCommandTest
         public cmd_test(CommandActionEx del)
         {
             m_delegate = del;
+            RuntimeResolver.ResolveOptions(this);
         }
 
         void execute(String[] args)
@@ -448,6 +449,11 @@ public class CommandOptionsTest extends CCommandTest
         @CommandOption()
         public String[] strings = { "one", "two" };
 
+        public cmd_test_default()
+        {
+            RuntimeResolver.ResolveOptions(this);
+        }
+
         void execute(String[] args)
         {
             ExecutionDelegate.onExecute(this, args);
@@ -466,6 +472,11 @@ public class CommandOptionsTest extends CCommandTest
 
         @CommandOption(ShortName="o123")
         public String op123;
+
+        public cmd_test_list()
+        {
+            RuntimeResolver.ResolveOptions(this);
+        }
 
         void execute()
         {

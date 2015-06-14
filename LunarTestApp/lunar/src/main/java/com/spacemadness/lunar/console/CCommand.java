@@ -35,7 +35,6 @@ public abstract class CCommand implements Comparable<CCommand>
     public CCommand()
     {
         this.Delegate(null);
-        ResolveOptions();
     }
 
     public CCommand(String name)
@@ -47,11 +46,6 @@ public abstract class CCommand implements Comparable<CCommand>
             throw new NullPointerException("Name is null");
         }
         this.Name = name;
-    }
-
-    private void ResolveOptions()
-    {
-        RuntimeResolver.ResolveOptions(this);
     }
 
     boolean ExecuteTokens(List<String> tokens)
@@ -1478,7 +1472,6 @@ public abstract class CCommand implements Comparable<CCommand>
 
         public String Name; // FIXME: { get; protected set; }
         public String Description; // FIXME: { get; protected set; }
-        public Class<?> Type;  // FIXME: { get { return Target != null ? Target.FieldType : null; } }
         public Object DefaultValue; // FIXME: { get; set; }
 
         public String ShortName; // FIXME: { get; set; }
@@ -1510,6 +1503,29 @@ public abstract class CCommand implements Comparable<CCommand>
             }
 
             return new String[0];
+        }
+
+        @Override
+        public String toString()
+        {
+            StringBuilder result = new StringBuilder();
+            result.append(Target.getType().getName());
+            result.append(" ");
+            result.append(Name);
+            if (ShortName != null)
+            {
+                result.append("(");
+                result.append(ShortName);
+                result.append(")");
+            }
+
+            if (DefaultValue != null)
+            {
+                result.append(" = ");
+                result.append(DefaultValue.toString());
+            }
+
+            return result.toString();
         }
     }
 }
