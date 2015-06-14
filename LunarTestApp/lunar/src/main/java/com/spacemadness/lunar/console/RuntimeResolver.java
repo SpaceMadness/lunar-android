@@ -156,7 +156,7 @@ class RuntimeResolver // TODO: remove this class
 
                 String name = IsNullOrEmpty(attr.Name()) ? optionField.getName() : attr.Name();
 
-                CCommand.Option option = new CCommand.Option(optionField, name, nullOrNonEmpty(attr.Description()));
+                CCommand.Option option = new CCommand.Option(command, optionField, name, nullOrNonEmpty(attr.Description()));
                 if (!IsNullOrEmpty(attr.Values())) {
                     option.Values = ParseValues(attr.Values(), optionField.getType());
                 }

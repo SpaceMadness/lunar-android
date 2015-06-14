@@ -236,15 +236,8 @@ public abstract class CCommand implements Comparable<CCommand>
         Option option = FindOption(name);
         if (option != null)
         {
-            try
-            {
-                ParseOption(iter, option);
-                return option;
-            }
-            catch (IllegalAccessException e)
-            {
-                throw new CCommandException(e);
-            }
+            ParseOption(iter, option);
+            return option;
         }
         else
         {
@@ -252,7 +245,7 @@ public abstract class CCommand implements Comparable<CCommand>
         }
     }
 
-    private void ParseOption(Iterator<String> iter, Option opt) throws IllegalAccessException
+    private void ParseOption(Iterator<String> iter, Option opt)
     {
         Class<?> type = opt.Target.getType();
         opt.IsHandled = true;
@@ -261,27 +254,27 @@ public abstract class CCommand implements Comparable<CCommand>
         {
             Object value = CCommandUtils.NextIntArg(iter);
             CheckValue(opt, value);
-            opt.Target.set(this, value);
+            opt.setValue(value);
         }
         else if (boolean.class.equals(type))
         {
-            opt.Target.set(this, true);
+            opt.setValue(true);
         }
         else if (float.class.equals(type))
         {
             Object value = CCommandUtils.NextFloatArg(iter);
             CheckValue(opt, value);
-            opt.Target.set(this, value);
+            opt.setValue(value);
         }
         else if (String.class.equals(type))
         {
             String value = CCommandUtils.NextArg(iter);
             CheckValue(opt, value);
-            opt.Target.set(this, value);
+            opt.setValue(value);
         }
         else if (String[].class.equals(type))
         {
-            String[] arr = (String[]) opt.Target.get(this);
+            String[] arr = (String[]) opt.getValue();
             if (arr == null)
             {
                 throw new CCommandException("Field should be initialized: " + opt.Target.getName());
@@ -294,7 +287,7 @@ public abstract class CCommand implements Comparable<CCommand>
         }
         else if (int[].class.equals(type))
         {
-            int[] arr = (int[]) opt.Target.get(this);
+            int[] arr = (int[]) opt.getValue();
             if (arr == null)
             {
                 throw new CCommandException("Field should be initialized: " + opt.Target.getName());
@@ -307,7 +300,7 @@ public abstract class CCommand implements Comparable<CCommand>
         }
         else if (float[].class.equals(type))
         {
-            float[] arr = (float[]) opt.Target.get(this);
+            float[] arr = (float[]) opt.getValue();
             if (arr == null)
             {
                 throw new CCommandException("Field should be initialized: " + opt.Target.getName());
@@ -320,7 +313,7 @@ public abstract class CCommand implements Comparable<CCommand>
         }
         else if (boolean[].class.equals(type))
         {
-            boolean[] arr = (boolean[]) opt.Target.get(this);
+            boolean[] arr = (boolean[]) opt.getValue();
             if (arr == null)
             {
                 throw new CCommandException("Field should be initialized: " + opt.Target.getName());
@@ -350,7 +343,7 @@ public abstract class CCommand implements Comparable<CCommand>
 
         if (type.IsArray)
         {
-            Array arr = (Array) opt.Target.get(this);
+            Array arr = (Array) opt.getValue();
             if (arr != null)
             {
                 int length = arr.Length;
@@ -583,7 +576,7 @@ public abstract class CCommand implements Comparable<CCommand>
         return m_optionsLookup != null ? m_optionsLookup.get(name) : null;
     }
 
-    private void ResetOptions() throws IllegalAccessException
+    private void ResetOptions()
     {
         if (m_options != null)
         {
@@ -598,16 +591,16 @@ public abstract class CCommand implements Comparable<CCommand>
         }
     }
 
-    private void ResetOption(Option opt) throws IllegalAccessException
+    private void ResetOption(Option opt)
     {
         Class<?> type = opt.Target.getType();
         if (type.isArray() && opt.DefaultValue != null)
         {
-            System.arraycopy(opt.DefaultValue, 0, opt.Target.get(this), 0, Array.getLength(opt.DefaultValue));
+            System.arraycopy(opt.DefaultValue, 0, opt.getValue(), 0, Array.getLength(opt.DefaultValue));
         }
         else
         {
-            opt.Target.set(this, opt.DefaultValue);
+            opt.setValue(opt.DefaultValue);
         }
         opt.IsHandled = false;
     }
@@ -1074,7 +1067,8 @@ public abstract class CCommand implements Comparable<CCommand>
             buffer.append(StringUtils.TryFormat("  %s\n", this.Description));
         }
 
-        String optionsUsage = GetOptionsUsage(m_options);
+        String optionsUsage = m_options != null && m_options.size() > 0 ?
+                GetOptionsUsage(m_options) : null;
         String[] argsUsages = GetArgsUsages();
 
         // name
@@ -1088,7 +1082,10 @@ public abstract class CCommand implements Comparable<CCommand>
             {
                 buffer.append(optionsUsage);
             }
-            buffer.append(argsUsages[0]);
+            if (argsUsages[0] != null)
+            {
+                buffer.append(argsUsages[0]);
+            }
 
             // optional usage lines
             for (int i = 1; i < argsUsages.length; ++i)
@@ -1111,63 +1108,54 @@ public abstract class CCommand implements Comparable<CCommand>
 
     private String GetOptionsUsage(List<Option> options)
     {
-        /*
-        if (options != null && options.size() > 0)
+        StringBuilder buffer = new StringBuilder();
+        for (int i = 0; i < options.size(); ++i)
         {
-            StringBuilder buffer = new StringBuilder();
-            for (int i = 0; i < options.size(); ++i)
+            Option opt = options.get(i);
+
+            buffer.append(' ');
+
+            if (!opt.IsRequired)
             {
-                Option opt = options.get(i);
+                buffer.append('[');
+            }
 
-                buffer.append(' ');
+            if (opt.ShortName != null)
+            {
+                buffer.append(String.format("-%s|", StringUtils.C(opt.ShortName, ColorCode.TableVar)));
+            }
 
-                if (!opt.IsRequired)
+            buffer.append(String.format("--%s", StringUtils.C(opt.Name, ColorCode.TableVar)));
+
+            if (!boolean.class.equals(opt.getType()))
+            {
+                if (opt.HasValues())
                 {
-                    buffer.append('[');
-                }
-
-                if (opt.ShortName != null)
-                {
-                    buffer.AppendFormat("-%s|", StringUtils.C(opt.ShortName, ColorCode.TableVar));
-                }
-
-                buffer.AppendFormat("--%s", StringUtils.C(opt.Name, ColorCode.TableVar));
-
-                if (opt.Type != typeof(boolean))
-                {
-                    if (opt.HasValues())
+                    String[] values = opt.Values;
+                    buffer.append(" <");
+                    for (int valueIndex = 0; valueIndex < values.length; ++valueIndex)
                     {
-                        String[] values = opt.Values;
-                        buffer.Append(" <");
-                        for (int valueIndex = 0; valueIndex < values.Length; ++valueIndex)
+                        buffer.append(StringUtils.Arg(values[valueIndex]));
+                        if (valueIndex < values.length - 1)
                         {
-                            buffer.Append(StringUtils.Arg(values[valueIndex]));
-                            if (valueIndex < values.Length - 1)
-                            {
-                                buffer.Append("|");
-                            }
+                            buffer.append("|");
                         }
-                        buffer.Append('>');
                     }
-                    else
-                    {
-                        buffer.AppendFormat(" <%s>", UsageOptionName(opt));
-                    }
+                    buffer.append('>');
                 }
-
-                if (!opt.IsRequired)
+                else
                 {
-                    buffer.Append(']');
+                    buffer.append(String.format(" <%s>", UsageOptionName(opt)));
                 }
             }
 
-            return buffer.ToString();
+            if (!opt.IsRequired)
+            {
+                buffer.append(']');
+            }
         }
 
-        return null;
-        */
-
-        throw new NotImplementedException();
+        return buffer.toString();
     }
 
     private String UsageOptionName(Option opt)
@@ -1184,34 +1172,30 @@ public abstract class CCommand implements Comparable<CCommand>
 
     private String GetUsageOptionName(Option opt)
     {
-        /*
-        Type type = opt.Type;
-        if (type != null && type.IsArray)
+        Class<?> type = opt.getType();
+        if (type != null && type.isArray())
         {
-            Array arr = (Array) opt.Target.get(this);
+            Object arr = opt.getValue();
             if (arr != null)
             {
-                int length = arr.Length;
-                String elementTypeName = ClassUtils.TypeShortName(arr.GetType().GetElementType());
+                int length = Array.getLength(arr);
+                String elementTypeName = ClassUtils.TypeShortName(type.getComponentType());
 
                 StringBuilder result = new StringBuilder();
                 for (int i = 0; i < length; ++i)
                 {
-                    result.Append(elementTypeName);
+                    result.append(elementTypeName);
                     if (i < length - 1)
                     {
-                        result.Append(',');
+                        result.append(',');
                     }
                 }
-                return result.ToString();
+                return result.toString();
             }
         }
 
         String typename = ClassUtils.TypeShortName(type);
         return typename != null ? typename : "opt";
-        */
-
-        throw new NotImplementedException();
     }
 
     private String[] GetArgsUsages()
@@ -1228,37 +1212,20 @@ public abstract class CCommand implements Comparable<CCommand>
 
     protected String[] GetUsageArgs()
     {
-        /*
         if (m_values != null && m_values.length > 0)
         {
             return new String[] { " " + StringUtils.Join(m_values, "|") };
         }
 
-        Method[] executeMethods = ClassUtils.ListInstanceMethods(GetCommandType(), delegate(Method method)
+        if (executeMethods == null)
         {
-            if (method.Name != "execute")
-            {
-                return false;
-            }
+            executeMethods = resolveExecuteMethods();
+        }
 
-            if (method.IsAbstract)
-            {
-                return false;
-            }
-
-            Type returnType = method.ReturnType;
-            if (returnType != typeof(boolean) && returnType != typeof(void))
-            {
-                return false;
-            }
-
-            return true;
-        });
-
-        if (executeMethods.Length > 0)
+        if (executeMethods.length > 0)
         {
-            String[] result = new String[executeMethods.Length];
-            for (int i = 0; i < result.Length; ++i)
+            String[] result = new String[executeMethods.length];
+            for (int i = 0; i < result.length; ++i)
             {
                 result[i] = CCommandUtils.GetMethodParamsUsage(executeMethods[i]);
             }
@@ -1267,9 +1234,6 @@ public abstract class CCommand implements Comparable<CCommand>
         }
 
         return null;
-        */
-
-        throw new NotImplementedException();
     }
 
     protected void ClearTerminal()
@@ -1407,11 +1371,29 @@ public abstract class CCommand implements Comparable<CCommand>
 
     public static class Option
     {
-        public Option(Field field, String name, String description)
+        private final CCommand command;
+
+        public Option(CCommand command, Field field, String name, String description)
         {
-            Target = field;
-            Name = name;
-            Description = description;
+            if (command == null)
+            {
+                throw new NullPointerException("Command is null");
+            }
+
+            if (field == null)
+            {
+                throw new NullPointerException("Field is null");
+            }
+
+            if (StringUtils.IsNullOrEmpty(name))
+            {
+                throw new IllegalArgumentException("Name is null or empty");
+            }
+
+            this.command = command;
+            this.Target = field;
+            this.Name = name;
+            this.Description = description;
         }
 
         public boolean IsValidValue(String value)
@@ -1468,7 +1450,7 @@ public abstract class CCommand implements Comparable<CCommand>
         //////////////////////////////////////////////////////////////////////////////
         // Properties
 
-        public Field Target; // FIXME: { get; private set; }
+        private Field Target; // FIXME: { get; private set; }
 
         public String Name; // FIXME: { get; protected set; }
         public String Description; // FIXME: { get; protected set; }
@@ -1505,6 +1487,11 @@ public abstract class CCommand implements Comparable<CCommand>
             return new String[0];
         }
 
+        public Class<?> getType()
+        {
+            return Target.getType();
+        }
+
         @Override
         public String toString()
         {
@@ -1526,6 +1513,30 @@ public abstract class CCommand implements Comparable<CCommand>
             }
 
             return result.toString();
+        }
+
+        public Object getValue()
+        {
+            try
+            {
+                return Target.get(command);
+            }
+            catch (IllegalAccessException e)
+            {
+                throw new RuntimeException(e); // FIXME
+            }
+        }
+
+        public void setValue(Object value)
+        {
+            try
+            {
+                Target.set(command, value);
+            }
+            catch (IllegalAccessException e)
+            {
+                throw new RuntimeException(e);
+            }
         }
     }
 }

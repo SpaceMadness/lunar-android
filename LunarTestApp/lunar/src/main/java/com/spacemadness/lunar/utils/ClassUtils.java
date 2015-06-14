@@ -187,6 +187,11 @@ public class ClassUtils
         return outList;
     }
 
+    public static String TypeShortName(Class<?> cls)
+    {
+        throw new NotImplementedException();
+    }
+
     public interface MethodFilter
     {
         boolean accept(Method method);

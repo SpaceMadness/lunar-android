@@ -1,13 +1,16 @@
 package com.spacemadness.lunar.console;
 
+import com.spacemadness.lunar.console.annotations.Arg;
 import com.spacemadness.lunar.core.ArrayIterator;
 import com.spacemadness.lunar.core.BooleanList;
 import com.spacemadness.lunar.core.FloatList;
 import com.spacemadness.lunar.core.IntList;
 import com.spacemadness.lunar.utils.ArrayUtils;
+import com.spacemadness.lunar.utils.ClassUtils;
 import com.spacemadness.lunar.utils.NotImplementedException;
 import com.spacemadness.lunar.utils.StringUtils;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -83,42 +86,44 @@ class CCommandUtils
 
     public static String GetMethodParamsUsage(Method method)
     {
-//        Class<?>[] parameters = method.getParameterTypes();
-//        if (parameters.length > 0)
-//        {
-//            StringBuilder result = new StringBuilder();
-//            for (int i = 0; i < parameters.length; ++i)
-//            {
-//                Class<?> param = parameters[i];
-//                if (param.isArray())
-//                {
-//                    result.append(" ...");
-//                }
-//                else
-//                {
-//                    result.append(StringUtils.TryFormat(" <%s>", param.Name));
-//                }
-//            }
-//
-//            return result.toString();
-//        }
-//
-//        return null;
-        throw new NotImplementedException();
+        Class<?>[] types = method.getParameterTypes();
+        final Annotation[][] annotations = method.getParameterAnnotations();
+
+        if (types.length > 0)
+        {
+            StringBuilder result = new StringBuilder();
+            for (int i = 0; i < types.length; ++i)
+            {
+                Class<?> type = types[i];
+                if (type.isArray())
+                {
+                    result.append(" ...");
+                }
+                else
+                {
+                    Arg arg = findArgAnnotation(annotations[i]);
+                    result.append(StringUtils.TryFormat(" <%s>", arg != null ? arg.value() : type.getSimpleName()));
+                }
+            }
+
+            return result.toString();
+        }
+
+        return null;
     }
 
-    static List<Object> ResolveInvokeParameters(Class<?>[] parameters, String[] invokeArgs)
+    private static Arg findArgAnnotation(Annotation[] annotations)
     {
-//        List<Object> list = new ArrayList<Object>(invokeArgs.length);
-//
-//        Iterator<String> iter = new ArrayIterator<String>(invokeArgs);
-//        for (Class<?> param : parameters)
-//        {
-//            list.add(ResolveInvokeParameter(param, iter));
-//        }
-//
-//        return list;
-        throw new NotImplementedException();
+        for (int i = 0; i < annotations.length; ++i)
+        {
+            Arg arg = ClassUtils.as(annotations[i], Arg.class);
+            if (arg != null)
+            {
+                return arg;
+            }
+        }
+
+        return null;
     }
 
     private static Object ResolveInvokeParameter(Class<?> type, Iterator<String> iter)
