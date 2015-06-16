@@ -350,18 +350,17 @@ public class StringUtils
 
     //////////////////////////////////////////////////////////////////////////////
 
-    private static List<String> s_tempList;
-
     public static String GetSuggestedText(String token, String[] strings)
     {
-        if (token != null)
+        if (!IsNullOrEmpty(token))
         {
             List<String> filtered = new ArrayList<String>(strings.length); // TODO: reuse object
             for (int i = 0; i < strings.length; ++i)
             {
-                if (StartsWithIgnoreCase(strings[i], token))
+                final String str = strings[i];
+                if (StartsWithIgnoreCase(str, token))
                 {
-                    filtered.add(token);
+                    filtered.add(str);
                 }
             }
 
@@ -378,9 +377,10 @@ public class StringUtils
             List<String> filtered = new ArrayList<String>(strings.size()); // TODO: reuse object
             for (int i = 0; i < strings.size(); ++i)
             {
-                if (StartsWithIgnoreCase(strings.get(i), token))
+                final String str = strings.get(i);
+                if (StartsWithIgnoreCase(str, token))
                 {
-                    filtered.add(token);
+                    filtered.add(str);
                 }
             }
 

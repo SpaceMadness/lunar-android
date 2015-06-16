@@ -922,7 +922,6 @@ public abstract class CCommand implements Comparable<CCommand>
                 }
             }
 
-            Arrays.sort(names);
             Print(names);
         }
     }
