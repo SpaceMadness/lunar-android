@@ -124,7 +124,7 @@ public class CommandAutoCompleteTest extends TestCaseEx
         cmd_OptionsTest cmd = new cmd_OptionsTest();
         cmd.Delegate(del);
 
-        String commandLine = "test --boolean";
+        String commandLine = "test --bool";
         List<String> tokens = CommandTokenizer.Tokenize(commandLine);
 
         assertEquals("test --boolOpt", cmd.AutoComplete(commandLine, tokens, false));
@@ -302,7 +302,7 @@ public class CommandAutoCompleteTest extends TestCaseEx
         cmd_OptionsTest cmd = new cmd_OptionsTest();
         cmd.Delegate(del);
 
-        String commandLine = "test --boolean";
+        String commandLine = "test --bool";
         List<String> tokens = CommandTokenizer.Tokenize(commandLine);
 
         assertEquals("test --boolOpt", cmd.AutoComplete(commandLine, tokens, true));
@@ -666,6 +666,7 @@ public class CommandAutoCompleteTest extends TestCaseEx
 	    public cmd_OptionsTest()
 	    {
 	        RuntimeResolver.ResolveOptions(this);
+
 	        this.Values(new String[] {
 	            "foo",
 	            "val1",

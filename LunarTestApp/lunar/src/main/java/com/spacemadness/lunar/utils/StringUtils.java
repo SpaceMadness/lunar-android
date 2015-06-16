@@ -1,10 +1,8 @@
 package com.spacemadness.lunar.utils;
 
 import com.spacemadness.lunar.ColorCode;
-import com.spacemadness.lunar.core.ArrayIterator;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -356,58 +354,48 @@ public class StringUtils
 
     public static String GetSuggestedText(String token, String[] strings)
     {
-        return GetSuggestedText0(token, new ArrayIterator<String>(strings));
+        if (token != null)
+        {
+            List<String> filtered = new ArrayList<String>(strings.length); // TODO: reuse object
+            for (int i = 0; i < strings.length; ++i)
+            {
+                if (StartsWithIgnoreCase(strings[i], token))
+                {
+                    filtered.add(token);
+                }
+            }
+
+            return getSuggestedText(filtered);
+        }
+
+        return getSuggestedText(ArrayUtils.toList(strings));
     }
 
     public static String GetSuggestedText(String token, List<String> strings)
     {
-        return GetSuggestedText0(token, strings.iterator());
-    }
-
-    private static String GetSuggestedText0(String token, Iterator<String> iter)
-    {
-        if (IsNullOrEmpty(token))
+        if (token != null)
         {
-            return null;
-        }
-
-        if (s_tempList == null) s_tempList = new ArrayList<String>();
-        else s_tempList.clear();
-
-        while (iter.hasNext())
-        {
-            String str = iter.next();
-            if (StringUtils.StartsWithIgnoreCase(str, token))
+            List<String> filtered = new ArrayList<String>(strings.size()); // TODO: reuse object
+            for (int i = 0; i < strings.size(); ++i)
             {
-                s_tempList.add(str);
+                if (StartsWithIgnoreCase(strings.get(i), token))
+                {
+                    filtered.add(token);
+                }
             }
+
+            return getSuggestedText(filtered);
         }
 
-        return GetSuggestedTextFiltered0(token, s_tempList);
+        return getSuggestedText(strings);
     }
 
-    public static String GetSuggestedTextFiltered(String token, List<String> strings)
+    private static String getSuggestedText(List<String> list)
     {
-        return GetSuggestedTextFiltered0(token, strings);
-    }
-
-    public static String GetSuggestedTextFiltered(String token, String[] strings)
-    {
-        // return GetSuggestedTextFiltered0(token, strings);
-        throw new NotImplementedException();
-    }
-
-    private static String GetSuggestedTextFiltered0(String token, List<String> list)
-    {
-        if (token == null) return null;
         if (list.size() == 0) return null;
         if (list.size() == 1) return list.get(0);
 
         String firstString = list.get(0);
-        if (token.length() == 0)
-        {
-            token = firstString;
-        }
 
         StringBuilder suggestedToken = new StringBuilder();
 

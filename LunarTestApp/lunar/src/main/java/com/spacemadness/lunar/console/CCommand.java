@@ -1,6 +1,7 @@
 package com.spacemadness.lunar.console;
 
 import com.spacemadness.lunar.ColorCode;
+import com.spacemadness.lunar.core.ArrayListIterator;
 import com.spacemadness.lunar.debug.Log;
 import com.spacemadness.lunar.utils.ArrayUtils;
 import com.spacemadness.lunar.utils.ClassUtils;
@@ -15,6 +16,7 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -338,16 +340,15 @@ public abstract class CCommand implements Comparable<CCommand>
 
     private boolean SkipOption(Iterator<String> iter, Option opt)
     {
-        /*
-        Type type = opt.Target.FieldType;
+        Class<?> type = opt.getType();
 
-        if (type.IsArray)
+        if (type.isArray())
         {
-            Array arr = (Array) opt.getValue();
+            Object arr = opt.getValue();
             if (arr != null)
             {
-                int length = arr.Length;
-                Type elementType = arr.GetType().GetElementType();
+                int length = Array.getLength(arr);
+                Class<?> elementType = type.getComponentType();
 
                 int index = 0;
                 if (iter.hasNext() && index++ < length)
@@ -370,9 +371,9 @@ public abstract class CCommand implements Comparable<CCommand>
             return false;
         }
 
-        if (type == typeof(int) ||
-            type == typeof(float) ||
-            type == typeof(String))
+        if (opt.isType(int.class) ||
+                opt.isType(float.class) ||
+                opt.isType(String.class))
         {
             if (iter.hasNext())
             {
@@ -397,8 +398,6 @@ public abstract class CCommand implements Comparable<CCommand>
         }
 
         return false;
-        */
-        throw new NotImplementedException();
     }
 
     private void CheckValue(Option opt, Object value)
@@ -609,14 +608,13 @@ public abstract class CCommand implements Comparable<CCommand>
 
     String AutoComplete(String commandLine, List<String> tokens, boolean doubleTab)
     {
-        /*
-        Iterator<String> iter = tokens.iterator();
+        ArrayListIterator<String> iter = new ArrayListIterator<String>((ArrayList<String>) tokens); // TODO: I don't like that
         iter.next(); // first token is a command name
 
         while (iter.hasNext())
         {
             String token = iter.next();
-            int iterPos = iter.Position; // store position to revert for the case if option skip fails
+            int iterPos = iter.getPosition(); // store position to revert for the case if option skip fails
 
             // first, try to parse options
             if (token.startsWith("--"))
@@ -624,7 +622,7 @@ public abstract class CCommand implements Comparable<CCommand>
                 String optionName = token.substring(2);
                 if (iter.hasNext() && SkipOption(iter, optionName)) continue;
 
-                iter.Position = iterPos;
+                iter.setPosition(iterPos);
                 return AutoCompleteOption(commandLine, iter, optionName, "--", doubleTab);
             }
             else if (token.startsWith("-") && !StringUtils.IsNumeric(token))
@@ -632,7 +630,7 @@ public abstract class CCommand implements Comparable<CCommand>
                 String optionName = token.substring(1);
                 if (iter.hasNext() && SkipOption(iter, optionName)) continue;
 
-                iter.Position = iterPos;
+                iter.setPosition(iterPos);
                 return AutoCompleteOption(commandLine, iter, optionName, "-", doubleTab);
             }
 
@@ -640,35 +638,40 @@ public abstract class CCommand implements Comparable<CCommand>
         }
 
         return AutoCompleteArgs(commandLine, "", doubleTab);
-        */
-
-        throw new NotImplementedException(); // FIXME
     }
 
-    private String AutoCompleteOption(String commandLine, Iterator<String> iter, String optNameToken, String prefix, boolean doubleTab)
+    private String AutoCompleteOption(String commandLine, ArrayListIterator<String> iter, String optNameToken, String prefix, boolean doubleTab)
     {
-        /*
-        ReusableList<Option> optionsList = ReusableLists.NextAutoRecycleList<Option>();
+        List<Option> optionsList = new ArrayList<Option>();
 
         // list options
-        boolean useShort = false;
-        useShort = prefix.equals("-");
+        boolean useShort = prefix.equals("-");
         if (useShort)
         {
             ListShortOptions(optionsList, optNameToken);
-            optionsList.Sort(delegate(Option op1, Option op2) {
-                return op1.ShortName.CompareTo(op2.ShortName);
+            Collections.sort(optionsList, new Comparator<Option>()
+            {
+                @Override
+                public int compare(Option lhs, Option rhs)
+                {
+                    return lhs.ShortName.compareTo(rhs.ShortName);
+                }
             });
         }
         else
         {
             ListOptions(optionsList, optNameToken);
-            optionsList.Sort(delegate(Option op1, Option op2) {
-                return op1.Name.CompareTo(op2.Name);
+            Collections.sort(optionsList, new Comparator<Option>()
+            {
+                @Override
+                public int compare(Option lhs, Option rhs)
+                {
+                    return lhs.Name.compareTo(rhs.Name);
+                }
             });
         }
 
-        if (optionsList.Count > 1)
+        if (optionsList.size() > 1)
         {
             if (doubleTab)
             {
@@ -679,18 +682,18 @@ public abstract class CCommand implements Comparable<CCommand>
             if (suggested != null)
             {
                 String text = commandLine;
-                int index = text.LastIndexOf(prefix);
-                return text.SubString(0, index + prefix.Length) + suggested;
+                int index = text.lastIndexOf(prefix);
+                return text.substring(0, index + prefix.length()) + suggested;
             }
         }
-        else if (optionsList.Count == 1)
+        else if (optionsList.size() == 1)
         {
-            Option opt = optionsList[0];
-            String token = iter.Current();
+            Option opt = optionsList.get(0);
+            String token = iter.current();
             String optName = useShort ? opt.ShortName : opt.Name;
 
-            int index = commandLine.LastIndexOf(token);
-            String newCommandLine = commandLine.SubString(0, index + prefix.Length) + optName + " ";
+            int index = commandLine.lastIndexOf(token);
+            String newCommandLine = commandLine.substring(0, index + prefix.length()) + optName + " ";
 
             if (opt.HasValues())
             {
@@ -698,7 +701,7 @@ public abstract class CCommand implements Comparable<CCommand>
                 {
                     String arg = iter.next();
                     String[] values = opt.ListValues(arg);
-                    if (values.Length > 1)
+                    if (values.length > 1)
                     {
                         String suggested = StringUtils.GetSuggestedText(arg, values);
                         if (suggested != null)
@@ -711,7 +714,7 @@ public abstract class CCommand implements Comparable<CCommand>
                             Print(values);
                         }
                     }
-                    else if (values.Length == 1)
+                    else if (values.length == 1)
                     {
                         newCommandLine += values[0] + " ";
                     }
@@ -722,39 +725,45 @@ public abstract class CCommand implements Comparable<CCommand>
                 }
             }
 
-            return newCommandLine.Equals(commandLine) ? null : newCommandLine;
+            return newCommandLine.equals(commandLine) ? null : newCommandLine;
         }
 
         return null;
-        */
-
-        throw new NotImplementedException(); // FIXME
     }
 
     private String AutoCompleteOption(String commandLine, String optToken, String argToken, boolean doubleTab, boolean useShort)
     {
-        /*
         String prefix = useShort ? "-" : "--";
-        String optName = optToken.Length > prefix.Length ? optToken.SubString(prefix.Length) : null;
+        String optName = optToken.length() > prefix.length() ? optToken.substring(prefix.length()) : null;
 
         // list options
         List<Option> optionsList;
         if (useShort)
         {
             optionsList = ListShortOptions(optName);
-            ListUtils.Sort(optionsList, delegate(Option op1, Option op2) {
-                return op1.ShortName.CompareTo(op2.ShortName);
+            Collections.sort(optionsList, new Comparator<Option>()
+            {
+                @Override
+                public int compare(Option lhs, Option rhs)
+                {
+                    return lhs.ShortName.compareTo(rhs.ShortName);
+                }
             });
         }
         else
         {
             optionsList = ListOptions(optName);
-            ListUtils.Sort(optionsList, delegate(Option op1, Option op2) {
-                return op1.Name.CompareTo(op2.Name);
+            Collections.sort(optionsList, new Comparator<Option>()
+            {
+                @Override
+                public int compare(Option lhs, Option rhs)
+                {
+                    return lhs.Name.compareTo(rhs.Name);
+                }
             });
         }
 
-        if (optionsList.Count > 1)
+        if (optionsList.size() > 1)
         {
             if (doubleTab)
             {
@@ -763,19 +772,19 @@ public abstract class CCommand implements Comparable<CCommand>
             if (optName != null)
             {
                 String text = commandLine;
-                int index = text.LastIndexOf(prefix);
-                return text.SubString(0, index + prefix.Length) + GetSuggestedText(optName, optionsList, useShort);
+                int index = text.lastIndexOf(prefix);
+                return text.substring(0, index + prefix.length()) + GetSuggestedText(optName, optionsList, useShort);
             }
         }
-        else if (optionsList.Count == 1)
+        else if (optionsList.size() == 1)
         {
-            Option opt = optionsList[0];
-            int index = commandLine.LastIndexOf(prefix);
-            String newCommandLine = commandLine.SubString(0, index + prefix.Length) +
+            Option opt = optionsList.get(0);
+            int index = commandLine.lastIndexOf(prefix);
+            String newCommandLine = commandLine.substring(0, index + prefix.length()) +
                     (useShort ? opt.ShortName : opt.Name) + " " +
                     (argToken != null ? argToken : "");
 
-            if (newCommandLine.Equals(commandLine))
+            if (newCommandLine.equals(commandLine))
             {
                 return opt.HasValues() ? AutoComplete(commandLine, opt, argToken, doubleTab) : null;
             }
@@ -784,9 +793,6 @@ public abstract class CCommand implements Comparable<CCommand>
         }
 
         return null;
-        */
-
-        throw new NotImplementedException(); // FIXME
     }
 
     private String AutoComplete(String commandLine, Option opt, String token, boolean doubleTab)
@@ -935,7 +941,7 @@ public abstract class CCommand implements Comparable<CCommand>
             names[i] = useShort ? options.get(i).ShortName : options.get(i).Name;
         }
 
-        return StringUtils.GetSuggestedTextFiltered(token, names);
+        return StringUtils.GetSuggestedText(token, names);
     }
 
     void Clear()
@@ -1398,28 +1404,23 @@ public abstract class CCommand implements Comparable<CCommand>
 
         public boolean IsValidValue(String value)
         {
-            /*
             if (HasValues())
             {
                 return ArrayUtils.IndexOf(Values, value) != -1;
             }
 
-            return IsValidValue(Target.FieldType, value);
-            */
-
-            throw new NotImplementedException(); // FIXME
+            return IsValidValue(getType(), value);
         }
 
         static boolean IsValidValue(Class<?> type, String value)
         {
-            /*
             if (String.class.equals(type))
             {
-                if (value.StartsWith("--")) // can't be long option
+                if (value.startsWith("--")) // can't be long option
                 {
                     return false;
                 }
-                if (value.StartsWith("-")) // can't be short option
+                if (value.startsWith("-")) // can't be short option
                 {
                     return StringUtils.IsNumeric(value); // but can be a negative number
                 }
@@ -1437,9 +1438,6 @@ public abstract class CCommand implements Comparable<CCommand>
             }
 
             return false;
-            */
-
-            throw new NotImplementedException(); // FIXME
         }
 
         public boolean HasValues()
@@ -1492,6 +1490,11 @@ public abstract class CCommand implements Comparable<CCommand>
             return Target.getType();
         }
 
+        public boolean isType(Class<?> type)
+        {
+            return getType().equals(type);
+        }
+
         @Override
         public String toString()
         {
@@ -1523,7 +1526,7 @@ public abstract class CCommand implements Comparable<CCommand>
             }
             catch (IllegalAccessException e)
             {
-                throw new RuntimeException(e); // FIXME
+                throw new RuntimeException(e); // FIXME: throw real exception
             }
         }
 
@@ -1535,7 +1538,7 @@ public abstract class CCommand implements Comparable<CCommand>
             }
             catch (IllegalAccessException e)
             {
-                throw new RuntimeException(e);
+                throw new RuntimeException(e); // FIXME: throw real exception
             }
         }
     }
