@@ -10,12 +10,16 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.spacemadness.lunar.console.CommandHistory;
+
 /**
  * Created by alementuev on 6/16/15.
  */
 public class CommandEditText extends EditText
 {
+    private CommandHistory history;
     private OnCommandRunListener commandListener;
+    private String lastUserInput;
 
     public CommandEditText(Context context)
     {
@@ -44,6 +48,8 @@ public class CommandEditText extends EditText
 
     private void init(Context context)
     {
+        history = new CommandHistory(128);
+
         setImeActionLabel("Run", EditorInfo.IME_ACTION_GO);
         setInputType(InputType.TYPE_CLASS_TEXT);
         setLines(1);
@@ -87,14 +93,62 @@ public class CommandEditText extends EditText
     //////////////////////////////////////////////////////////////////////////////
     // History
 
+    public boolean historyPrev()
+    {
+        if (lastUserInput == null)
+        {
+            lastUserInput = getCommandLine();
+        }
+
+        String commandLine = getHistoryPrev();
+        if (commandLine != null)
+        {
+            setText(commandLine);
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean historyNext()
+    {
+        String commandLine = getHistoryNext();
+        if (commandLine != null)
+        {
+            setText(commandLine);
+            return true;
+        }
+
+        if (lastUserInput != null)
+        {
+            setCommandLine(lastUserInput);
+            resetHistory();
+
+            return true;
+        }
+
+        return false;
+    }
+
     private void pushHistory(String commandLine)
     {
+        history.Push(commandLine);
+    }
 
+    private String getHistoryPrev()
+    {
+        return history.Prev();
+    }
+
+    private String getHistoryNext()
+    {
+        return history.Next();
     }
 
     private void resetHistory()
     {
-
+        history.Reset();
+        lastUserInput = null;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -108,6 +162,16 @@ public class CommandEditText extends EditText
     public OnCommandRunListener getCommandListener()
     {
         return commandListener;
+    }
+
+    public String getCommandLine()
+    {
+        return getText().toString();
+    }
+
+    public void setCommandLine(String commandLine)
+    {
+        setText(commandLine);
     }
 
     //////////////////////////////////////////////////////////////////////////////

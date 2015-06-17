@@ -2,13 +2,11 @@ package spacemadness.com.lunartestapp;
 
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
-import android.widget.TextView;
+
+import com.spacemadness.lunar.ui.CommandEditText;
 
 
 public class MainActivity extends ActionBarActivity
@@ -19,8 +17,7 @@ public class MainActivity extends ActionBarActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        setEditText();
-        setButtons();
+        setupUI();
     }
 
     @Override
@@ -48,18 +45,16 @@ public class MainActivity extends ActionBarActivity
         return super.onOptionsItemSelected(item);
     }
 
-    private void setEditText()
+    private void setupUI()
     {
-        EditText editText = (EditText) findViewById(R.id.edit_text_command_line);
-    }
+        final CommandEditText commandEditText = (CommandEditText) findViewById(R.id.edit_text_command_line);
 
-    private void setButtons()
-    {
         setClickListener(R.id.button_up, new View.OnClickListener()
         {
             @Override
             public void onClick(View v)
             {
+                commandEditText.historyPrev();
             }
         });
         setClickListener(R.id.button_down, new View.OnClickListener()
@@ -67,6 +62,7 @@ public class MainActivity extends ActionBarActivity
             @Override
             public void onClick(View v)
             {
+                commandEditText.historyNext();
             }
         });
         setClickListener(R.id.button_left, new View.OnClickListener()
