@@ -70,7 +70,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <com.spacemadness.lunar.ui.CommandLineEditText
+        <com.spacemadness.lunar.ui.CommandEditText
             android:id="@+id/edit_text_command_line"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

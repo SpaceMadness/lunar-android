@@ -13,30 +13,30 @@ import android.widget.TextView;
 /**
  * Created by alementuev on 6/16/15.
  */
-public class CommandLineEditText extends EditText
+public class CommandEditText extends EditText
 {
     private OnCommandRunListener commandListener;
 
-    public CommandLineEditText(Context context)
+    public CommandEditText(Context context)
     {
         super(context);
         init(context);
     }
 
-    public CommandLineEditText(Context context, AttributeSet attrs)
+    public CommandEditText(Context context, AttributeSet attrs)
     {
         super(context, attrs);
         init(context);
     }
 
-    public CommandLineEditText(Context context, AttributeSet attrs, int defStyleAttr)
+    public CommandEditText(Context context, AttributeSet attrs, int defStyleAttr)
     {
         super(context, attrs, defStyleAttr);
         init(context);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public CommandLineEditText(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes)
+    public CommandEditText(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes)
     {
         super(context, attrs, defStyleAttr, defStyleRes);
         init(context);
@@ -115,6 +115,6 @@ public class CommandLineEditText extends EditText
 
     public interface OnCommandRunListener
     {
-        void onCommandRun(CommandLineEditText v, String commandLine);
+        void onCommandRun(CommandEditText v, String commandLine);
     }
 }
