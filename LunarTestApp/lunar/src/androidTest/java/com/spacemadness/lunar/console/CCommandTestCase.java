@@ -1,9 +1,13 @@
 package com.spacemadness.lunar.console;
 
+import com.spacemadness.lunar.Config;
 import com.spacemadness.lunar.TestCaseEx;
 import com.spacemadness.lunar.utils.ClassUtils;
 import com.spacemadness.lunar.utils.NotImplementedException;
 import com.spacemadness.lunar.utils.StringUtils;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 
 /**
  * Created by weee on 6/10/15.
@@ -149,7 +153,36 @@ public class CCommandTestCase extends TestCaseEx implements ICCommandDelegate
 
     protected void OverrideDebugMode(boolean flag)
     {
+        try
+        {
+            Field field = Config.class.getDeclaredField("isDebugBuild");
+            int modifiers = field.getModifiers();
 
+            if (Modifier.isFinal(modifiers))
+            {
+                Field artFieldField = Field.class.getDeclaredField("artField");
+                artFieldField.setAccessible(true);
+                Object artField = artFieldField.get(field);
+
+                Class<?> artFieldClass = artField.getClass();
+                Field accessFlagsField = artFieldClass.getDeclaredField("accessFlags");
+                accessFlagsField.setAccessible(true);
+                int accessFlags = accessFlagsField.getInt(artField) & 0xffff;
+                accessFlags &= ~Modifier.FINAL;
+                accessFlagsField.setInt(artField, accessFlags);
+            }
+
+            if (Modifier.isPrivate(modifiers))
+            {
+                field.setAccessible(true);
+            }
+
+            field.setBoolean(null, flag);
+        }
+        catch (Exception e)
+        {
+            throw new AssertionError(e);
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////
