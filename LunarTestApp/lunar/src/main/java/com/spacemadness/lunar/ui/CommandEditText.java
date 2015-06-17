@@ -51,7 +51,7 @@ public class CommandEditText extends EditText
         history = new CommandHistory(128);
 
         setImeActionLabel("Run", EditorInfo.IME_ACTION_GO);
-        setInputType(InputType.TYPE_CLASS_TEXT);
+        setInputType(InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS);
         setLines(1);
         setSingleLine(true);
 
@@ -149,6 +149,15 @@ public class CommandEditText extends EditText
     {
         history.Reset();
         lastUserInput = null;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    // Operations
+
+    public void clear()
+    {
+        setCommandLine("");
+        resetHistory();
     }
 
     //////////////////////////////////////////////////////////////////////////////

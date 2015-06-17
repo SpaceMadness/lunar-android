@@ -84,13 +84,7 @@ public class MainActivity extends ActionBarActivity
             @Override
             public void onClick(View v)
             {
-            }
-        });
-        setClickListener(R.id.button_run, new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
+                commandEditText.clear();
             }
         });
     }
