@@ -7,6 +7,7 @@ import com.spacemadness.lunar.console.annotations.CommandOption;
 import com.spacemadness.lunar.utils.ArrayUtils;
 import com.spacemadness.lunar.utils.ClassUtils;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ import dalvik.system.PathClassLoader;
 
 import static com.spacemadness.lunar.utils.ClassUtils.FieldFilter;
 import static com.spacemadness.lunar.utils.ClassUtils.as;
+import static com.spacemadness.lunar.utils.ClassUtils.getFieldValue;
 import static com.spacemadness.lunar.utils.ClassUtils.tryNewInstance;
 import static com.spacemadness.lunar.utils.StringUtils.IsNullOrEmpty;
 import static com.spacemadness.lunar.utils.StringUtils.nullOrNonEmpty;
@@ -29,12 +31,6 @@ import static com.spacemadness.lunar.utils.StringUtils.nullOrNonEmpty;
 class RuntimeResolver // TODO: remove this class
 {
     private static final String TAG = PathClassLoader.class.getSimpleName();
-    private static final Field dexField;
-
-    static
-    {
-        dexField = resolveDexField();
-    }
 
     private static final FieldFilter OPTIONS_FIELD_FILTER = new FieldFilter()
     {
@@ -57,22 +53,6 @@ class RuntimeResolver // TODO: remove this class
         }
     };
 
-    private static Field resolveDexField()
-    {
-        try
-        {
-            Field dexField = PathClassLoader.class.getDeclaredField("mDexs");
-            dexField.setAccessible(true);
-            return dexField;
-        }
-        catch (Exception e)
-        {
-            Log.e(TAG, "Can't init runtime resolver: " + e.getMessage());
-        }
-
-        return null;
-    }
-
     public static List<CCommand> ResolveCommands()
     {
         try
@@ -89,24 +69,35 @@ class RuntimeResolver // TODO: remove this class
 
     public static List<CCommand> ResolveCommandsGuarded() throws Exception
     {
-        List<CCommand> list = new ArrayList<CCommand>();
+        final List<CCommand> list = new ArrayList<CCommand>();
 
-        PathClassLoader classLoader = (PathClassLoader) Thread.currentThread().getContextClassLoader();
-        DexFile[] dexFiles = (DexFile[]) dexField.get(classLoader);
-        for (DexFile dex : dexFiles)
+        ClassUtils.listClassesName(new ClassUtils.Map<String>()
         {
-            Enumeration<String> entries = dex.entries();
-            while (entries.hasMoreElements())
-            {
-                String className = entries.nextElement();
+            private final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
 
-                Class<?> aClass = Class.forName(className, false, classLoader);
-                if (aClass != null)
+            @Override
+            public void each(String className)
+            {
+                if (className.startsWith("android.")) // skip system Android classes
                 {
-                    process(aClass);
+                    return;
+                }
+
+                try
+                {
+                    Class<?> aClass = Class.forName(className, false, classLoader);
+                    CCommand command = process(aClass);
+                    if (command != null)
+                    {
+                        list.add(command);
+                    }
+                }
+                catch (Exception e)
+                {
+                    e.printStackTrace(); // TODO: better error handling
                 }
             }
-        }
+        });
 
         return list;
     }
@@ -147,7 +138,7 @@ class RuntimeResolver // TODO: remove this class
             List<Field> optionFields = ClassUtils.listFields(command.getClass(), OPTIONS_FIELD_FILTER, true);
             for (Field optionField : optionFields)
             {
-                if (Modifier.isPrivate(optionField.getModifiers()))
+                if (!Modifier.isPublic(optionField.getModifiers()))
                 {
                     optionField.setAccessible(true);
                 }

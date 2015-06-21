@@ -3,12 +3,19 @@ package com.spacemadness.lunar.utils;
 import com.spacemadness.lunar.debug.Assert;
 import com.spacemadness.lunar.debug.Log;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
+import java.util.NoSuchElementException;
+
+import dalvik.system.DexFile;
+import dalvik.system.PathClassLoader;
 
 public class ClassUtils
 {
@@ -68,6 +75,32 @@ public class ClassUtils
             Log.logCrit("Unable to instantiate class %s: %s", cls, e.getMessage());
         }
         return null;
+    }
+
+    public static void listClassesName(Map<String> map) throws NoSuchFieldException, IllegalAccessException
+    {
+        if (map == null)
+        {
+            throw new NullPointerException("Map is null");
+        }
+
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+
+        Object pathList = getFieldValue(classLoader, "pathList");
+        Object dexElements = getFieldValue(pathList, "dexElements");
+
+        int dexElementsCount = Array.getLength(dexElements);
+        for (int i = 0; i < dexElementsCount; ++i)
+        {
+            Object dexElement = Array.get(dexElements, i);
+            DexFile dexFile = (DexFile) getFieldValue(dexElement, "dexFile");
+
+            Enumeration<String> entries = dexFile.entries();
+            while (entries.hasMoreElements())
+            {
+                map.each(entries.nextElement());
+            }
+        }
     }
 
     public static Method[] ListInstanceMethods(Class<?> cls, MethodFilter filter)
@@ -187,9 +220,96 @@ public class ClassUtils
         return outList;
     }
 
+    public static Field findField(Class<?> cls, String name, boolean recursive)
+    {
+        if (cls == null)
+        {
+            throw new NullPointerException("Class is null");
+        }
+
+        if (name == null)
+        {
+            throw new NullPointerException("Field name is null");
+        }
+
+        if (recursive)
+        {
+            Class<?> c = cls;
+            while (c != null) // don't list Object's fields
+            {
+                Field field = findField0(c, name);
+                if (field != null)
+                {
+                    return field;
+                }
+                c = c.getSuperclass();
+            }
+
+            return null;
+        }
+
+        return findField0(cls, name);
+    }
+
+    public static Field findField(Class<?> cls, String name)
+    {
+        if (cls == null)
+        {
+            throw new NullPointerException("Class is null");
+        }
+
+        if (name == null)
+        {
+            throw new NullPointerException("Field name is null");
+        }
+
+        return findField0(cls, name);
+    }
+
+    private static Field findField0(Class<?> cls, String name)
+    {
+        final Field[] fields = cls.getDeclaredFields();
+        for (int i = 0; i < fields.length; ++i)
+        {
+            Field field = fields[i];
+            if (field.getName().equals(name))
+            {
+                return field;
+            }
+        }
+
+        return null;
+    }
+
+    public static Object getFieldValue(Object target, String name) throws NoSuchFieldException, IllegalAccessException
+    {
+        if (target == null)
+        {
+            throw new NullPointerException("Target is null");
+        }
+
+        Field field = findField(target.getClass(), name, true);
+        if (field == null)
+        {
+            throw new NoSuchElementException("Field '" + name + "'not found in class: " + target.getClass());
+        }
+
+        if (!Modifier.isPublic(field.getModifiers()))
+        {
+            field.setAccessible(true);
+        }
+
+        return field.get(target);
+    }
+
     public static String TypeShortName(Class<?> cls)
     {
         throw new NotImplementedException();
+    }
+
+    public interface Map<T>
+    {
+        void each(T t);
     }
 
     public interface MethodFilter

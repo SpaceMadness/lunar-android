@@ -1,5 +1,6 @@
 package com.spacemadness.lunar.console;
 
+import com.spacemadness.lunar.debug.Log;
 import com.spacemadness.lunar.utils.ClassUtils;
 import com.spacemadness.lunar.utils.StringUtils;
 
@@ -24,6 +25,7 @@ public class CRegistery
         List<CCommand> commands = RuntimeResolver.ResolveCommands();
         for (int i = 0; i < commands.size(); ++i)
         {
+            Log.d("Resolve command: " + commands.get(i).Name);
             Register(commands.get(i));
         }
     }

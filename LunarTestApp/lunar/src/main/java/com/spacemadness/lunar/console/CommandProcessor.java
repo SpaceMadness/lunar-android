@@ -11,7 +11,7 @@ import static com.spacemadness.lunar.utils.StringUtils.C;
 /**
  * Created by alementuev on 5/29/15.
  */
-class CommandProcessor
+public class CommandProcessor
 {
     private ICCommandDelegate m_delegate;
 

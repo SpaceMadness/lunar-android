@@ -1,15 +1,19 @@
 package spacemadness.com.lunartestapp;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
+import com.spacemadness.lunar.console.CRegistery;
+import com.spacemadness.lunar.console.CommandProcessor;
 import com.spacemadness.lunar.ui.CommandEditText;
+import com.spacemadness.lunar.ui.TerminalFragment;
 
 
-public class MainActivity extends ActionBarActivity
+public class MainActivity extends ActionBarActivity implements TerminalFragment.OnFragmentInteractionListener
 {
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -17,7 +21,7 @@ public class MainActivity extends ActionBarActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        setupUI();
+        CRegistery.ResolveCommands();
     }
 
     @Override
@@ -45,52 +49,8 @@ public class MainActivity extends ActionBarActivity
         return super.onOptionsItemSelected(item);
     }
 
-    private void setupUI()
+    @Override
+    public void onFragmentInteraction(Uri uri)
     {
-        final CommandEditText commandEditText = (CommandEditText) findViewById(R.id.edit_text_command_line);
-
-        setClickListener(R.id.button_up, new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                commandEditText.historyPrev();
-            }
-        });
-        setClickListener(R.id.button_down, new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                commandEditText.historyNext();
-            }
-        });
-        setClickListener(R.id.button_left, new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-            }
-        });
-        setClickListener(R.id.button_right, new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-            }
-        });
-        setClickListener(R.id.button_clear, new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                commandEditText.clear();
-            }
-        });
-    }
-
-    private void setClickListener(int id, View.OnClickListener listener)
-    {
-        findViewById(id).setOnClickListener(listener);
     }
 }

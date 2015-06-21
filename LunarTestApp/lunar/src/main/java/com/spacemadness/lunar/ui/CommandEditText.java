@@ -62,12 +62,12 @@ public class CommandEditText extends EditText
             {
                 if (actionId == EditorInfo.IME_ACTION_GO)
                 {
-                    String commandLine = v.getText().toString().trim();
+                    String commandLine = getCommandLine().trim();
                     if (commandLine.length() > 0)
                     {
                         pushHistory(commandLine);
                         notifyListener(commandLine);
-                        v.setText("");
+                        setCommandLine("");
                         resetHistory();
                     }
 
@@ -103,7 +103,7 @@ public class CommandEditText extends EditText
         String commandLine = getHistoryPrev();
         if (commandLine != null)
         {
-            setText(commandLine);
+            setCommandLine(commandLine);
             return true;
         }
 
@@ -115,7 +115,7 @@ public class CommandEditText extends EditText
         String commandLine = getHistoryNext();
         if (commandLine != null)
         {
-            setText(commandLine);
+            setCommandLine(commandLine);
             return true;
         }
 
@@ -154,6 +154,11 @@ public class CommandEditText extends EditText
     //////////////////////////////////////////////////////////////////////////////
     // Operations
 
+    public void autocomplete()
+    {
+
+    }
+
     public void clear()
     {
         setCommandLine("");
@@ -180,7 +185,13 @@ public class CommandEditText extends EditText
 
     public void setCommandLine(String commandLine)
     {
+        if (commandLine == null)
+        {
+            throw new NullPointerException("Command line is null");
+        }
+
         setText(commandLine);
+        setSelection(commandLine.length());
     }
 
     //////////////////////////////////////////////////////////////////////////////

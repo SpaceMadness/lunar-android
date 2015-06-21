@@ -172,7 +172,7 @@ public class CCommandTestCase extends TestCaseEx implements ICCommandDelegate
                 accessFlagsField.setInt(artField, accessFlags);
             }
 
-            if (Modifier.isPrivate(modifiers))
+            if (!Modifier.isPublic(modifiers))
             {
                 field.setAccessible(true);
             }
