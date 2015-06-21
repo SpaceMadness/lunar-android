@@ -13,12 +13,12 @@ import spacemadness.com.lunar.R;
 
 public class TerminalFragment extends Fragment implements CommandEditText.OnCommandRunListener
 {
-    private final Terminal mTerminal;
-    private RecyclerView mRecycleView;
+    private final Terminal terminal;
+    private RecyclerView recycleView;
 
     public TerminalFragment()
     {
-        mTerminal = new Terminal();
+        terminal = new Terminal();
     }
 
     @Override
@@ -83,6 +83,6 @@ public class TerminalFragment extends Fragment implements CommandEditText.OnComm
     @Override
     public void onCommandRun(CommandEditText v, String commandLine)
     {
-        mTerminal.ExecuteCommandLine(commandLine, true);
+        terminal.ExecuteCommandLine(commandLine, true);
     }
 }

@@ -14,15 +14,17 @@ import java.util.List;
 public class Terminal implements ICCommandDelegate
 {
     private CommandProcessor commandProcessor;
+    private List<String> entries;
 
     public Terminal()
     {
         commandProcessor = new CommandProcessor();
+        entries = new ArrayList<String>();
     }
 
     public void Add(String line)
     {
-        throw new NotImplementedException();
+        entries.add(line);
     }
 
     public void Add(String[] tables)
@@ -176,5 +178,10 @@ public class Terminal implements ICCommandDelegate
     public boolean IsPromptEnabled()
     {
         return true;
+    }
+
+    public int getEntriesCount()
+    {
+        throw new NotImplementedException();
     }
 }
