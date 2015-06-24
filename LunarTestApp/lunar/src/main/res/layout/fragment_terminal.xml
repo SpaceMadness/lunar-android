@@ -6,7 +6,7 @@
               tools:context="com.spacemadness.lunar.ui.TerminalFragment">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/listViewTerminal"
+        android:id="@+id/recycler_view_terminal"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_weight="1"/>
@@ -57,7 +57,7 @@
             style="?android:attr/buttonStyleSmall"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="⇥"/>
+            android:text="Tab"/>
 
     </LinearLayout>
 

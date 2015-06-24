@@ -1,25 +1,22 @@
 package spacemadness.com.lunartestapp;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.ActionBarActivity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.spacemadness.lunar.console.CRegistery;
-import com.spacemadness.lunar.console.CommandProcessor;
-import com.spacemadness.lunar.ui.CommandEditText;
-import com.spacemadness.lunar.ui.TerminalFragment;
+import com.spacemadness.lunar.utils.StringUtils;
 
-
-public class MainActivity extends ActionBarActivity implements TerminalFragment.OnFragmentInteractionListener
+public class MainActivity extends ActionBarActivity
 {
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        StringUtils.colorsDisabled = true; // FIXME: remove
 
         CRegistery.ResolveCommands();
     }
@@ -47,10 +44,5 @@ public class MainActivity extends ActionBarActivity implements TerminalFragment.
         }
 
         return super.onOptionsItemSelected(item);
-    }
-
-    @Override
-    public void onFragmentInteraction(Uri uri)
-    {
     }
 }

@@ -11,25 +11,29 @@ import java.util.List;
 /**
  * Created by alementuev on 6/17/15.
  */
-public class Terminal implements ICCommandDelegate
+public class Terminal implements TerminalAdapter.DataSource, ICCommandDelegate
 {
-    private CommandProcessor commandProcessor;
-    private List<String> entries;
+    private final CommandProcessor commandProcessor;
+    private final TerminalEntries entries;
+    private EntriesListener listener;
 
-    public Terminal()
+    public Terminal(int capacity)
     {
         commandProcessor = new CommandProcessor();
-        entries = new ArrayList<String>();
+        commandProcessor.CommandDelegate(this);
+        entries = new TerminalEntries(capacity);
     }
 
     public void Add(String line)
     {
-        entries.add(line);
+        TerminalEntry entry = entries.add(line);
+        notifyEntryAdded(entry);
     }
 
-    public void Add(String[] tables)
+    public void Add(String[] lines)
     {
-        throw new NotImplementedException();
+        TerminalEntry entry = entries.add(lines);
+        notifyEntryAdded(entry);
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -136,6 +140,21 @@ public class Terminal implements ICCommandDelegate
     }
 
     //////////////////////////////////////////////////////////////////////////////
+    // TerminalAdapter.DataSource
+
+    @Override
+    public TerminalEntry getEntry(int position)
+    {
+        return entries.get(position);
+    }
+
+    @Override
+    public int getEntryCount()
+    {
+        return entries.size();
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
     // Command listener
 
     @Override
@@ -180,8 +199,35 @@ public class Terminal implements ICCommandDelegate
         return true;
     }
 
-    public int getEntriesCount()
+    //////////////////////////////////////////////////////////////////////////////
+    // Getters/Setters
+
+    public void setListener(EntriesListener listener)
     {
-        throw new NotImplementedException();
+        this.listener = listener;
+    }
+
+    public EntriesListener getListener()
+    {
+        return listener;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    // Helpers
+
+    private void notifyEntryAdded(TerminalEntry entry)
+    {
+        if (listener != null)
+        {
+            listener.onEntryAdded(this, entry);
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    // Entries listener
+
+    public interface EntriesListener
+    {
+        void onEntryAdded(Terminal terminal, TerminalEntry entry);
     }
 }

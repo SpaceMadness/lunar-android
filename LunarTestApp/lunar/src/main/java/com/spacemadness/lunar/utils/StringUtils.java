@@ -12,6 +12,8 @@ import java.util.regex.Pattern;
  */
 public class StringUtils
 {
+    public static boolean colorsDisabled; // FIXME: remove
+
     private static final char[] kSpaceSplitChars = { ' ' }; // FIXME: rename
 
     private static final Pattern kRichTagRegex = Pattern.compile("(<color=.*?>)|(<b>)|(<i>)|(</color>)|(</b>)|(</i>)");  // FIXME: rename
@@ -473,7 +475,7 @@ public class StringUtils
 
     public static String C(String str, ColorCode color)
     {
-        return StringUtils.TryFormat("<color=$%s>%s</color>", ToString(color.ordinal()), str);
+        return colorsDisabled ? str : StringUtils.TryFormat("<color=$%s>%s</color>", ToString(color.ordinal()), str);
     }
 
     static String C(String str, Color color, int startIndex, int endIndex)
