@@ -3,7 +3,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent"
               android:orientation="vertical"
-              tools:context="com.spacemadness.lunar.ui.TerminalFragment">
+              tools:context="com.spacemadness.lunar.console.TerminalFragment">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view_terminal"
@@ -66,7 +66,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <com.spacemadness.lunar.ui.CommandEditText
+        <com.spacemadness.lunar.console.CommandEditText
             android:id="@+id/edit_text_command_line"
             android:hint="Enter Command"
             android:layout_width="0dp"

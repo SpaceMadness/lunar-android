@@ -2,8 +2,6 @@ package com.spacemadness.lunar.console;
 
 import android.util.SparseArray;
 
-import com.spacemadness.lunar.ui.ViewHolderBuilder;
-
 public abstract class TerminalEntry
 {
     private static SparseArray<ViewHolderBuilder> lookup = new SparseArray<>();

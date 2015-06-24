@@ -5,8 +5,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.spacemadness.lunar.ui.ViewHolderBuilder;
-
 import spacemadness.com.lunar.R;
 
 /**

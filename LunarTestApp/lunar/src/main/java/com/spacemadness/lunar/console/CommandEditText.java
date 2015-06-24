@@ -1,4 +1,4 @@
-package com.spacemadness.lunar.ui;
+package com.spacemadness.lunar.console;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -9,8 +9,6 @@ import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
 import android.widget.EditText;
 import android.widget.TextView;
-
-import com.spacemadness.lunar.console.CommandHistory;
 
 /**
  * Created by alementuev on 6/16/15.

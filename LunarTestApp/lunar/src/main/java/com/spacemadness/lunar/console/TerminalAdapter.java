@@ -4,8 +4,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.spacemadness.lunar.ui.ViewHolderBuilder;
-
 public class TerminalAdapter extends RecyclerView.Adapter<TerminalAdapter.ViewHolder>
 {
     private DataSource dataSource;

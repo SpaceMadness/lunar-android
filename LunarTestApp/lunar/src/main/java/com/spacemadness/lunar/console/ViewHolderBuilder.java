@@ -1,4 +1,4 @@
-package com.spacemadness.lunar.ui;
+package com.spacemadness.lunar.console;
 
 import android.view.ViewGroup;
 
