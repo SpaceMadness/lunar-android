@@ -7,17 +7,10 @@ import com.spacemadness.lunar.utils.NotImplementedException;
 /**
  * Created by weee on 5/28/15.
  */
-public class ObjectsPoolEntry extends FastListNode
+public class ObjectsPoolEntry<T extends ObjectsPoolEntry> extends FastListNode<T>
 {
     ObjectsPool<?> pool;
     boolean recycled;
-
-    public ObjectsPoolEntry AutoRecycle()
-    {
-//        TimerManager.ScheduleTimer(Recycle);
-//        return this;
-        throw new NotImplementedException();
-    }
 
     public void Recycle()
     {

@@ -33,6 +33,7 @@ public class Cmd_cvarlist extends CCommand
     boolean execute(@Arg("prefix") String prefix)
     {
         int options = CommandListOptions.None;
+
         if (Config.isDebugBuild)
         {
             options |= CommandListOptions.Debug;

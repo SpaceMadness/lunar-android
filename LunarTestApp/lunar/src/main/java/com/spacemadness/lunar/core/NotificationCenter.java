@@ -10,19 +10,19 @@ import java.util.Map;
 /**
  * Created by weee on 5/28/15.
  */
-class NotificationCenter implements IDestroyable
+public class NotificationCenter implements IDestroyable
 {
     private static NotificationCenter s_sharedInstance;
 
-    private TimerManager m_timerManager;
     private Map<String, NotificationDelegateList> m_registerMap;
     private ObjectsPool<Notification> m_notificatoinsPool;
 
     static
     {
-        s_sharedInstance = new NotificationCenter(TimerManager.SharedInstance());
+        
     }
 
+    /*
     private final TimerRunnable PostCallback = new TimerRunnable() // FIXME: rename
     {
         @Override
@@ -34,10 +34,10 @@ class NotificationCenter implements IDestroyable
             PostImmediately(notification);
         }
     };
+    */
 
-    public NotificationCenter(TimerManager timerManager)
+    public NotificationCenter()
     {
-        m_timerManager = timerManager;
         m_registerMap = new HashMap<String, NotificationDelegateList>();
         m_notificatoinsPool = new ObjectsPool(Notification.class);
     }
@@ -194,13 +194,13 @@ class NotificationCenter implements IDestroyable
     {
 //        Timer timer = m_timerManager.Schedule(PostCallback);
 //        timer.userData = notification;
-
         throw new NotImplementedException();
     }
     
     private void CancelScheduledPosts()
     {
-        m_timerManager.Cancel(PostCallback);
+//        m_timerManager.Cancel(PostCallback);
+        throw new NotImplementedException();
     }
 
     //////////////////////////////////////////////////////////////////////////////

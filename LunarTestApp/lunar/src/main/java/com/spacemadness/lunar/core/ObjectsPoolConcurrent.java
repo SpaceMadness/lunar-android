@@ -17,6 +17,12 @@ public class ObjectsPoolConcurrent<T extends ObjectsPoolEntry> extends ObjectsPo
     }
 
     @Override
+    public synchronized void clear()
+    {
+        super.clear();
+    }
+
+    @Override
     public synchronized void Recycle(ObjectsPoolEntry e)
     {
         super.Recycle(e);

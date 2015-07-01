@@ -34,11 +34,6 @@ public class ObjectsPoolTest extends TestCase
         assertEquals(0, pool.size());
     }
 
-    public void testNextAutoRecycleObject() throws Exception
-    {
-        fail("Implement me");
-    }
-
     public void testRecycle1() throws Exception
     {
         ObjectsPool<Entry> pool = new ObjectsPool<>(Entry.class);

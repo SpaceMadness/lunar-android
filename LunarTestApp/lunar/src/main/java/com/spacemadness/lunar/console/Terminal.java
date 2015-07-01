@@ -1,6 +1,7 @@
 package com.spacemadness.lunar.console;
 
 import com.spacemadness.lunar.ColorCode;
+import com.spacemadness.lunar.core.NotificationCenter;
 import com.spacemadness.lunar.utils.NotImplementedException;
 import com.spacemadness.lunar.utils.StringUtils;
 
@@ -190,7 +191,7 @@ public class Terminal implements TerminalAdapter.DataSource, ICCommandDelegate
     @Override
     public void PostNotification(CCommand cmd, String name, Object... data)
     {
-        throw new NotImplementedException();
+        NotificationCenter.PostNotification(cmd, name, data);
     }
 
     @Override

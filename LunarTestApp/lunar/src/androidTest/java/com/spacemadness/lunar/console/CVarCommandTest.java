@@ -7,7 +7,7 @@ import com.spacemadness.lunar.console.commands.Cmd_reset;
  */
 public class CVarCommandTest extends CCommandTestCase
 {
-	public void testCvarBool()
+    public void testCvarBool()
     {
         CVar cvar = new CVar("var", false);
 

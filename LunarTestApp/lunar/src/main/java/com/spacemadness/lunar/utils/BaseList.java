@@ -10,11 +10,11 @@ import java.util.List;
  */
 public class BaseList<T> implements IBaseCollection<T> // TODO: need a better name
 {
-    protected List<T> list;
+    protected List<T> list; // TODO: reduce visibility
 
-    protected T nullElement;
-    protected int removedCount;
-    protected boolean locked;
+    protected T nullElement; // TODO: reduce visibility
+    protected int removedCount; // TODO: reduce visibility
+    protected boolean locked; // TODO: reduce visibility
 
     protected BaseList(T nullElement)
     {

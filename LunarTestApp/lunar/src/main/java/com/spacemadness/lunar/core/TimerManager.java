@@ -1,500 +1,155 @@
 package com.spacemadness.lunar.core;
 
+import android.os.Handler;
+import android.os.Looper;
+
 import com.spacemadness.lunar.debug.Assert;
-import com.spacemadness.lunar.utils.NotImplementedException;
+import com.spacemadness.lunar.utils.FastConcurrentList;
+import com.spacemadness.lunar.utils.FastList;
 
-/**
- * Created by weee on 5/28/15.
- */
-public class TimerManager extends ITimerManager
+public class TimerManager
 {
-    public static final ITimerManager Null = new NullTimerManager();
+    private final Object lock = new Object();
+    private final FastList<Timer> timers;
 
-    private static TimerManager s_sharedInstance; // FIXME: rename
+    final Handler handler;
 
-    double currentTime;
-
-    private Timer rootTimer;
-
-    private Timer delayedAddHeadTimer; // timers which were scheduled while iterating the list
-    private Timer delayedAddTailTimer; // track tail to append at the end of the list so timers are
-                                       // fired in the same order as they scheduled
-
-    private Timer delayedFreeRootTimer; // timers which were cancelled while iterating the list
-
-    private int timersCount;
-    private boolean updating;
-
-    //////////////////////////////////////////////////////////////////////////////
-    // Shared instance
-
-    static
+    public TimerManager(Looper looper)
     {
-        s_sharedInstance = new TimerManager();
+        this(new Handler(looper));
     }
 
-    public static Timer ScheduleTimer(Runnable callback)
+    public TimerManager(Handler handler)
     {
-        return ScheduleTimer(callback, 0.0f);
-    }
-
-    public static Timer ScheduleTimer(Runnable callback, float delay)
-    {
-        return ScheduleTimer(callback, delay, false);
-    }
-
-    public static Timer ScheduleTimer(Runnable callback, float delay, boolean repeated)
-    {
-        return ScheduleTimer(callback, delay, repeated, null);
-    }
-
-    public static Timer ScheduleTimer(Runnable callback, float delay, boolean repeated, String name)
-    {
-        return s_sharedInstance.Schedule(callback, delay, repeated, name);
-    }
-
-    public static Timer ScheduleTimer(TimerRunnable callback)
-    {
-        return ScheduleTimer(callback, 0.0f);
-    }
-
-    public static Timer ScheduleTimer(TimerRunnable callback, float delay)
-    {
-        return ScheduleTimer(callback, delay, false);
-    }
-
-    public static Timer ScheduleTimer(TimerRunnable callback, float delay, boolean repeated)
-    {
-        return ScheduleTimer(callback, delay, repeated, null);
-    }
-
-    public static Timer ScheduleTimer(TimerRunnable callback, float delay, boolean repeated, String name)
-    {
-        return s_sharedInstance.Schedule(callback, delay, repeated, name);
-    }
-
-    public static Timer ScheduleTimerOnce(Runnable callback)
-    {
-        return ScheduleTimerOnce(callback, 0.0f);
-    }
-
-    public static Timer ScheduleTimerOnce(Runnable callback, float delay)
-    {
-        return ScheduleTimerOnce(callback, delay, false);
-    }
-
-    public static Timer ScheduleTimerOnce(Runnable callback, float delay, boolean repeated)
-    {
-        return ScheduleTimerOnce(callback, delay, repeated, null);
-    }
-
-    public static Timer ScheduleTimerOnce(Runnable callback, float delay, boolean repeated, String name)
-    {
-        return s_sharedInstance.ScheduleOnce(callback, delay, repeated, name);
-    }
-
-    public static Timer ScheduleTimerOnce(TimerRunnable callback)
-    {
-        return ScheduleTimerOnce(callback, 0.0f);
-    }
-
-    public static Timer ScheduleTimerOnce(TimerRunnable callback, float delay)
-    {
-        return ScheduleTimerOnce(callback, delay, false);
-    }
-
-    public static Timer ScheduleTimerOnce(TimerRunnable callback, float delay, boolean repeated)
-    {
-        return ScheduleTimerOnce(callback, delay, repeated, null);
-    }
-
-    public static Timer ScheduleTimerOnce(TimerRunnable callback, float delay, boolean repeated, String name)
-    {
-        return s_sharedInstance.ScheduleOnce(callback, delay, repeated, name);
-    }
-
-    public static void CancelTimer(Runnable callback)
-    {
-        s_sharedInstance.Cancel(callback);
-    }
-
-    public static void CancelTimer(TimerRunnable callback)
-    {
-        s_sharedInstance.Cancel(callback);
-    }
-
-    public static void CancelTimers(Object target)
-    {
-        // s_sharedInstance.CancelAll(target);
-        throw new NotImplementedException();
-    }
-
-    static TimerManager SharedInstance()
-    {
-        return s_sharedInstance;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    // Updatable
-
-    @Override
-    public void Update(float delta)
-    {
-        synchronized (this)
+        if (handler == null)
         {
-            currentTime += delta;
-
-            if (timersCount > 0)
-            {
-                updating = true;
-                for (Timer t = rootTimer; t != null;)
-                {
-                    if (t.fireTime > currentTime)
-                    {
-                        break;
-                    }
-
-                    Timer timer = t;
-                    t = t.next;
-
-                    if (!timer.cancelled)
-                    {
-                        timer.Fire();
-                    }
-                }
-                updating = false;
-            
-                // Put timers which were cancelled during this update back into the pool
-                if (delayedFreeRootTimer != null)
-                {
-                    for (Timer t = delayedFreeRootTimer; t != null;)
-                    {
-                        Timer timer = t;
-                        t = t.helpListNext;
-
-                        CancelTimerInLoop(timer);
-                    }
-                    delayedFreeRootTimer = null;
-                }
-
-                // Add timers which were scheduled during this update
-                if (delayedAddHeadTimer != null)
-                {
-                    for (Timer t = delayedAddHeadTimer; t != null;)
-                    {
-                        Timer timer = t;
-                        t = t.helpListNext;
-
-                        AddTimer(timer);
-                    }
-                    delayedAddHeadTimer = null;
-                    delayedAddTailTimer = null;
-                }
-            }
+            throw new NullPointerException("Handler is null");
         }
+        this.handler = handler;
+        this.timers = new FastConcurrentList<>();
     }
 
-    //////////////////////////////////////////////////////////////////////////////
-    // Schedule
-
-    @Override
-    public Timer Schedule(Runnable callback, float delay, int numRepeats, String name)
+    public Timer ScheduleOnce(Runnable target)
     {
-        return Schedule(callback, Timer.DefaultTimerCallback, delay, numRepeats, name);
+        return ScheduleOnce(target, 0L);
     }
 
-    @Override
-    public Timer Schedule(TimerRunnable callback, float delay, int numRepeats, String name)
+    public Timer ScheduleOnce(Runnable target, long delayMillis)
     {
-        return Schedule(null, callback, delay, numRepeats, name);
-    }
-
-    private Timer Schedule(Runnable callback1, TimerRunnable callback2, float delay, int numRepeats, String name)
-    {
-        float timeout = delay < 0 ? 0 : delay;
-
-        Timer timer = NextFreeTimer();
-        timer.callback1 = callback1;
-        timer.callback2 = callback2;
-        timer.timeout = timeout;
-        timer.numRepeats = numRepeats;
-        timer.scheduleTime = currentTime;
-        timer.fireTime = currentTime + timeout;
-        timer.name = name;
-
-        synchronized (this)
+        if (target == null)
         {
-            if (updating)
-            {
-                AddTimerDelayed(timer);
-            }
-            else
-            {
-                AddTimer(timer);
-            }
+            throw new NullPointerException("Target is null");
         }
 
-        return timer;
-    }
-
-    @Override
-    protected Timer FindTimer(Runnable callback)
-    {
-        for (Timer timer = rootTimer; timer != null; timer = timer.next)
+        synchronized (lock)
         {
-            if (timer.callback1 == callback)
+            Timer timer = findTimer(target);
+            if (timer != null)
             {
                 return timer;
             }
-        }
 
-        return null;
+            return Schedule(target, delayMillis);
+        }
     }
 
-    @Override
-    protected Timer FindTimer(TimerRunnable callback)
+    public Timer Schedule(Runnable target)
     {
-        for (Timer timer = rootTimer; timer != null; timer = timer.next)
+        return Schedule(target, 0L);
+    }
+
+    public Timer Schedule(Runnable target, long delayMillis)
+    {
+        if (target == null)
         {
-            if (timer.callback2 == callback)
+            throw new NullPointerException("Target is null");
+        }
+
+        synchronized (lock)
+        {
+            Timer timer = Timer.NextFreeTimer();
+            addTimer(timer);
+            timer.manager = this;
+            timer.target = target;
+            timer.delayMillis = delayMillis < 0 ? 0 : delayMillis;
+            timer.schedule();
+            return timer;
+        }
+    }
+
+    public Timer Cancel(Runnable target)
+    {
+        if (target == null)
+        {
+            throw new NullPointerException("Target is null");
+        }
+
+        synchronized (lock)
+        {
+            Timer timer = findTimer(target);
+            if (timer != null)
             {
-                return timer;
+                timer.cancel();
             }
-        }
 
-        return null;
+            return timer;
+        }
     }
 
-    @Override
-    public void Cancel(Runnable callback)
+    void addTimer(Timer timer)
     {
-        synchronized (this)
+        synchronized (lock)
         {
-            for (Timer timer = rootTimer; timer != null;)
-            {
-                Timer t = timer;
-                timer = timer.next;
+            Assert.IsNull(timer.manager);
+            timers.AddLastItem(timer);
+        }
+    }
 
-                if (t.callback1 == callback)
+    void removeTimer(Timer timer)
+    {
+        synchronized (lock)
+        {
+            Assert.AreSame(this, timer.manager);
+            Assert.IsTrue(timers.Count() > 0);
+
+            timers.RemoveItem(timer);
+            timer.Recycle();
+        }
+    }
+
+    Timer findTimer(Runnable target)
+    {
+        synchronized (lock)
+        {
+            for (Timer t = timers.ListFirst(); t != null; t = t.listNext())
+            {
+                if (t.target == target)
                 {
-                    t.Cancel();
-                }
-            }
-        }
-    }
-
-    @Override
-    public void Cancel(TimerRunnable callback)
-    {
-        synchronized (this)
-        {
-            for (Timer timer = rootTimer; timer != null;)
-            {
-                Timer t = timer;
-                timer = timer.next;
-
-                if (t.callback2 == callback)
-                {
-                    t.Cancel();
-                }
-            }
-        }
-    }
-
-    @Override
-    public void Cancel(String name)
-    {
-        synchronized (this)
-        {
-            for (Timer timer = rootTimer; timer != null;)
-            {
-                Timer t = timer;
-                timer = timer.next;
-
-                if (t.name == name)
-                {
-                    t.Cancel();
-                }
-            }
-        }
-    }
-
-    @Override
-    public void CancelAll()
-    {
-        synchronized (this)
-        {
-            for (Timer timer = rootTimer; timer != null;)
-            {
-                Timer t = timer;
-                timer = timer.next;
-
-                t.Cancel();
-            }
-        }
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    // Destroyable
-
-    @Override
-    public void Destroy()
-    {
-        CancelAll();
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    // Timer List
-
-    private Timer NextFreeTimer()
-    {
-        Timer timer = Timer.NextFreeTimer();
-        timer.manager = this;
-        return timer;
-    }
-
-    private void AddTimerDelayed(Timer timer)
-    {
-        if (delayedAddHeadTimer == null)
-        {
-            delayedAddHeadTimer = timer; // beginning of the list
-        }
-
-        if (delayedAddTailTimer != null)
-        {
-            delayedAddTailTimer.helpListNext = timer;
-        }
-        delayedAddTailTimer = timer;
-    }
-
-    private void AddFreeTimerDelayed(Timer timer)
-    {
-        timer.helpListNext = delayedFreeRootTimer;
-        delayedFreeRootTimer = timer;
-    }
-
-    private void AddFreeTimer(Timer timer)
-    {
-        Timer.AddFreeTimer(timer);
-    }
-
-    private void AddTimer(Timer timer)
-    {
-        Assert.AreSame(this, timer.manager);
-        ++timersCount;
-
-        if (rootTimer != null)
-        {
-            // if timer has the least remaining time - it goes first
-            if (timer.fireTime < rootTimer.fireTime)
-            {
-                timer.next = rootTimer;
-                rootTimer.prev = timer;
-                rootTimer = timer;
-
-                return;
-            }
-
-            // try to insert in a sorted order
-            Timer tail = rootTimer;
-            for (Timer t = rootTimer.next; t != null; tail = t, t = t.next)
-            {
-                if (timer.fireTime < t.fireTime)
-                {
-                    Timer prev = t.prev;
-                    Timer next = t;
-
-                    timer.prev = prev;
-                    timer.next = next;
-
-                    next.prev = timer;
-                    prev.next = timer;
-
-                    return;
+                    return t;
                 }
             }
 
-            // add timer at the end of the list
-            tail.next = timer;
-            timer.prev = tail;
-        }
-        else
-        {
-            rootTimer = timer; // timer is root now
+            return null;
         }
     }
 
-    private void RemoveTimer(Timer timer)
+    boolean containsTimer(Runnable target)
     {
-        Assert.AreSame(this, timer.manager);
-        Assert.Greater(timersCount, 0);
-        --timersCount;
-
-        Timer prev = timer.prev;
-        Timer next = timer.next;
-
-        if (prev != null)
-            prev.next = next;
-        else
-            rootTimer = next;
-
-        if (next != null)
-            next.prev = prev;
+        return findTimer(target) != null;
     }
 
-    void CancelTimer(Timer timer)
-    {   
-        synchronized (this)
-        {
-            if (updating)
-            {
-                AddFreeTimerDelayed(timer);
-            }
-            else
-            {
-                CancelTimerInLoop(timer);
-            }
-        }
+    public int getTimersCount()
+    {
+        return timers.Count();
     }
 
-    private void CancelTimerInLoop(Timer timer)
+    public static TimerManager getMainManager()
     {
-        RemoveTimer(timer);
-        AddFreeTimer(timer);
+        return Holder.mainManager;
     }
 
-    @Override
-    public int Count()
+    private static class Holder
     {
-        synchronized (this)
-        {
-            return timersCount;
-        }
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    // Properties
-
-    protected Timer RootTimer()
-    {
-        return rootTimer;
-    }
-
-    protected Timer DelayedFreeHeadTimer()
-    {
-        return delayedFreeRootTimer;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    // Unit testing
-
-    protected static void CancelTimers()
-    {
-        s_sharedInstance.CancelAll();
-    }
-
-    protected static void RunUpdate(float delta)
-    {
-        s_sharedInstance.Update(delta);
+        public static final TimerManager mainManager = new TimerManager(Looper.getMainLooper());
     }
 }

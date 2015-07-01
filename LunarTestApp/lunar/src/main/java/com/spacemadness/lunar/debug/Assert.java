@@ -1,6 +1,7 @@
 package com.spacemadness.lunar.debug;
 
 import com.spacemadness.lunar.utils.NotImplementedException;
+import com.spacemadness.lunar.utils.StringUtils;
 
 import java.util.Collection;
 import java.util.List;
@@ -2351,8 +2352,8 @@ public class Assert // FIXME: rename methods to assert*
 //        {
 //        }
 
-        throw new NotImplementedException();
+        throw new AssertionError(StringUtils.TryFormat(format, args));
     }
 
-    private static boolean IsEnabled;
+    private static boolean IsEnabled = true;
 }

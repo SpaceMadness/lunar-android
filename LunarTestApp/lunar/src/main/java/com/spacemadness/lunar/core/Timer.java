@@ -1,197 +1,337 @@
 package com.spacemadness.lunar.core;
 
-import com.spacemadness.lunar.debug.Log;
-import com.spacemadness.lunar.utils.ClassUtils;
-import com.spacemadness.lunar.utils.StringUtils;
+import com.spacemadness.lunar.debug.Assert;
 
-/**
- * Created by weee on 5/28/15.
- */
-public final class Timer
+public class Timer extends ObjectsPoolEntry<Timer>
 {
-    static final Object mutex = new Object();
+    private static final ObjectsPool<Timer> timersPool = new ObjectsPoolConcurrent<>(Timer.class);
 
-    static final TimerRunnable DefaultTimerCallback = new TimerRunnable()
-    {
-        @Override
-        public void run(Timer timer)
-        {
-            timer.callback1.run();
-        }
-    };
+    private final Runnable wrapperRunnable;
 
-    protected static Timer freeRoot;
+    private boolean scheduled;
+    private boolean running;
+    private boolean firstTimeSchedule;
+    private boolean canceled;
+    private boolean repeated;
+    private boolean suspended;
 
-    boolean cancelled;
+    long delayMillis;
+    private long currentDelayMillis;
+    private long scheduledTimestamp;
+    private long remainAfterSuspendMillis;
 
-    Runnable callback1;
-    TimerRunnable callback2;
+    private boolean ticksWhenSuspended;
+    private boolean firesWhenSuspended;
 
-    Timer next;
-    Timer prev;
+    private TimerListener listener;
 
-    Timer helpListNext;
+    Runnable target;
 
     TimerManager manager;
 
-    int numRepeats;
-    int numRepeated;
+    static int instanceCount;
 
-    float timeout;
-    double fireTime;
-    double scheduleTime;
-
-    public String name;
-    public Object userData;
-
-    public void Cancel()
-    {   
-        synchronized (this)
-        {
-            if (!cancelled)
-            {
-                cancelled = true;
-                manager.CancelTimer(this);
-            }
-        }
-    }
-
-    void Fire()
+    public Timer()
     {
-        synchronized (this)
+        wrapperRunnable = new Runnable()
         {
-            try
+            @Override
+            public void run()
             {
-                callback2.run(this);
-
-                if (!cancelled)
+                synchronized (Timer.this)
                 {
-                    ++numRepeated;
-                    if (numRepeated == numRepeats)
+                    Assert.IsFalse(running);
+
+                    running = true;
+                    scheduled = false;
+
+                    if (!canceled && !suspended)
                     {
-                        Cancel();
+                        try
+                        {
+                            target.run();
+                        }
+                        catch (Exception e)
+                        {
+                            e.printStackTrace(); // TODO: better handling
+                        }
+                        notifyFired();
+
+                        if (canceled)
+                        {
+                            notifyCancelled();
+                            remove();
+                        }
+                        else if (!repeated)
+                        {
+                            notifyFinished();
+                            remove();
+                        }
+                        else if (!suspended)
+                        {
+                            schedule(wrapperRunnable, delayMillis);
+                        }
                     }
-                    else
-                    {
-                        fireTime = manager.currentTime + timeout;
-                    }
+
+                    running = false;
                 }
             }
-            catch (Exception e)
+        };
+
+        ++instanceCount;
+    }
+
+    synchronized void schedule()
+    {
+        Assert.IsFalse(scheduled);
+        if (!scheduled)
+        {
+            if (!firstTimeSchedule)
             {
-                Log.logException(e, "Exception while firing timer");
-                Cancel();
+                firstTimeSchedule = true;
+                notifyScheduled();
             }
+
+            schedule(wrapperRunnable, delayMillis);
         }
     }
 
-    public <T> T UserData(Class<? extends T> cls)
+    private synchronized void remove()
     {
-        return ClassUtils.cast(userData, cls);
+        manager.removeTimer(this);
     }
 
-    public boolean IsRepeated()
+    public synchronized void reset()
     {
-        return numRepeats != 1;
+        if (scheduled)
+        {
+            removeCallback(wrapperRunnable);
+            schedule(wrapperRunnable, delayMillis);
+        }
     }
 
-    public float Timeout()
+    public synchronized void cancel()
     {
-        return timeout;
+        removeCallback(wrapperRunnable);
+
+        if (scheduled)
+        {
+            notifyCancelled();
+        }
+
+        if (running)
+        {
+            canceled = true;
+            scheduled = false;
+            suspended = false;
+        }
+        else
+        {
+            remove();
+        }
     }
 
-    public float Elapsed()
+    public synchronized void suspend()
     {
-        return (float) (manager.currentTime - scheduleTime);
+        if (scheduled && !suspended && !firesWhenSuspended)
+        {
+            suspended = true;
+            remainAfterSuspendMillis = getRemainingMillis();
+
+            removeCallback(wrapperRunnable);
+            notifySuspended();
+        }
     }
 
-    protected static Timer FreeRoot()
+    public synchronized void resume()
     {
-        return freeRoot;
+        if (scheduled && suspended)
+        {
+            suspended = false;
+
+            long delay = ticksWhenSuspended ? getRemainingMillis() : remainAfterSuspendMillis;
+
+            postCallback(wrapperRunnable, delay);
+            notifyResumed();
+        }
     }
 
-    protected static void FreeRoot(Timer timer)
+    protected TimerListener getListener()
     {
-        freeRoot = timer;
+        return listener;
     }
+
+    protected void setListener(TimerListener listener)
+    {
+        this.listener = listener;
+    }
+
+    public boolean isSuspended()
+    {
+        return suspended;
+    }
+
+    public boolean isScheduled()
+    {
+        return scheduled;
+    }
+
+    public boolean isTicksWhenSuspended()
+    {
+        return ticksWhenSuspended;
+    }
+
+    public void setTicksWhenSuspended(boolean ticksWhenSuspended)
+    {
+        this.ticksWhenSuspended = ticksWhenSuspended;
+    }
+
+    public boolean isFiresWhenSuspended()
+    {
+        return firesWhenSuspended;
+    }
+
+    public void setFiresWhenSuspended(boolean firesWhenSuspended)
+    {
+        this.firesWhenSuspended = firesWhenSuspended;
+    }
+
+    public Runnable getTarget()
+    {
+        return target;
+    }
+
+    public long getRemainingMillis()
+    {
+        long remains = currentDelayMillis - (System.currentTimeMillis() - scheduledTimestamp);
+        return remains > 0 ? remains : 0;
+    }
+
+    public long getDelayMillis()
+    {
+        return delayMillis;
+    }
+
+    private synchronized void schedule(Runnable runnable, long delay)
+    {
+        boolean succeed = postCallback(runnable, delay);
+        Assert.IsTrue(succeed, "Unable to queue runnable object");
+
+        canceled = false;
+        scheduled = true;
+    }
+
+    private boolean postCallback(Runnable runnable, long delay)
+    {
+        currentDelayMillis = delay;
+        scheduledTimestamp = System.currentTimeMillis();
+        return manager.handler.postDelayed(runnable, delay);
+    }
+
+    private void removeCallback(Runnable runnable)
+    {
+        manager.handler.removeCallbacks(runnable);
+    }
+
+    ////////////////////////////////////////////////////////////////
+    // Object pool
+
 
     @Override
-    public String toString()
+    protected void OnRecycleObject()
     {
-        Object callback = callback2 != DefaultTimerCallback ? callback2 : callback1;
-        return StringUtils.TryFormat("Method=%s, IsRepeated=%s, Timeout=%f, Elapsed=%f]",
-                callback,
-                this.IsRepeated(),
-                this.Timeout(),
-                this.manager != null ? this.Elapsed() : 0);
+        // wrapperRunnable = null; keep the wrapper runnable
+        manager                   = null;
+        target                    = null;
+        listener                  = null;
+
+        scheduled                 = false;
+        firstTimeSchedule         = false;
+        canceled                  = false;
+        repeated                  = false;
+        suspended                 = false;
+        ticksWhenSuspended        = false;
+        running                   = false;
+
+        delayMillis               = 0L;
+        currentDelayMillis        = 0L;
+        scheduledTimestamp        = 0L;
+        remainAfterSuspendMillis  = 0L;
     }
 
-    //////////////////////////////////////////////////////////////////////////////
-    // Objects pool
-
-    protected static Timer NextFreeTimer()
+    Timer listNext()
     {
-        synchronized (mutex)
+        return ListNodeNext();
+    }
+
+    Timer listPrev()
+    {
+        return ListNodePrev();
+    }
+
+    static int getTimerPoolSize()
+    {
+        return timersPool.size();
+    }
+
+    static Timer NextFreeTimer()
+    {
+        return timersPool.NextObject();
+    }
+
+    static void drainPool()
+    {
+        timersPool.clear();
+    }
+
+    ////////////////////////////////////////////////////////////////
+    // Notifications
+
+    private void notifyScheduled()
+    {
+        if (listener != null)
         {
-            Timer timer;
-            if (freeRoot != null)
-            {
-                timer = freeRoot;
-                freeRoot = timer.next;
-                timer.prev = timer.next = null;
-            }
-            else
-            {
-                timer = new Timer();
-            }
-        
-            return timer;
+            listener.onTimerScheduled(this);
         }
     }
 
-    protected static void AddFreeTimer(Timer timer)
+    private void notifyFired()
     {
-        synchronized (mutex)
+        if (listener != null)
         {
-            timer.Reset();
-
-            if (freeRoot != null)
-            {
-                timer.next = freeRoot;
-            }
-
-            freeRoot = timer;
+            listener.onTimerFired(this);
         }
     }
 
-    protected static Timer NextTimer(Timer timer)
+    private void notifyCancelled()
     {
-        return timer.next;
+        if (listener != null)
+        {
+            listener.onTimerCancelled(this);
+        }
     }
 
-    protected static Timer PrevTimer(Timer timer)
+    private void notifyFinished()
     {
-        return timer.prev;
+        if (listener != null)
+        {
+            listener.onTimerFinished(this);
+        }
     }
 
-    protected static Timer NextHelperListTimer(Timer timer)
+    private void notifySuspended()
     {
-        return timer.helpListNext;
+        if (listener != null)
+        {
+            listener.onTimerSuspended(this);
+        }
     }
 
-    private void Reset()
+    private void notifyResumed()
     {
-        next = prev = null;
-        helpListNext = null;
-        manager = null;
-        callback1 = null;
-        callback2 = null;
-        numRepeats = numRepeated = 0;
-        timeout = 0;
-        fireTime = 0;
-        scheduleTime = 0;
-        cancelled = false;
-        name = null;
-        userData = null;
+        if (listener != null)
+        {
+            listener.onTimerResumed(this);
+        }
     }
 }

@@ -23,11 +23,6 @@ public class ObjectsPool<T extends ObjectsPoolEntry> implements IDestroyable
         this.poolList = new FastList<>();
     }
 
-    public T NextAutoRecycleObject()
-    {
-        return (T)NextObject().AutoRecycle();
-    }
-
     public T NextObject()
     {
         ObjectsPoolEntry first = TakeReference();
@@ -40,6 +35,11 @@ public class ObjectsPool<T extends ObjectsPoolEntry> implements IDestroyable
         first.recycled = false;
 
         return (T)first;
+    }
+
+    public void clear()
+    {
+        poolList.Clear();
     }
 
     void Recycle(ObjectsPoolEntry e)

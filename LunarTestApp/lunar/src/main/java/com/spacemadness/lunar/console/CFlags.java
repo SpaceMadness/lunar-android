@@ -8,30 +8,30 @@ public class CFlags
     /// <summary>
     /// No flags (default value)
     /// </summary>
-    public static final int None      = 0;
-
-    /// <summary>
-    /// The value cannot be modified from the command line
-    /// </summary>
-    public static final int Readonly  = 1 << 1;
+    public static final int None      = CCommandFlags.None;
 
     /// <summary>
     /// Only accessible in debug mode
     /// </summary>
-    public static final int Debug     = 1 << 2;
+    public static final int Debug     = CCommandFlags.Debug;
 
     /// <summary>
     /// Won't be listed in cvarlist
     /// </summary>
-    public static final int Hidden    = 1 << 3;
+    public static final int Hidden    = CCommandFlags.Hidden;
 
     /// <summary>
     /// System variable (hidden in cvarlist unless "--all (-a)" option is used)
     /// </summary>
-    public static final int System    = 1 << 4;
+    public static final int System    = CCommandFlags.System;
+
+    /// <summary>
+    /// The value cannot be modified from the command line
+    /// </summary>
+    public static final int Readonly  = 1 << 255;
 
     /// <summary>
     /// Don't save into config file
     /// </summary>
-    public static final int NoArchive = 1 << 5;
+    public static final int NoArchive = 1 << 256;
 }
