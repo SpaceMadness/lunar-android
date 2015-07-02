@@ -9,44 +9,34 @@ public abstract class BaseObject implements IDestroyable
 {
     protected void RegisterNotification(String name, NotificationDelegate del)
     {
-        // NotificationCenter.RegisterNotification(name, del);
-        throw new NotImplementedException();
+        NotificationCenter.getMainNotificationCenter().Register(name, del);
     }
 
     protected void UnregisterNotification(String name, NotificationDelegate del)
     {
-        // NotificationCenter.UnregisterNotification(name, del);
-        throw new NotImplementedException();
+        NotificationCenter.getMainNotificationCenter().Unregister(name, del);
     }
 
     protected void UnregisterNotifications(NotificationDelegate del)
     {
-        // NotificationCenter.UnregisterNotifications(del);
-        throw new NotImplementedException();
-    }
-
-    protected void UnregisterNotifications()
-    {
-        throw new NotImplementedException();
+        NotificationCenter.getMainNotificationCenter().UnregisterAll(del);
     }
 
     protected void PostNotification(String name, Object... data)
     {
-        // NotificationCenter.PostNotification(this, name, data);
-        throw new NotImplementedException();
+        NotificationCenter.getMainNotificationCenter().Post(this, name, data);
     }
 
     protected void PostNotificationImmediately(String name, Object... data)
     {
-        // NotificationCenter.PostNotificationImmediately(this, name, data);
-        throw new NotImplementedException();
+        NotificationCenter.getMainNotificationCenter().PostImmediately(this, name, data);
     }
 
     //////////////////////////////////////////////////////////////////////////////
     // IDestroyable
 
+    @Override
     public void Destroy()
     {
-        UnregisterNotifications();
     }
 }

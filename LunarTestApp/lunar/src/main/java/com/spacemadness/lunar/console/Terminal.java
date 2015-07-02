@@ -191,8 +191,7 @@ public class Terminal implements TerminalAdapter.DataSource, ICCommandDelegate
     @Override
     public void PostNotification(CCommand cmd, String name, Object... data)
     {
-        // NotificationCenter.PostNotification(cmd, name, data);
-        throw new NotImplementedException();
+         NotificationCenter.getMainNotificationCenter().Post(cmd, name, data);
     }
 
     @Override

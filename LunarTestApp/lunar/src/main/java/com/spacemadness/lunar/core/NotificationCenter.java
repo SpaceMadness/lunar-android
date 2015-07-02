@@ -150,6 +150,11 @@ public class NotificationCenter implements IDestroyable
     //////////////////////////////////////////////////////////////////////////////
     // Getters/Setters
 
+    public static NotificationCenter getMainNotificationCenter()
+    {
+        return Holder.mainNotificationCenter;
+    }
+
     TimerManager getTimerManager()
     {
         return timerManager;
@@ -158,5 +163,13 @@ public class NotificationCenter implements IDestroyable
     int getNotificationPoolSize()
     {
         return notificationPool.size();
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    // Thread-safe instance
+
+    private static class Holder
+    {
+        private static final NotificationCenter mainNotificationCenter = new NotificationCenter(Looper.getMainLooper());
     }
 }
