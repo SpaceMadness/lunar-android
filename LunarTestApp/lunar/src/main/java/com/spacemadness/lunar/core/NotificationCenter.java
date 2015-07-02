@@ -1,88 +1,34 @@
 package com.spacemadness.lunar.core;
 
-import com.spacemadness.lunar.debug.Assert;
-import com.spacemadness.lunar.utils.ClassUtils;
-import com.spacemadness.lunar.utils.NotImplementedException;
+import android.os.Looper;
 
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by weee on 5/28/15.
- */
 public class NotificationCenter implements IDestroyable
 {
-    private static NotificationCenter s_sharedInstance;
+    private static final Object[] EMPTY_DATA = new Object[0];
 
-    private Map<String, NotificationDelegateList> m_registerMap;
-    private ObjectsPool<Notification> m_notificatoinsPool;
+    private final Map<String, NotificationDelegateList> delegateLookup;
+    private final ObjectsPool<NotificationObject> notificationPool; // TODO: make shared pool
+    private final TimerManager timerManager;
 
-    static
+    public NotificationCenter(Looper looper)
     {
-        
+        this(new TimerManager(looper));
     }
 
-    /*
-    private final TimerRunnable PostCallback = new TimerRunnable() // FIXME: rename
+    public NotificationCenter(TimerManager timerManager)
     {
-        @Override
-        public void run(Timer timer)
+        if (timerManager == null)
         {
-            Notification notification = ClassUtils.as(timer.userData, Notification.class);
-            Assert.IsNotNull(notification);
-
-            PostImmediately(notification);
+            throw new NullPointerException("Timer manager is null");
         }
-    };
-    */
 
-    public NotificationCenter()
-    {
-        m_registerMap = new HashMap<String, NotificationDelegateList>();
-        m_notificatoinsPool = new ObjectsPool(Notification.class);
-    }
+        this.timerManager = timerManager;
 
-    //////////////////////////////////////////////////////////////////////////////
-    // Shared instance
-
-    public static void RegisterNotification(String name, NotificationDelegate del)
-    {
-        s_sharedInstance.Register(name, del);
-    }
-
-    public static void RegisterNotifications(NotificationInfo... list)
-    {
-        s_sharedInstance.Register(list);
-    }
-
-    public static void UnregisterNotification(String name, NotificationDelegate del)
-    {
-        s_sharedInstance.Unregister(name, del);
-    }
-
-    public static void UnregisterNotifications(NotificationInfo... list)
-    {
-        s_sharedInstance.Unregister(list);
-    }
-
-    public static void UnregisterNotifications(NotificationDelegate del)
-    {
-        s_sharedInstance.UnregisterAll(del);
-    }
-
-    public static void PostNotification(Object sender, String name, Object... data)
-    {
-        s_sharedInstance.Post(sender, name, data);
-    }
-
-    public static void PostNotificationImmediately(Object sender, String name, Object... data)
-    {
-        s_sharedInstance.PostImmediately(sender, name, data);
-    }
-
-    public static NotificationCenter SharedInstance() // TODO: decrease visiblity
-    {
-        return s_sharedInstance;
+        delegateLookup = new HashMap<>();
+        notificationPool = new ObjectsPoolConcurrent<>(NotificationObject.class); // TODO: make concurrent?
     }
 
     public void Destroy()
@@ -106,20 +52,12 @@ public class NotificationCenter implements IDestroyable
         if (list == null)
         {
             list = new NotificationDelegateList();
-            m_registerMap.put(name, list);
+            delegateLookup.put(name, list);
         }
         
         list.Add(del);
     }
 
-    public void Register(NotificationInfo... list)
-    {
-        for (int i = 0; i < list.length; ++i)
-        {
-            Register(list [i].name, list [i].del);
-        }
-    }
-    
     public boolean Unregister(String name, NotificationDelegate del)
     {
         NotificationDelegateList list = FindList(name);
@@ -131,42 +69,44 @@ public class NotificationCenter implements IDestroyable
         return false;
     }
 
-    public void Unregister(NotificationInfo... list)
-    {
-        for (int i = 0; i < list.length; ++i)
-        {
-            Unregister(list [i].name, list [i].del);
-        }
-    }
-    
     public boolean UnregisterAll(NotificationDelegate del)
     {
         boolean removed = false;
-        for (NotificationDelegateList list : m_registerMap.values())
+        for (NotificationDelegateList list : delegateLookup.values())
         {   
             removed |= list.Remove(del);
         }
         return removed;
     }
-    
+
+    public void Post(Object sender, String name)
+    {
+        Post(sender, name, EMPTY_DATA);
+    }
+
     public void Post(Object sender, String name, Object... data)
     {
+        if (data == null)
+        {
+            throw new NullPointerException("Data is null");
+        }
+
         NotificationDelegateList list = FindList(name);
         if (list != null && list.Count() > 0)
         {
-            Notification notification = m_notificatoinsPool.NextObject();
+            NotificationObject notification = createNotification();
             notification.Init(sender, name, data);
             
             SchedulePost(notification);
         }
     }
-    
+
     public void PostImmediately(Object sender, String name, Object... data)
     {   
         NotificationDelegateList list = FindList(name);
         if (list != null && list.Count() > 0)
         {
-            Notification notification = m_notificatoinsPool.NextObject();
+            NotificationObject notification = createNotification();
             notification.Init(sender, name, data);
             
             list.NotifyDelegates(notification);
@@ -174,9 +114,9 @@ public class NotificationCenter implements IDestroyable
         }
     }
     
-    public void PostImmediately(Notification notification)
+    void PostImmediately(NotificationObject notification)
     {
-        String name = notification.Name;
+        String name = notification.getName();
         NotificationDelegateList list = FindList(name);
         if (list != null)
         {
@@ -184,30 +124,39 @@ public class NotificationCenter implements IDestroyable
         }
         notification.Recycle();
     }
+
+    private NotificationObject createNotification()
+    {
+        NotificationObject notification = notificationPool.NextObject();
+        notification.notificationCenter = this;
+        return notification;
+    }
     
     private NotificationDelegateList FindList(String name)
     {
-        return m_registerMap.get(name);
+        return delegateLookup.get(name);
     }
     
-    private void SchedulePost(Notification notification)
+    private void SchedulePost(NotificationObject notification)
     {
-//        Timer timer = m_timerManager.Schedule(PostCallback);
-//        timer.userData = notification;
-        throw new NotImplementedException();
+        timerManager.Schedule(notification);
     }
     
     private void CancelScheduledPosts()
     {
-//        m_timerManager.Cancel(PostCallback);
-        throw new NotImplementedException();
+        timerManager.cancelAll(); // FIXME: better cancellation
     }
 
     //////////////////////////////////////////////////////////////////////////////
-    // Unit Testing
+    // Getters/Setters
 
-    private Map<String, NotificationDelegateList> RegistryMap()
+    TimerManager getTimerManager()
     {
-        return m_registerMap;
+        return timerManager;
+    }
+
+    int getNotificationPoolSize()
+    {
+        return notificationPool.size();
     }
 }

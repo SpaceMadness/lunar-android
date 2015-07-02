@@ -9,7 +9,6 @@ import com.spacemadness.lunar.utils.FastList;
 
 public class TimerManager
 {
-    private final Object lock = new Object();
     private final FastList<Timer> timers;
 
     final Handler handler;
@@ -41,7 +40,7 @@ public class TimerManager
             throw new NullPointerException("Target is null");
         }
 
-        synchronized (lock)
+        synchronized (timers)
         {
             Timer timer = findTimer(target);
             if (timer != null)
@@ -65,7 +64,7 @@ public class TimerManager
             throw new NullPointerException("Target is null");
         }
 
-        synchronized (lock)
+        synchronized (timers)
         {
             Timer timer = Timer.NextFreeTimer();
             addTimer(timer);
@@ -84,7 +83,7 @@ public class TimerManager
             throw new NullPointerException("Target is null");
         }
 
-        synchronized (lock)
+        synchronized (timers)
         {
             Timer timer = findTimer(target);
             if (timer != null)
@@ -96,9 +95,24 @@ public class TimerManager
         }
     }
 
+    public void cancelAll()
+    {
+        synchronized (timers)
+        {
+            for (Timer t = timers.ListFirst(); t != null;)
+            {
+                Timer next = t.listNext();
+                t.cancel();
+                t = next;
+            }
+
+            Assert.IsTrue(timers.isEmpty());
+        }
+    }
+
     void addTimer(Timer timer)
     {
-        synchronized (lock)
+        synchronized (timers)
         {
             Assert.IsNull(timer.manager);
             timers.AddLastItem(timer);
@@ -107,7 +121,7 @@ public class TimerManager
 
     void removeTimer(Timer timer)
     {
-        synchronized (lock)
+        synchronized (timers)
         {
             Assert.AreSame(this, timer.manager);
             Assert.IsTrue(timers.Count() > 0);
@@ -119,7 +133,7 @@ public class TimerManager
 
     Timer findTimer(Runnable target)
     {
-        synchronized (lock)
+        synchronized (timers)
         {
             for (Timer t = timers.ListFirst(); t != null; t = t.listNext())
             {

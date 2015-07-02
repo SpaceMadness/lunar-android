@@ -39,7 +39,8 @@ public class UpdatableList extends BaseList<IUpdatable> implements IUpdatable, I
     {
         try
         {
-            locked = true;
+            lock();
+
             int elementsCount = list.size();
             for (int i = 0; i < elementsCount; ++i) // do not update added items on that tick
             {
@@ -48,8 +49,7 @@ public class UpdatableList extends BaseList<IUpdatable> implements IUpdatable, I
         }
         finally
         {
-            ClearRemoved();
-            locked = false;
+            unlock();
         }
     }
 

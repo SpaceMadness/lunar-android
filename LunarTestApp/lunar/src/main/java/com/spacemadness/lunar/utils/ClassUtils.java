@@ -58,13 +58,14 @@ public class ClassUtils
      */
     public static <T> T tryNewInstance(Class<? extends T> cls)
     {
+        if (cls == null)
+        {
+            throw new NullPointerException("Class is null");
+        }
+
         try
         {
-            if (cls != null)
-            {
-                Constructor<? extends T> defaultConstructor = cls.getDeclaredConstructor(EMPTY_PARAMS);
-                return as(defaultConstructor.newInstance(), cls);
-            }
+            return newInstance(cls);
         }
         catch (InvocationTargetException e)
         {
@@ -75,6 +76,12 @@ public class ClassUtils
             Log.logCrit("Unable to instantiate class %s: %s", cls, e.getMessage());
         }
         return null;
+    }
+
+    public static <T> T newInstance(Class<? extends T> cls) throws NoSuchMethodException, InstantiationException, IllegalAccessException, InvocationTargetException
+    {
+        Constructor<? extends T> defaultConstructor = cls.getDeclaredConstructor(EMPTY_PARAMS);
+        return as(defaultConstructor.newInstance(), cls);
     }
 
     public static void listClassesName(Map<String> map) throws NoSuchFieldException, IllegalAccessException

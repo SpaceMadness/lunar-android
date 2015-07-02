@@ -10,11 +10,11 @@ import java.util.List;
  */
 public class BaseList<T> implements IBaseCollection<T> // TODO: need a better name
 {
-    protected List<T> list; // TODO: reduce visibility
+    protected final List<T> list;
 
-    protected T nullElement; // TODO: reduce visibility
-    protected int removedCount; // TODO: reduce visibility
-    protected boolean locked; // TODO: reduce visibility
+    private final T nullElement;
+    private int removedCount;
+    private boolean locked;
 
     protected BaseList(T nullElement)
     {
@@ -107,7 +107,7 @@ public class BaseList<T> implements IBaseCollection<T> // TODO: need a better na
         return list.contains(e);
     }
 
-    protected synchronized void ClearRemoved() // FIXME: rename
+    private synchronized void ClearRemoved() // FIXME: rename
     {
         for (int i = list.size() - 1; removedCount > 0 && i >= 0; --i)
         {
@@ -122,5 +122,18 @@ public class BaseList<T> implements IBaseCollection<T> // TODO: need a better na
     public synchronized int Count() // FIXME: rename
     {
         return list.size() - removedCount;
+    }
+
+    protected synchronized void lock()
+    {
+        Assert.IsFalse(locked);
+        locked = true;
+    }
+
+    protected synchronized void unlock()
+    {
+        Assert.IsTrue(locked);
+        ClearRemoved();
+        locked = false;
     }
 }

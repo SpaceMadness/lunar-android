@@ -8,8 +8,10 @@ import com.spacemadness.lunar.utils.NotImplementedException;
 /**
  * Created by weee on 5/28/15.
  */
-class NotificationDelegateList extends BaseList<NotificationDelegate>
+class NotificationDelegateList extends BaseList<NotificationDelegate> // TODO: make concurrent
 {
+    // FIXME: use weak references
+
     private static final NotificationDelegate NullNotificationDelegate = new NotificationDelegate()
     {
         @Override
@@ -30,39 +32,29 @@ class NotificationDelegateList extends BaseList<NotificationDelegate>
         return super.Add(del);
     }
     
-    public boolean RemoveAll(Object target)
+    public synchronized void NotifyDelegates(Notification notification)
     {
-//        boolean removed = false;
-//        for (int i = 0; i < list.size(); ++i)
-//        {
-//            NotificationDelegate del = list.get(i);
-//            if (del.Target == target)
-//            {
-//                RemoveAt(i); // it's safe: the list size will be changed on the next update
-//                removed = true;
-//            }
-//        }
-//
-//        return removed;
-
-        throw new NotImplementedException();
-    }
-    
-    public void NotifyDelegates(Notification notification)
-    {
-        int delegatesCount = list.size();
-        for (int i = 0; i < delegatesCount; ++i)
+        try
         {
-            NotificationDelegate del = list.get(i);
-            try
+            lock();
+
+            int delegatesCount = list.size();
+            for (int i = 0; i < delegatesCount; ++i)
             {
-                del.onNotification(notification);
-            }
-            catch (Exception e)
-            {
-                Log.logException(e, "Error while notifying delegate");
+                try
+                {
+                    NotificationDelegate del = list.get(i);
+                    del.onNotification(notification);
+                }
+                catch (Exception e)
+                {
+                    Log.logException(e, "Error while notifying delegate");
+                }
             }
         }
-        ClearRemoved();
+        finally
+        {
+            unlock();
+        }
     }
 }

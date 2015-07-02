@@ -4,6 +4,8 @@ import com.spacemadness.lunar.debug.Assert;
 import com.spacemadness.lunar.utils.ClassUtils;
 import com.spacemadness.lunar.utils.FastList;
 
+import java.lang.reflect.InvocationTargetException;
+
 /**
  * Created by weee on 5/28/15.
  */
@@ -52,7 +54,18 @@ public class ObjectsPool<T extends ObjectsPoolEntry> implements IDestroyable
 
     protected T CreateObject()
     {
-        return ClassUtils.tryNewInstance(cls);
+        try
+        {
+            return ClassUtils.newInstance(cls);
+        }
+        catch (InvocationTargetException e)
+        {
+            throw new ObjectsPoolException("Can't create pool object instance " + cls, e.getCause());
+        }
+        catch (Exception e)
+        {
+            throw new ObjectsPoolException("Can't create pool object instance " + cls, e);
+        }
     }
 
     private ObjectsPoolEntry TakeReference()

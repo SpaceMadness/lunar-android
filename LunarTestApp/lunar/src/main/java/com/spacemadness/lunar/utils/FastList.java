@@ -150,6 +150,11 @@ public class FastList<T extends FastListNode> implements IFastList
         return m_size;
     }
 
+    public boolean isEmpty()
+    {
+        return Count() == 0;
+    }
+
     public T ListFirst() // FIXME: rename
     {
         return m_listFirst;
