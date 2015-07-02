@@ -1,7 +1,5 @@
 package com.spacemadness.lunar.core;
 
-import com.spacemadness.lunar.utils.NotImplementedException;
-
 /**
  * Created by weee on 5/28/15.
  */

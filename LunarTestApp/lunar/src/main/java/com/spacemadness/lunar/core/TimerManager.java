@@ -1,6 +1,7 @@
 package com.spacemadness.lunar.core;
 
 import android.os.Handler;
+import android.os.HandlerThread;
 import android.os.Looper;
 
 import com.spacemadness.lunar.debug.Assert;
@@ -9,6 +10,8 @@ import com.spacemadness.lunar.utils.FastList;
 
 public class TimerManager
 {
+    private static int nextBackgroundManagerId;
+
     private final FastList<Timer> timers;
 
     final Handler handler;
@@ -160,6 +163,46 @@ public class TimerManager
     public static TimerManager getMainManager()
     {
         return Holder.mainManager;
+    }
+
+    public static Background createInBackground()
+    {
+        return createInBackground(null);
+    }
+
+    public static Background createInBackground(String name)
+    {
+        HandlerThread handlerThread = new HandlerThread(name == null ? "Background-" + nextBackgroundManagerId++ : name);
+        handlerThread.start();
+
+        return new Background(handlerThread);
+    }
+
+    public static class Background extends TimerManager implements IDestroyable
+    {
+        private final HandlerThread handlerThread;
+
+        private Background(HandlerThread handlerThread)
+        {
+            super(handlerThread.getLooper());
+            this.handlerThread = handlerThread;
+        }
+
+        public void quit()
+        {
+            handlerThread.getLooper().quit();
+        }
+
+        public void join() throws InterruptedException
+        {
+            handlerThread.join();
+        }
+
+        @Override
+        public void Destroy()
+        {
+            quit();
+        }
     }
 
     private static class Holder
