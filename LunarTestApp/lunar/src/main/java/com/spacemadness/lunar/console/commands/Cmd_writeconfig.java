@@ -27,6 +27,7 @@ import com.spacemadness.lunar.console.annotations.Command;
 import com.spacemadness.lunar.utils.FileUtils;
 import com.spacemadness.lunar.utils.StringUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -36,19 +37,19 @@ public class Cmd_writeconfig extends CCommand
 {
     boolean execute(@Arg("filename") String filename)
     {
-        List<String> lines = new ArrayList<String>();
-        
-        // cvars
-        ListCvars(lines);
-        
-        // aliases
-        ListAliases(lines);
-        
-        String path = CCommandHelper.GetConfigPath(filename);
-
         try
         {
-            FileUtils.Write(path, lines);
+            File configFile = CCommandHelper.getConfigFile(filename, true);
+
+            List<String> lines = new ArrayList<String>();
+
+            // cvars
+            ListCvars(lines);
+
+            // aliases
+            ListAliases(lines);
+
+            FileUtils.Write(configFile, lines);
             return true;
         }
         catch (IOException e)
@@ -63,7 +64,8 @@ public class Cmd_writeconfig extends CCommand
     
     private static void ListCvars(List<String> lines)
     {
-        List<CVar> cvars = CRegistery.ListVars(new ListCommandsFilter<CVarCommand>() {
+        List<CVar> cvars = CRegistery.ListVars(new ListCommandsFilter<CVarCommand>()
+        {
             @Override
             public boolean accept(CVarCommand command) {
                 return !command.IsDefault() && !command.HasFlag(CFlags.NoArchive);

@@ -1,7 +1,6 @@
 package com.spacemadness.lunar.console;
 
 import com.spacemadness.lunar.ColorCode;
-import com.spacemadness.lunar.core.NotificationCenter;
 import com.spacemadness.lunar.utils.NotImplementedException;
 import com.spacemadness.lunar.utils.StringUtils;
 
@@ -9,9 +8,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-/**
- * Created by alementuev on 6/17/15.
- */
 public class Terminal implements TerminalAdapter.DataSource, ICCommandDelegate
 {
     private final CommandProcessor commandProcessor;
@@ -177,21 +173,9 @@ public class Terminal implements TerminalAdapter.DataSource, ICCommandDelegate
     }
 
     @Override
-    public void ClearTerminal()
-    {
-        throw new NotImplementedException();
-    }
-
-    @Override
     public boolean ExecuteCommandLine(String commandLine, boolean manual)
     {
         return commandProcessor.TryExecute(commandLine, manual);
-    }
-
-    @Override
-    public void PostNotification(CCommand cmd, String name, Object... data)
-    {
-         NotificationCenter.getMainNotificationCenter().Post(cmd, name, data);
     }
 
     @Override

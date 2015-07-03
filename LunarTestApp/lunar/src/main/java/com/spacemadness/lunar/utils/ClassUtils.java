@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 
 import dalvik.system.DexFile;
-import dalvik.system.PathClassLoader;
 
 public class ClassUtils
 {

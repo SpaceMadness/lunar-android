@@ -2,7 +2,7 @@ package com.spacemadness.lunar.core;
 
 import android.os.HandlerThread;
 
-public class MockTimerManager extends TimerManager
+public class MockTimerManager extends TimerManagerImp
 {
     private final HandlerThread handlerThread;
     private boolean waitFlag;

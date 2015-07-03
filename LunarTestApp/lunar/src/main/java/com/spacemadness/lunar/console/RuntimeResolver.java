@@ -1,26 +1,20 @@
 package com.spacemadness.lunar.console;
 
-import android.util.Log;
-
 import com.spacemadness.lunar.console.annotations.Command;
 import com.spacemadness.lunar.console.annotations.CommandOption;
 import com.spacemadness.lunar.utils.ArrayUtils;
 import com.spacemadness.lunar.utils.ClassUtils;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Enumeration;
 import java.util.List;
 
-import dalvik.system.DexFile;
 import dalvik.system.PathClassLoader;
 
 import static com.spacemadness.lunar.utils.ClassUtils.FieldFilter;
 import static com.spacemadness.lunar.utils.ClassUtils.as;
-import static com.spacemadness.lunar.utils.ClassUtils.getFieldValue;
 import static com.spacemadness.lunar.utils.ClassUtils.tryNewInstance;
 import static com.spacemadness.lunar.utils.StringUtils.IsNullOrEmpty;
 import static com.spacemadness.lunar.utils.StringUtils.nullOrNonEmpty;

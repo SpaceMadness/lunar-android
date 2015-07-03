@@ -1,4 +1,4 @@
-package com.spacemadness.lunar.utils;//  Copyright 2015 SpaceMadness.
+//  Copyright 2015 SpaceMadness.
 // 
 //  Lunar is licensed under the Apache License, 
 //  Version 2.0 (the "License"); you may not use this file except in compliance 
@@ -13,6 +13,8 @@ package com.spacemadness.lunar.utils;//  Copyright 2015 SpaceMadness.
 //  limitations under the License.
 //
 
+package com.spacemadness.lunar.utils;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,16 +27,51 @@ import java.util.List;
 
 public class FileUtils
 {
-    public static List<String> Read(String path) throws FileNotFoundException, IOException
+    public static List<String> Read(String path) throws IOException
     {
-        return Read(path, new ArrayList<String>());
+        return Read(path, DEFAULT_FILTER);
     }
 
-    public static List<String> Read(String path, List<String> outList) throws FileNotFoundException, IOException
+    public static List<String> Read(String path, ReadFilter filter) throws IOException
     {
-        if (path == null)
+        return Read(path, new ArrayList<String>(), filter);
+    }
+
+    public static List<String> Read(String path, List<String> outList) throws IOException
+    {
+        return Read(path, outList, DEFAULT_FILTER);
+    }
+
+    public static List<String> Read(String path, List<String> outList, ReadFilter filter) throws IOException
+    {
+        return Read(new File(path), outList, filter);
+    }
+
+    public static List<String> Read(File file) throws IOException
+    {
+        return Read(file, DEFAULT_FILTER);
+    }
+
+    public static List<String> Read(File file, ReadFilter filter) throws IOException
+    {
+        return Read(file, new ArrayList<String>(), filter);
+    }
+
+    public static List<String> Read(File file, List<String> outList) throws IOException
+    {
+        return Read(file, outList, DEFAULT_FILTER);
+    }
+
+    public static List<String> Read(File file, List<String> outList, ReadFilter filter) throws IOException
+    {
+        if (file == null)
         {
-            throw new NullPointerException("Path is null");
+            throw new NullPointerException("File is null");
+        }
+
+        if (!file.exists())
+        {
+            throw new FileNotFoundException("File doesn't exist: " + file);
         }
 
         if (outList == null)
@@ -42,7 +79,10 @@ public class FileUtils
             throw new NullPointerException("Out list is null");
         }
 
-        File file = new File(path);
+        if (filter == null)
+        {
+            throw new NullPointerException("Filter is null");
+        }
 
         BufferedReader reader = null;
         try
@@ -52,8 +92,13 @@ public class FileUtils
             String line;
             while ((line = reader.readLine()) != null)
             {
-                outList.add(line);
+                if (filter.accept(line))
+                {
+                    outList.add(line);
+                }
             }
+
+            return outList;
         }
         finally
         {
@@ -62,15 +107,18 @@ public class FileUtils
                 reader.close();
             }
         }
-
-        return null;
     }
 
     public static void Write(String path, List<String> lines) throws IOException
     {
-        if (path == null)
+        Write(new File(path), lines);
+    }
+
+    public static void Write(File file, List<String> lines) throws IOException
+    {
+        if (file == null)
         {
-            throw new NullPointerException("Path is null");
+            throw new NullPointerException("File is null");
         }
 
         if (lines == null)
@@ -81,7 +129,7 @@ public class FileUtils
         PrintStream stream = null;
         try
         {
-            stream = new PrintStream(new File(path));
+            stream = new PrintStream(file);
             for (String line : lines)
             {
                 stream.println(line);
@@ -128,13 +176,44 @@ public class FileUtils
         return dotIndex != -1 ? filename.substring(dotIndex) : "";
     }
 
-    public static String ChangeExtension(String filename, String extension)
+    public static String ChangeExtension(String filename, String ext)
     {
-        throw new NotImplementedException();
+        if (filename == null)
+        {
+            throw new NullPointerException("File name is null");
+        }
+
+        if (ext == null)
+        {
+            throw new NullPointerException("Extension is null");
+        }
+
+        String oldExt = getFileExt(filename);
+        if (oldExt.equals(ext))
+        {
+            return filename;
+        }
+
+        int index = filename.length() - oldExt.length();
+        return filename.substring(0, index) + ext;
     }
 
     public static boolean IsPathRooted(String path)
     {
         throw new NotImplementedException();
+    }
+
+    private static final ReadFilter DEFAULT_FILTER = new ReadFilter()
+    {
+        @Override
+        public boolean accept(String line)
+        {
+            return true;
+        }
+    };
+
+    public interface ReadFilter
+    {
+        boolean accept(String line);
     }
 }

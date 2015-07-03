@@ -6,7 +6,7 @@ import com.spacemadness.lunar.utils.ClassUtils;
 import java.util.HashMap;
 import java.util.Map;
 
-class NotificationObject extends ObjectsPoolEntry implements Notification, Runnable
+public class NotificationObject extends ObjectsPoolEntry implements Notification, Runnable
 {
     private Map<String, Object> data;
 

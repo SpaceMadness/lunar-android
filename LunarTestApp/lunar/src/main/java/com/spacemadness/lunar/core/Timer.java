@@ -27,7 +27,7 @@ public class Timer extends ObjectsPoolEntry<Timer>
 
     Runnable target;
 
-    TimerManager manager;
+    TimerManagerImp manager;
 
     static int instanceCount;
 

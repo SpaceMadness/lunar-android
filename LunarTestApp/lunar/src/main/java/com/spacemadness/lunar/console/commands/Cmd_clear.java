@@ -17,12 +17,13 @@ package com.spacemadness.lunar.console.commands;
 
 import com.spacemadness.lunar.console.CCommand;
 import com.spacemadness.lunar.console.annotations.Command;
+import com.spacemadness.lunar.utils.NotImplementedException;
 
 @Command(Name="clear", Description="Clears current terminal window.")
 public class Cmd_clear extends CCommand
 {
     void execute()
     {
-        ClearTerminal();
+        throw new NotImplementedException();
     }
 }

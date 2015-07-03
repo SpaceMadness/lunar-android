@@ -239,7 +239,7 @@ public class NotificationCenterTest extends TestCase
         callbacks.clear();
     }
 
-    private class MockNotificationCenter extends NotificationCenter
+    private class MockNotificationCenter extends NotificationCenterImp
     {
         public MockNotificationCenter()
         {

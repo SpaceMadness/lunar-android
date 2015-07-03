@@ -2,9 +2,6 @@ package com.spacemadness.lunar.utils;
 
 import junit.framework.TestCase;
 
-/**
- * Created by weee on 6/9/15.
- */
 public class ObjectUtilsTest extends TestCase
 {
     public void testAreEqual() throws Exception
@@ -37,5 +34,14 @@ public class ObjectUtilsTest extends TestCase
         String s2 = null;
 
         assertTrue(ObjectUtils.areEqual(s1, s2));
+    }
+
+    public void testNotNull() throws Exception
+    {
+        Object obj = new Object();
+        Object objDefault = new Object();
+
+        assertSame(obj, ObjectUtils.notNullOrDefault(obj, objDefault));
+        assertSame(objDefault, ObjectUtils.notNullOrDefault(null, objDefault));
     }
 }

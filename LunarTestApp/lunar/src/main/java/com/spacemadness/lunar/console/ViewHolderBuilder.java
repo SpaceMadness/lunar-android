@@ -2,9 +2,6 @@ package com.spacemadness.lunar.console;
 
 import android.view.ViewGroup;
 
-import com.spacemadness.lunar.console.TerminalAdapter;
-import com.spacemadness.lunar.console.TerminalEntry;
-
 /**
  * Created by alementuev on 6/22/15.
  */

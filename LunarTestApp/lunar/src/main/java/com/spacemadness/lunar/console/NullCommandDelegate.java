@@ -25,19 +25,9 @@ public class NullCommandDelegate implements ICCommandDelegate
     }
 
     @Override
-    public void ClearTerminal()
-    {
-    }
-
-    @Override
     public boolean ExecuteCommandLine(String commandLine, boolean manual)
     {
         return false;
-    }
-
-    @Override
-    public void PostNotification(CCommand cmd, String name, Object... data)
-    {
     }
 
     @Override

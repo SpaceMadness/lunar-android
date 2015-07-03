@@ -1,33 +1,32 @@
 package com.spacemadness.lunar.core;
 
-/**
- * Created by weee on 5/28/15.
- */
+import static com.spacemadness.lunar.RuntimePlatform.getNotificationCenter;
+
 public abstract class BaseObject implements IDestroyable
 {
     protected void RegisterNotification(String name, NotificationDelegate del)
     {
-        NotificationCenter.getMainNotificationCenter().Register(name, del);
+        getNotificationCenter().Register(name, del);
     }
 
     protected void UnregisterNotification(String name, NotificationDelegate del)
     {
-        NotificationCenter.getMainNotificationCenter().Unregister(name, del);
+        getNotificationCenter().Unregister(name, del);
     }
 
     protected void UnregisterNotifications(NotificationDelegate del)
     {
-        NotificationCenter.getMainNotificationCenter().UnregisterAll(del);
+        getNotificationCenter().UnregisterAll(del);
     }
 
     protected void PostNotification(String name, Object... data)
     {
-        NotificationCenter.getMainNotificationCenter().Post(this, name, data);
+        getNotificationCenter().Post(this, name, data);
     }
 
     protected void PostNotificationImmediately(String name, Object... data)
     {
-        NotificationCenter.getMainNotificationCenter().PostImmediately(this, name, data);
+        getNotificationCenter().PostImmediately(this, name, data);
     }
 
     //////////////////////////////////////////////////////////////////////////////

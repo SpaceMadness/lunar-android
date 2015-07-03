@@ -19,6 +19,7 @@ public class TestCaseEx extends TestCase
     {
         super.setUp();
 
+        TestingRuntimePlatform.init();
         result = new ArrayList<>();
     }
 

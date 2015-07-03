@@ -2,7 +2,7 @@ package com.spacemadness.lunar;
 
 import android.content.Context;
 
-import com.spacemadness.lunar.console.AppTerminalImpl;
+import com.spacemadness.lunar.console.AppTerminalImp;
 
 public abstract class AppTerminal // TODO: better class name
 {
@@ -26,7 +26,7 @@ public abstract class AppTerminal // TODO: better class name
                 throw new IllegalStateException("Instance is already initialized");
             }
 
-            instance = new AppTerminalImpl(context);
+            instance = new AppTerminalImp(context);
         }
     }
 

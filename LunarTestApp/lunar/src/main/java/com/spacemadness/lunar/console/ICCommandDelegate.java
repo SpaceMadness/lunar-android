@@ -9,10 +9,7 @@ public interface ICCommandDelegate
     void LogTerminal(String[] table);
     void LogTerminal(Throwable e, String message);
 
-    void ClearTerminal();
-
     boolean ExecuteCommandLine(String commandLine, boolean manual);
-    void PostNotification(CCommand cmd, String name, Object... data);
 
-    boolean IsPromptEnabled();
+    boolean IsPromptEnabled(); // FIXME: remove this method
 }

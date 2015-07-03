@@ -22,6 +22,7 @@ import com.spacemadness.lunar.console.annotations.Command;
 import com.spacemadness.lunar.console.annotations.CommandOption;
 import com.spacemadness.lunar.utils.FileUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -40,22 +41,23 @@ public class Cmd_cat extends CCommand
     {
         String name = filename != null ? filename : "default.cfg";
         
-        String path = CCommandHelper.GetConfigPath(name);
-        if (!FileUtils.FileExists(path))
+        File configFile = CCommandHelper.getConfigFile(name);
+        if (!configFile.exists())
         {
-            PrintError("Can't find config file: '%s'", path);
+            PrintError("Can't find config file: '%s'", configFile);
             return false;
         }
 
         if (verbose)
         {
-            Print(path);
+            Print(configFile.getAbsolutePath());
         }
 
         try
         {
-            List<String> lines = FileUtils.Read(path);
-            for (String line : lines) {
+            List<String> lines = FileUtils.Read(configFile);
+            for (String line : lines)
+            {
                 PrintIndent(line);
             }
 

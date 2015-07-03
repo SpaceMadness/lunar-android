@@ -3,9 +3,6 @@ package com.spacemadness.lunar.console;
 import com.spacemadness.lunar.ColorCode;
 import com.spacemadness.lunar.utils.StringUtils;
 
-/**
- * Created by alementuev on 5/29/15.
- */
 public class CVarCommand extends CCommand
 {
     public final CVar cvar;

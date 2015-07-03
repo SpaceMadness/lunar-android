@@ -8,4 +8,5 @@ import spacemadness.com.lunar.BuildConfig;
 public class Config
 {
     public static final boolean isDebugBuild = BuildConfig.DEBUG;
+    public static final boolean isTesting = false;
 }

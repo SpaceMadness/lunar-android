@@ -15,9 +15,12 @@
 
 package com.spacemadness.lunar.console;
 
+import com.spacemadness.lunar.RuntimePlatform;
 import com.spacemadness.lunar.utils.FileUtils;
-import com.spacemadness.lunar.utils.NotImplementedException;
 import com.spacemadness.lunar.utils.StringUtils;
+
+import java.io.File;
+import java.io.IOException;
 
 public class CCommandHelper
 {
@@ -41,21 +44,30 @@ public class CCommandHelper
         return buffer.toString();
     }
 
-    public static String GetConfigPath(String filename)
+    public static File getConfigFile(String filename)
     {
         String path = FileUtils.ChangeExtension(filename, ".cfg");
-        if (FileUtils.IsPathRooted(path))
+
+        File configFile = new File(path);
+        if (configFile.isAbsolute())
         {
-            return path;
+            return configFile;
         }
 
-        // return System.IO.Path.Combine(ConfigPath, path);
-        throw new NotImplementedException();
+        return new File(RuntimePlatform.getConfigsDir(), path);
     }
 
-    public static String ConfigPath()
+    public static File getConfigFile(String filename, boolean createConfigDir) throws IOException
     {
-        // return System.IO.Path.Combine(FileUtils.DataPath, "configs");
-        throw new NotImplementedException(); // FIXME
+        String path = FileUtils.ChangeExtension(filename, ".cfg");
+
+        File configFile = new File(path);
+        if (configFile.isAbsolute())
+        {
+            return configFile;
+        }
+
+        File configsDir = RuntimePlatform.getConfigsDir(createConfigDir);
+        return new File(configsDir, path);
     }
 }

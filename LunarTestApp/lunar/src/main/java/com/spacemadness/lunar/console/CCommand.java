@@ -14,13 +14,14 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import static com.spacemadness.lunar.RuntimePlatform.getNotificationCenter;
 
 public abstract class CCommand implements Comparable<CCommand>
 {
@@ -1241,11 +1242,6 @@ public abstract class CCommand implements Comparable<CCommand>
         return null;
     }
 
-    protected void ClearTerminal()
-    {
-        m_delegate.ClearTerminal();
-    }
-
     protected boolean ExecCommand(String commandLine)
     {
         return ExecCommand(commandLine, false);
@@ -1258,7 +1254,7 @@ public abstract class CCommand implements Comparable<CCommand>
 
     protected void PostNotification(String name, Object... data)
     {
-        m_delegate.PostNotification(this, name, data);
+        getNotificationCenter().Post(this, name, data);
     }
 
     //////////////////////////////////////////////////////////////////////////////

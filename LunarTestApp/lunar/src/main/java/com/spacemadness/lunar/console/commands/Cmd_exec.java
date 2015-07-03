@@ -22,6 +22,7 @@ import com.spacemadness.lunar.console.annotations.Arg;
 import com.spacemadness.lunar.console.annotations.Command;
 import com.spacemadness.lunar.utils.FileUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -30,8 +31,8 @@ public class Cmd_exec extends CCommand
 {
     boolean execute(@Arg("filename") String filename)
     {
-        String path = CCommandHelper.GetConfigPath(filename);
-        if (!FileUtils.FileExists(path))
+        File configFile = CCommandHelper.getConfigFile(filename);
+        if (!configFile.exists())
         {
             if (this.IsManualMode)
             {
@@ -40,10 +41,10 @@ public class Cmd_exec extends CCommand
             return false;
         }
         
-        List<String> lines = null;
+        List<String> lines;
         try
         {
-            lines = FileUtils.Read(path);
+            lines = FileUtils.Read(configFile);
         }
         catch (IOException e)
         {
