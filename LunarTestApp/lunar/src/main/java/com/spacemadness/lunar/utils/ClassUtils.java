@@ -68,11 +68,11 @@ public class ClassUtils
         }
         catch (InvocationTargetException e)
         {
-            Log.logCrit("Unable to instantiate class %s: %s", cls, e.getCause().getMessage());
+            Log.c("Unable to instantiate class %s: %s", cls, e.getCause().getMessage());
         }
         catch (Exception e)
         {
-            Log.logCrit("Unable to instantiate class %s: %s", cls, e.getMessage());
+            Log.c("Unable to instantiate class %s: %s", cls, e.getMessage());
         }
         return null;
     }

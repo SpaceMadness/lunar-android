@@ -4,8 +4,9 @@ import android.content.Context;
 
 import com.spacemadness.lunar.AppTerminal;
 import com.spacemadness.lunar.DefaultRuntimePlatform;
+import com.spacemadness.lunar.debug.Log;
 
-public class AppTerminalImp extends AppTerminal
+public class AppTerminalImp extends AppTerminal // TODO: think about merging platform and terminal classes
 {
     public AppTerminalImp(Context context)
     {
@@ -14,7 +15,27 @@ public class AppTerminalImp extends AppTerminal
             throw new NullPointerException("Context is null");
         }
 
-        DefaultRuntimePlatform.setContext(context.getApplicationContext());
-        CRegistery.ResolveCommands();
+        try
+        {
+            DefaultRuntimePlatform.initialize(context.getApplicationContext());
+        }
+        catch (Exception e)
+        {
+            Log.logException(e, "Exception while initializing terminal");
+        }
+    }
+
+    @Override
+    protected void destroyInstance()
+    {
+        try
+        {
+            DefaultRuntimePlatform.destroy();
+            super.destroyInstance();
+        }
+        catch (Exception e)
+        {
+            Log.logException(e, "Error while destroying terminal");
+        }
     }
 }

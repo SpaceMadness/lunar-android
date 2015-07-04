@@ -29,7 +29,7 @@ public class Log
         android.util.Log.e(TAG, message);
     }
 
-    public static void logCrit(String format, Object... params)
+    public static void c(String format, Object... params)
     {
         String message = String.format(format, params);
         android.util.Log.e(TAG, message);

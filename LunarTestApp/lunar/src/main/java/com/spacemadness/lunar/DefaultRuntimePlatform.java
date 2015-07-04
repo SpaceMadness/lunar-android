@@ -3,6 +3,7 @@ package com.spacemadness.lunar;
 import android.content.Context;
 import android.os.Looper;
 
+import com.spacemadness.lunar.console.CRegistery;
 import com.spacemadness.lunar.core.BackgroundTimerManager;
 import com.spacemadness.lunar.core.NotificationCenter;
 import com.spacemadness.lunar.core.NotificationCenterImp;
@@ -44,9 +45,9 @@ public class DefaultRuntimePlatform extends RuntimePlatform
     }
 
     //////////////////////////////////////////////////////////////////////////////
-    // Getters/Setters
+    // Lifecycle
 
-    public static void setContext(Context context)
+    public static void initialize(Context context)
     {
         if (context == null)
         {
@@ -54,7 +55,17 @@ public class DefaultRuntimePlatform extends RuntimePlatform
         }
 
         getInstance().contextRef = new WeakReference<>(context);
+
+        CRegistery.ResolveCommands();
     }
+
+    public static void destroy()
+    {
+        // TODO
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    // Getters/Setters
 
     public static Context getContext()
     {
