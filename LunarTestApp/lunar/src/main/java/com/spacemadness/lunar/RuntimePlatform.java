@@ -2,6 +2,7 @@ package com.spacemadness.lunar;
 
 import com.spacemadness.lunar.console.CVar;
 import com.spacemadness.lunar.console.Terminal;
+import com.spacemadness.lunar.core.IDestroyable;
 import com.spacemadness.lunar.core.Notification;
 import com.spacemadness.lunar.core.NotificationCenter;
 import com.spacemadness.lunar.core.NotificationDelegate;
@@ -13,9 +14,9 @@ import java.io.IOException;
 
 import static com.spacemadness.lunar.console.CCommandNotifications.*;
 
-public abstract class RuntimePlatform
+public abstract class RuntimePlatform implements IDestroyable
 {
-    private static final RuntimePlatform instance = new DefaultRuntimePlatform();
+    private static RuntimePlatform instance;
 
     private final Terminal terminal;
     private final NotificationCenter notificationCenter;
@@ -26,10 +27,21 @@ public abstract class RuntimePlatform
 
     protected RuntimePlatform()
     {
+        RuntimePlatform.instance = this; // TODO: thread safety and error checking
+
         notificationCenter = createNotificationCenter();
         registerNotifications();
 
         terminal = new Terminal(1024);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    // Destroyable
+
+    @Override
+    public void Destroy()
+    {
+        RuntimePlatform.instance = null;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -42,7 +54,7 @@ public abstract class RuntimePlatform
 
     public static boolean executeCommand(String commandLine, boolean manualMode)
     {
-        return instance.executeCommand0(commandLine, manualMode);
+        return instance.execCommand(commandLine, manualMode);
     }
 
     public static NotificationCenter getNotificationCenter()
@@ -169,7 +181,7 @@ public abstract class RuntimePlatform
     //////////////////////////////////////////////////////////////////////////////
     // Terminal
 
-    protected boolean executeCommand0(String commandLine, boolean manualMode)
+    public boolean execCommand(String commandLine, boolean manualMode)
     {
         return terminal.ExecuteCommandLine(commandLine, manualMode);
     }
@@ -196,6 +208,13 @@ public abstract class RuntimePlatform
 
     protected static RuntimePlatform getInstance()
     {
+        return instance; // TODO: thread safety
+    }
+
+    protected static RuntimePlatform getExistingInstance()
+    {
+        RuntimePlatform instance = getInstance();
+        Assert.IsNotNull(instance, "Instance is not initialized");
         return instance;
     }
 }

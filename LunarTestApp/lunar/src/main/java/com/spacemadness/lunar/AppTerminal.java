@@ -5,9 +5,9 @@ import android.content.Context;
 import com.spacemadness.lunar.console.AppTerminalImp;
 import com.spacemadness.lunar.debug.Log;
 
-public abstract class AppTerminal // TODO: better class name
+public abstract class AppTerminal
 {
-    private static final Object mutex = new Object();
+    private static final Object lock = new Object();
 
     private static AppTerminal instance;
 
@@ -20,7 +20,7 @@ public abstract class AppTerminal // TODO: better class name
 
     public static void initialize(Context context)
     {
-        synchronized (mutex)
+        synchronized (lock)
         {
             if (instance != null)
             {
@@ -33,27 +33,76 @@ public abstract class AppTerminal // TODO: better class name
                 return;
             }
 
-            instance = new AppTerminalImp(context);
+            try
+            {
+                instance = new AppTerminalImp(context);
+            }
+            catch (Exception e)
+            {
+                Log.logException(e, "Exception while initializing instance");
+            }
         }
     }
 
     public static void destroy()
     {
-        synchronized (mutex)
+        synchronized (lock)
         {
             if (instance == null)
             {
-                Log.e("Instance is not initialized");
+                Log.e("Instance is not initialized"); // TODO: replace with warning
                 return;
             }
 
-            instance.destroyInstance();
+            try
+            {
+                instance.destroyInstance();
+            }
+            catch (Exception e)
+            {
+                Log.logException(e, "Exception while destroying instance");
+            }
+
             instance = null;
         }
     }
 
     //////////////////////////////////////////////////////////////////////////////
+    // Commands
+
+    public static boolean executeCommand(String commandLine)
+    {
+        return executeCommand(commandLine, false);
+    }
+
+    public static boolean executeCommand(String commandLine, boolean manualMode)
+    {
+        if (commandLine == null)
+        {
+            throw new NullPointerException("Command line is null");
+        }
+
+        synchronized (lock)
+        {
+            if (instance == null)
+            {
+                if (Config.isDebugBuild)
+                {
+                    throw new NullPointerException("Instance is not initialized. Can't execute command: " + commandLine);
+                }
+
+                Log.c("Instance is not initialized. Can't execute command: %s", commandLine);
+                return false;
+            }
+
+            return instance.execCommand(commandLine, manualMode);
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
     // Inheritance
+
+    protected abstract boolean execCommand(String commandLine, boolean manualMode);
 
     protected void destroyInstance()
     {

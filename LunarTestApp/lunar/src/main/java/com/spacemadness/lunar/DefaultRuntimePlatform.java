@@ -3,7 +3,6 @@ package com.spacemadness.lunar;
 import android.content.Context;
 import android.os.Looper;
 
-import com.spacemadness.lunar.console.CRegistery;
 import com.spacemadness.lunar.core.BackgroundTimerManager;
 import com.spacemadness.lunar.core.NotificationCenter;
 import com.spacemadness.lunar.core.NotificationCenterImp;
@@ -17,7 +16,17 @@ public class DefaultRuntimePlatform extends RuntimePlatform
 {
     private static final String CONFIGS_DIR_NAME = "com.spacemadness.lunar.Configs";
 
-    private WeakReference<Context> contextRef;
+    private final WeakReference<Context> contextRef;
+
+    public DefaultRuntimePlatform(Context context)
+    {
+        if (context == null)
+        {
+            throw new NullPointerException("Context is null");
+        }
+
+        contextRef = new WeakReference<>(context);
+    }
 
     @Override
     protected TimerManager createTimerManager()
@@ -45,37 +54,11 @@ public class DefaultRuntimePlatform extends RuntimePlatform
     }
 
     //////////////////////////////////////////////////////////////////////////////
-    // Lifecycle
-
-    public static void initialize(Context context)
-    {
-        if (context == null)
-        {
-            throw new NullPointerException("Context is null");
-        }
-
-        getInstance().contextRef = new WeakReference<>(context);
-
-        CRegistery.ResolveCommands();
-    }
-
-    public static void destroy()
-    {
-        // TODO
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
     // Getters/Setters
 
     public static Context getContext()
     {
-        final WeakReference<Context> contextRef = getInstance().contextRef;
-        if (contextRef == null)
-        {
-            throw new NullPointerException("Context reference is not initialized");
-        }
-
-        return contextRef.get();
+        return getExistingInstance().contextRef.get();
     }
 
     public static Context getExistingContext()
@@ -89,8 +72,13 @@ public class DefaultRuntimePlatform extends RuntimePlatform
         return context;
     }
 
-    public static DefaultRuntimePlatform getInstance()
+    protected static DefaultRuntimePlatform getInstance()
     {
         return (DefaultRuntimePlatform) RuntimePlatform.getInstance();
+    }
+
+    protected static DefaultRuntimePlatform getExistingInstance()
+    {
+        return (DefaultRuntimePlatform) RuntimePlatform.getExistingInstance();
     }
 }
