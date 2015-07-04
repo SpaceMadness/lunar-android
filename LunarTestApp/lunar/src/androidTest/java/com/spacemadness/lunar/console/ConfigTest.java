@@ -4,11 +4,14 @@ public class ConfigTest extends CCommandTestCase
 {
     public void testWriteDefaultConfig()
     {
-        CVar boolVar = new CVar("bool", true);
-        CVar intVar = new CVar("int", 10);
-        CVar floatVar = new CVar("float", 3.14f);
-        CVar stringVar = new CVar("string", "Some string");
+        new CVar("bool", true);
+        new CVar("int", 10);
+        new CVar("float", 3.14f);
+        new CVar("string", "Some string");
 
-
+        execute("bool 0");
+        execute("int 30");
+        execute("float 6.28");
+        execute("string 'Some other string'");
     }
 }

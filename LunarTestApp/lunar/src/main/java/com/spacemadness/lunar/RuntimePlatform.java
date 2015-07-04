@@ -1,11 +1,16 @@
 package com.spacemadness.lunar;
 
+import com.spacemadness.lunar.console.CVar;
+import com.spacemadness.lunar.core.Notification;
 import com.spacemadness.lunar.core.NotificationCenter;
+import com.spacemadness.lunar.core.NotificationDelegate;
 import com.spacemadness.lunar.core.TimerManager;
 import com.spacemadness.lunar.debug.Assert;
 
 import java.io.File;
 import java.io.IOException;
+
+import static com.spacemadness.lunar.console.CCommandNotifications.*;
 
 public abstract class RuntimePlatform
 {
@@ -16,12 +21,18 @@ public abstract class RuntimePlatform
     private NotificationCenter notificationCenter;
     private File configsDir;
 
+    protected RuntimePlatform()
+    {
+        notificationCenter = createNotificationCenter();
+        registerNotifications();
+    }
+
     //////////////////////////////////////////////////////////////////////////////
     // Static access
 
     public static NotificationCenter getNotificationCenter()
     {
-        return instance.resolveNotificationCenter();
+        return instance.notificationCenter;
     }
 
     public static TimerManager getTimerManager()
@@ -51,17 +62,7 @@ public abstract class RuntimePlatform
     }
 
     //////////////////////////////////////////////////////////////////////////////
-    // Lazy object creation
-
-    private synchronized NotificationCenter resolveNotificationCenter()
-    {
-        if (notificationCenter == null)
-        {
-            notificationCenter = createNotificationCenter();
-        }
-
-        return notificationCenter;
-    }
+    // Lazy object initialization
 
     private synchronized TimerManager resolveTimerManager()
     {
@@ -96,6 +97,35 @@ public abstract class RuntimePlatform
     //////////////////////////////////////////////////////////////////////////////
     // Inheritance
 
+    protected void registerNotifications()
+    {
+        getNotificationCenter().Register(CVarValueChanged, new NotificationDelegate()
+        {
+            @Override
+            public void onNotification(Notification n)
+            {
+                boolean manual = (boolean) n.Get(KeyManualMode);
+                if (manual)
+                {
+                    CVar cvar = (CVar) n.Get(CVarValueChangedKeyVar);
+                    Assert.IsNotNull(cvar);
+
+                    if (cvar != null)
+                    {
+                        ScheduleSaveConfig();
+                    }
+                }
+            }
+        });
+        getNotificationCenter().Register(CBindingsChanged, new NotificationDelegate()
+        {
+            @Override
+            public void onNotification(Notification n)
+            {
+            }
+        });
+    }
+
     protected abstract TimerManager createTimerManager();
 
     protected abstract TimerManager createBackgroundTimerManager();
@@ -103,6 +133,14 @@ public abstract class RuntimePlatform
     protected abstract NotificationCenter createNotificationCenter();
 
     protected abstract File createConfigsDirFile();
+
+    //////////////////////////////////////////////////////////////////////////////
+    // Config
+
+    private void ScheduleSaveConfig()
+    {
+
+    }
 
     //////////////////////////////////////////////////////////////////////////////
     // Getters/Setters
