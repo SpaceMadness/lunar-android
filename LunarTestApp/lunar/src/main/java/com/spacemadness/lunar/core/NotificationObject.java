@@ -47,21 +47,36 @@ public class NotificationObject extends ObjectsPoolEntry implements Notification
     // Data
 
     @Override
-    public <T> T Get(String key, Class<? extends T> cls)
+    public Object Get(String key)
     {
-        Object value = Get(key);
-        return ClassUtils.as(value, cls);
+        return data != null ? data.get(key) : null;
     }
 
     @Override
-    public Object Get(String key)
+    public String getString(String key)
     {
-        if (data != null)
-        {
-            return data.get(key);
-        }
+        return (String) Get(key);
+    }
 
-        return null;
+    @Override
+    public boolean getBool(String key, boolean defaultValue)
+    {
+        Object value = Get(key);
+        return value != null ? (boolean) value : defaultValue;
+    }
+
+    @Override
+    public int getInt(String key, int defaultValue)
+    {
+        Object value = Get(key);
+        return value != null ? (int) value : defaultValue;
+    }
+
+    @Override
+    public float getFloat(String key, float defaultValue)
+    {
+        Object value = Get(key);
+        return value != null ? (float) value : defaultValue;
     }
 
     void Set(String key, Object value)

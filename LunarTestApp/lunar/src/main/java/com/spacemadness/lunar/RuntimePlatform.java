@@ -1,6 +1,7 @@
 package com.spacemadness.lunar;
 
 import com.spacemadness.lunar.console.CVar;
+import com.spacemadness.lunar.console.Terminal;
 import com.spacemadness.lunar.core.Notification;
 import com.spacemadness.lunar.core.NotificationCenter;
 import com.spacemadness.lunar.core.NotificationDelegate;
@@ -16,19 +17,33 @@ public abstract class RuntimePlatform
 {
     private static final RuntimePlatform instance = new DefaultRuntimePlatform();
 
+    private final Terminal terminal;
+    private final NotificationCenter notificationCenter;
+
     private TimerManager timerManager;
     private TimerManager backgroundTimerManager;
-    private NotificationCenter notificationCenter;
     private File configsDir;
 
     protected RuntimePlatform()
     {
         notificationCenter = createNotificationCenter();
         registerNotifications();
+
+        terminal = new Terminal(1024);
     }
 
     //////////////////////////////////////////////////////////////////////////////
     // Static access
+
+    public static boolean executeCommand(String commandLine)
+    {
+        return executeCommand(commandLine, false);
+    }
+
+    public static boolean executeCommand(String commandLine, boolean manualMode)
+    {
+        return instance.executeCommand0(commandLine, manualMode);
+    }
 
     public static NotificationCenter getNotificationCenter()
     {
@@ -104,7 +119,7 @@ public abstract class RuntimePlatform
             @Override
             public void onNotification(Notification n)
             {
-                boolean manual = (boolean) n.Get(KeyManualMode);
+                boolean manual = n.getBool(KeyManualMode, false);
                 if (manual)
                 {
                     CVar cvar = (CVar) n.Get(CVarValueChangedKeyVar);
@@ -112,7 +127,7 @@ public abstract class RuntimePlatform
 
                     if (cvar != null)
                     {
-                        ScheduleSaveConfig();
+                        scheduleSaveConfig();
                     }
                 }
             }
@@ -122,6 +137,23 @@ public abstract class RuntimePlatform
             @Override
             public void onNotification(Notification n)
             {
+                boolean manual = n.getBool(KeyManualMode, false);
+                if (manual)
+                {
+                    scheduleSaveConfig();
+                }
+            }
+        });
+        getNotificationCenter().Register(CAliasesChanged, new NotificationDelegate()
+        {
+            @Override
+            public void onNotification(Notification n)
+            {
+                boolean manual = n.getBool(KeyManualMode, false);
+                if (manual)
+                {
+                    scheduleSaveConfig();
+                }
             }
         });
     }
@@ -135,11 +167,28 @@ public abstract class RuntimePlatform
     protected abstract File createConfigsDirFile();
 
     //////////////////////////////////////////////////////////////////////////////
+    // Terminal
+
+    protected boolean executeCommand0(String commandLine, boolean manualMode)
+    {
+        return terminal.ExecuteCommandLine(commandLine, manualMode);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
     // Config
 
-    private void ScheduleSaveConfig()
+    private Runnable saveConfigRunnable = new Runnable() // TODO: lazy initialization
     {
+        @Override
+        public void run()
+        {
+            RuntimePlatform.executeCommand("writeconfig default.cfg");
+        }
+    };
 
+    private void scheduleSaveConfig()
+    {
+        getTimerManager().ScheduleOnce(saveConfigRunnable);
     }
 
     //////////////////////////////////////////////////////////////////////////////

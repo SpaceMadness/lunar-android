@@ -5,11 +5,12 @@ package com.spacemadness.lunar.core;
  */
 public interface Notification
 {
-    <T> T Get(String key, Class<? extends T> cls);
-
     Object Get(String key);
+    String getString(String key);
+    boolean getBool(String key, boolean defaultValue);
+    int getInt(String key, int defaultValue);
+    float getFloat(String key, float defaultValue);
 
     String getName();
-
     Object getSender();
 }
