@@ -1,6 +1,6 @@
 package com.spacemadness.lunar.core;
 
-public abstract class NotificationCenter
+public abstract class NotificationCenter implements IDestroyable
 {
     private static final Object[] EMPTY_DATA = new Object[0];
 

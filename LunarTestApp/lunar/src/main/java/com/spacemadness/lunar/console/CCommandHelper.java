@@ -15,12 +15,13 @@
 
 package com.spacemadness.lunar.console;
 
-import com.spacemadness.lunar.RuntimePlatform;
 import com.spacemadness.lunar.utils.FileUtils;
 import com.spacemadness.lunar.utils.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
+
+import static com.spacemadness.lunar.AppTerminal.*;
 
 public class CCommandHelper
 {
@@ -54,7 +55,7 @@ public class CCommandHelper
             return configFile;
         }
 
-        return new File(RuntimePlatform.getConfigsDir(), path);
+        return new File(getConfigsDir(), path);
     }
 
     public static File getConfigFile(String filename, boolean createConfigDir) throws IOException
@@ -67,7 +68,7 @@ public class CCommandHelper
             return configFile;
         }
 
-        File configsDir = RuntimePlatform.getConfigsDir(createConfigDir);
+        File configsDir = getConfigsDir(createConfigDir);
         return new File(configsDir, path);
     }
 }

@@ -1,6 +1,6 @@
 package com.spacemadness.lunar.core;
 
-public abstract class TimerManager
+public abstract class TimerManager implements IDestroyable
 {
     public Timer ScheduleOnce(Runnable target)
     {

@@ -41,6 +41,11 @@ public class TestingRuntimePlatform extends RuntimePlatform implements IDestroya
         {
             throw new NullPointerException("Attempt to cancelAll() on null manager");
         }
+
+        @Override
+        public void Destroy()
+        {
+        }
     };
 
     private static final NotificationCenter nullNotificationCenter = new NotificationCenter()
@@ -74,6 +79,11 @@ public class TestingRuntimePlatform extends RuntimePlatform implements IDestroya
 
         @Override
         protected void PostImmediately(NotificationObject notification)
+        {
+        }
+
+        @Override
+        public void Destroy()
         {
         }
     };

@@ -29,6 +29,12 @@ public class TimerManagerImp extends TimerManager
     }
 
     @Override
+    public void Destroy()
+    {
+        cancelAll();
+    }
+
+    @Override
     public Timer ScheduleOnce(Runnable target, long delayMillis)
     {
         if (target == null)

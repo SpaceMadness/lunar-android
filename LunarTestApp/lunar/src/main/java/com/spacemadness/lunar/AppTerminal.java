@@ -3,7 +3,12 @@ package com.spacemadness.lunar;
 import android.content.Context;
 
 import com.spacemadness.lunar.console.AppTerminalImp;
+import com.spacemadness.lunar.core.NotificationCenter;
+import com.spacemadness.lunar.core.TimerManager;
 import com.spacemadness.lunar.debug.Log;
+
+import java.io.File;
+import java.io.IOException;
 
 public abstract class AppTerminal
 {
@@ -100,9 +105,51 @@ public abstract class AppTerminal
     }
 
     //////////////////////////////////////////////////////////////////////////////
+    // Static access
+
+    public static NotificationCenter getNotificationCenter()
+    {
+        return instance.notificationCenter();
+    }
+
+    public static TimerManager getTimerManager()
+    {
+        return instance.timerManager();
+    }
+
+    public static TimerManager getBackgroundTimerManager()
+    {
+        return instance.backgroundTimerManager();
+    }
+
+    public static File getConfigsDir()
+    {
+        return instance.configsDir();
+    }
+
+    public static File getConfigsDir(boolean createIfNeccesary) throws IOException
+    {
+        final File configsDir = getConfigsDir();
+        if (!configsDir.exists() && createIfNeccesary && !configsDir.mkdirs())
+        {
+            throw new IOException("Can't create configs dir: " + configsDir);
+        }
+
+        return configsDir;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
     // Inheritance
 
     protected abstract boolean execCommand(String commandLine, boolean manualMode);
+
+    protected abstract NotificationCenter notificationCenter();
+
+    protected abstract TimerManager timerManager();
+
+    protected abstract TimerManager backgroundTimerManager();
+
+    protected abstract File configsDir();
 
     protected void destroyInstance()
     {

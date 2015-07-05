@@ -1,7 +1,6 @@
 package com.spacemadness.lunar.core;
 
-import static com.spacemadness.lunar.RuntimePlatform.getBackgroundTimerManager;
-import static com.spacemadness.lunar.RuntimePlatform.getTimerManager;
+import static com.spacemadness.lunar.AppTerminal.*;
 
 public class Dispatch
 {

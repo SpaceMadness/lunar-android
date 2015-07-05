@@ -1,6 +1,6 @@
 package com.spacemadness.lunar.core;
 
-import static com.spacemadness.lunar.RuntimePlatform.getNotificationCenter;
+import static com.spacemadness.lunar.AppTerminal.*;
 
 public abstract class BaseObject implements IDestroyable
 {

@@ -10,14 +10,11 @@ import com.spacemadness.lunar.core.TimerManager;
 import com.spacemadness.lunar.debug.Assert;
 
 import java.io.File;
-import java.io.IOException;
 
 import static com.spacemadness.lunar.console.CCommandNotifications.*;
 
 public abstract class RuntimePlatform implements IDestroyable
 {
-    private static RuntimePlatform instance;
-
     private final Terminal terminal;
     private final NotificationCenter notificationCenter;
 
@@ -27,8 +24,6 @@ public abstract class RuntimePlatform implements IDestroyable
 
     protected RuntimePlatform()
     {
-        RuntimePlatform.instance = this; // TODO: thread safety and error checking
-
         notificationCenter = createNotificationCenter();
         registerNotifications();
 
@@ -41,84 +36,10 @@ public abstract class RuntimePlatform implements IDestroyable
     @Override
     public void Destroy()
     {
-        RuntimePlatform.instance = null;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    // Static access
-
-    public static boolean executeCommand(String commandLine)
-    {
-        return executeCommand(commandLine, false);
-    }
-
-    public static boolean executeCommand(String commandLine, boolean manualMode)
-    {
-        return instance.execCommand(commandLine, manualMode);
-    }
-
-    public static NotificationCenter getNotificationCenter()
-    {
-        return instance.notificationCenter;
-    }
-
-    public static TimerManager getTimerManager()
-    {
-        return instance.resolveTimerManager();
-    }
-
-    public static TimerManager getBackgroundTimerManager()
-    {
-        return instance.resolveBackgroundTimerManager();
-    }
-
-    public static File getConfigsDir()
-    {
-        return instance.resolveConfigsDir();
-    }
-
-    public static File getConfigsDir(boolean createIfNeccesary) throws IOException
-    {
-        final File configsDir = getConfigsDir();
-        if (!configsDir.exists() && createIfNeccesary && !configsDir.mkdirs())
-        {
-            throw new IOException("Can't create configs dir: " + configsDir);
-        }
-
-        return configsDir;
-    }
-
-    //////////////////////////////////////////////////////////////////////////////
-    // Lazy object initialization
-
-    private synchronized TimerManager resolveTimerManager()
-    {
-        if (timerManager == null)
-        {
-            timerManager = createTimerManager();
-        }
-
-        return timerManager;
-    }
-
-    private synchronized TimerManager resolveBackgroundTimerManager()
-    {
-        if (backgroundTimerManager == null)
-        {
-            backgroundTimerManager = createBackgroundTimerManager();
-        }
-
-        return backgroundTimerManager;
-    }
-
-    private synchronized File resolveConfigsDir()
-    {
-        if (configsDir == null)
-        {
-            configsDir = createConfigsDirFile();
-        }
-
-        return configsDir;
+        timerManager.Destroy();
+        backgroundTimerManager.Destroy();
+        notificationCenter.Destroy();
+        terminal.Destroy();
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -194,7 +115,7 @@ public abstract class RuntimePlatform implements IDestroyable
         @Override
         public void run()
         {
-            RuntimePlatform.executeCommand("writeconfig default.cfg");
+            execCommand("writeconfig default.cfg", false);
         }
     };
 
@@ -206,15 +127,44 @@ public abstract class RuntimePlatform implements IDestroyable
     //////////////////////////////////////////////////////////////////////////////
     // Getters/Setters
 
-    protected static RuntimePlatform getInstance()
+
+    public Terminal getTerminal()
     {
-        return instance; // TODO: thread safety
+        return terminal;
     }
 
-    protected static RuntimePlatform getExistingInstance()
+    public NotificationCenter getNotificationCenter()
     {
-        RuntimePlatform instance = getInstance();
-        Assert.IsNotNull(instance, "Instance is not initialized");
-        return instance;
+        return notificationCenter;
+    }
+
+    public synchronized TimerManager getTimerManager()
+    {
+        if (timerManager == null)
+        {
+            timerManager = createTimerManager();
+        }
+
+        return timerManager;
+    }
+
+    public synchronized TimerManager getBackgroundTimerManager()
+    {
+        if (backgroundTimerManager == null)
+        {
+            backgroundTimerManager = createBackgroundTimerManager();
+        }
+
+        return backgroundTimerManager;
+    }
+
+    public synchronized File getConfigsDir()
+    {
+        if (configsDir == null)
+        {
+            configsDir = createConfigsDirFile();
+        }
+
+        return configsDir;
     }
 }

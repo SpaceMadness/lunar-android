@@ -21,7 +21,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import static com.spacemadness.lunar.RuntimePlatform.getNotificationCenter;
+import static com.spacemadness.lunar.AppTerminal.*;
 
 public abstract class CCommand implements Comparable<CCommand>
 {

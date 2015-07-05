@@ -56,12 +56,12 @@ public class DefaultRuntimePlatform extends RuntimePlatform
     //////////////////////////////////////////////////////////////////////////////
     // Getters/Setters
 
-    public static Context getContext()
+    public Context getContext()
     {
-        return getExistingInstance().contextRef.get();
+        return contextRef.get();
     }
 
-    public static Context getExistingContext()
+    public Context getExistingContext()
     {
         Context context = getContext();
         if (context == null)
@@ -70,15 +70,5 @@ public class DefaultRuntimePlatform extends RuntimePlatform
         }
 
         return context;
-    }
-
-    protected static DefaultRuntimePlatform getInstance()
-    {
-        return (DefaultRuntimePlatform) RuntimePlatform.getInstance();
-    }
-
-    protected static DefaultRuntimePlatform getExistingInstance()
-    {
-        return (DefaultRuntimePlatform) RuntimePlatform.getExistingInstance();
     }
 }

@@ -1,6 +1,7 @@
 package com.spacemadness.lunar.console;
 
 import com.spacemadness.lunar.ColorCode;
+import com.spacemadness.lunar.core.IDestroyable;
 import com.spacemadness.lunar.utils.NotImplementedException;
 import com.spacemadness.lunar.utils.StringUtils;
 
@@ -8,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class Terminal implements TerminalAdapter.DataSource, ICCommandDelegate
+public class Terminal implements TerminalAdapter.DataSource, ICCommandDelegate, IDestroyable
 {
     private final CommandProcessor commandProcessor;
     private final TerminalEntries entries;
@@ -19,6 +20,12 @@ public class Terminal implements TerminalAdapter.DataSource, ICCommandDelegate
         commandProcessor = new CommandProcessor();
         commandProcessor.CommandDelegate(this);
         entries = new TerminalEntries(capacity);
+    }
+
+    @Override
+    public void Destroy()
+    {
+        // TODO: release resources
     }
 
     public void Add(String line)

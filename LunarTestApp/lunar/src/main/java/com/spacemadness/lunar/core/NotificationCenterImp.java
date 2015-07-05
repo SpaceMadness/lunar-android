@@ -5,7 +5,7 @@ import android.os.Looper;
 import java.util.HashMap;
 import java.util.Map;
 
-public class NotificationCenterImp extends NotificationCenter implements IDestroyable
+public class NotificationCenterImp extends NotificationCenter
 {
     private final Map<String, NotificationDelegateList> delegateLookup;
     private final ObjectsPool<NotificationObject> notificationPool; // TODO: make shared pool
@@ -29,6 +29,7 @@ public class NotificationCenterImp extends NotificationCenter implements IDestro
         notificationPool = new ObjectsPoolConcurrent<>(NotificationObject.class); // TODO: make concurrent?
     }
 
+    @Override
     public void Destroy()
     {
         CancelScheduledPosts();
