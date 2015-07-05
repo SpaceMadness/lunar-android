@@ -1,16 +1,15 @@
 package com.spacemadness.lunar;
 
-import com.spacemadness.lunar.utils.StringUtils;
+import android.test.AndroidTestCase;
 
-import junit.framework.TestCase;
+import com.spacemadness.lunar.console.AppTerminalImp;
+import com.spacemadness.lunar.utils.ClassUtilsEx;
+import com.spacemadness.lunar.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by alementuev on 6/9/15.
- */
-public class TestCaseEx extends TestCase
+public class TestCaseEx extends AndroidTestCase
 {
     private List<String> result;
 
@@ -19,8 +18,20 @@ public class TestCaseEx extends TestCase
     {
         super.setUp();
 
-        TestingRuntimePlatform.init();
+        AppTerminal.initialize(getContext());
+
+        AppTerminal instance = AppTerminal.getInstance();
+        ClassUtilsEx.setField(AppTerminalImp.class, instance, "runtimePlatform", createRuntimePlatform());
+
         result = new ArrayList<>();
+    }
+
+    @Override
+    protected void tearDown() throws Exception
+    {
+        super.tearDown();
+
+        AppTerminal.destroy();
     }
 
     protected void assertResult(String... expected)
@@ -31,8 +42,7 @@ public class TestCaseEx extends TestCase
     protected void assertResult(List<String> actual, String... expected)
     {
         assertEquals("Expected: " + StringUtils.Join(expected) +
-                        "\nActual: " + StringUtils.Join(actual),
-                expected.length, actual.size());
+                        "\nActual: " + StringUtils.Join(actual), expected.length, actual.size());
 
         for (int i = 0; i < expected.length; ++i)
         {
@@ -96,6 +106,11 @@ public class TestCaseEx extends TestCase
                             "\nActual: " + StringUtils.Join(actual),
                     expected[i], actual[i]);
         }
+    }
+
+    protected TestingRuntimePlatform createRuntimePlatform()
+    {
+        return new TestingRuntimePlatform();
     }
 
     protected void clearResult()
