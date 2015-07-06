@@ -127,6 +127,7 @@ public class TimerManagerImp extends TimerManager
             Assert.IsTrue(timers.Count() > 0);
 
             timers.RemoveItem(timer);
+            timer.onRemoved();
             timer.Recycle();
         }
     }
@@ -152,13 +153,11 @@ public class TimerManagerImp extends TimerManager
         return handler;
     }
 
-    boolean containsTimer(Runnable target)
-    {
-        return findTimer(target) != null;
-    }
-
     public int getTimersCount()
     {
-        return timers.Count();
+        synchronized (timers)
+        {
+            return timers.Count();
+        }
     }
 }

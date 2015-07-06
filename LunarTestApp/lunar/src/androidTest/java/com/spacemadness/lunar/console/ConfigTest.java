@@ -29,7 +29,7 @@ public class ConfigTest extends CCommandTestCase
         execute("float 6.28");
         execute("string 'Some other string'");
 
-        Thread.sleep(50); // FIXME: use better notification system
+        Thread.sleep(100); // give a chance for dispatcher to kick in
 
         waitUntilNotificationsDispatched(); // wait until notifications are dispatched
         waitUntilTimersDispatched(); // wait until config written
@@ -88,7 +88,7 @@ public class ConfigTest extends CCommandTestCase
         execute("string1 'Some other string'");
         execute("string2 'Some string'");
 
-        Thread.sleep(50); // FIXME: use better notification system
+        Thread.sleep(100); // give a chance for dispatcher to kick in
 
         waitUntilNotificationsDispatched(); // wait until notifications are dispatched
         waitUntilTimersDispatched(); // wait until config written

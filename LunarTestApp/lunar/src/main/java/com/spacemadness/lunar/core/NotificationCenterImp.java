@@ -32,7 +32,7 @@ public class NotificationCenterImp extends NotificationCenter
     @Override
     public void Destroy()
     {
-        CancelScheduledPosts();
+        timerManager.Destroy();
     }
     
     @Override
@@ -142,11 +142,6 @@ public class NotificationCenterImp extends NotificationCenter
         timerManager.Schedule(notification);
     }
     
-    private void CancelScheduledPosts()
-    {
-        timerManager.cancelAll(); // FIXME: better cancellation
-    }
-
     //////////////////////////////////////////////////////////////////////////////
     // Getters/Setters
 

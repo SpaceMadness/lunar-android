@@ -79,7 +79,7 @@ public class MockRuntimePlatform extends RuntimePlatform implements IDestroyable
         MockTimerManager mock = ClassUtils.as(getCurrentInstance().getTimerManager(), MockTimerManager.class);
         if (mock != null)
         {
-            mock.sleep();
+            mock.waitUntilTimersFinished();
         }
     }
 

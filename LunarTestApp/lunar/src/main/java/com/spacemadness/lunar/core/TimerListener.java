@@ -11,4 +11,5 @@ public interface TimerListener
     void onTimerFired(Timer timer);
     void onTimerCancelled(Timer timer);
     void onTimerFinished(Timer timer);
+    void onTimerRemoved(Timer timer);
 }

@@ -1,5 +1,7 @@
 package com.spacemadness.lunar.core;
 
+import junit.framework.AssertionFailedError;
+
 public class MockTimerManager extends TimerManager
 {
     public final static TimerManager Null = new TimerManager()
@@ -76,11 +78,6 @@ public class MockTimerManager extends TimerManager
         }
     }
 
-    public void waitUntilTimersFinished() throws InterruptedException
-    {
-        backgroundTimerManager.waitUntilTimersFinished();
-    }
-
     @Override
     public Timer ScheduleOnce(Runnable target, long delayMillis)
     {
@@ -109,8 +106,33 @@ public class MockTimerManager extends TimerManager
     public void Destroy()
     {
         backgroundTimerManager.Destroy();
-        Timer.drainPool();
+        try
+        {
+            backgroundTimerManager.join();
+        }
+        catch (InterruptedException e)
+        {
+            throw new AssertionFailedError(e.getMessage());
+        }
+        finally
+        {
+            Timer.drainPool();
+        }
     }
+
+    //////////////////////////////////////////////////////////////////////////////
+    // Helpers
+
+    public void waitUntilTimersFinished() throws InterruptedException
+    {
+        while (getTimersCount() > 0)
+        {
+            Thread.sleep(100); // FIXME: replace with wait-notify approach
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    // Getters/Setters
 
     public int getTimersCount()
     {

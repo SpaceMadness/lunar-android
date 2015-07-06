@@ -446,7 +446,7 @@ public class TimerManagerTest extends TestCaseEx
     protected void tearDown() throws Exception
     {
         super.tearDown();
-        timerManager.waitUntilTimersFinished();
+        timerManager.Destroy();
     }
 
     private void sleep() throws Exception

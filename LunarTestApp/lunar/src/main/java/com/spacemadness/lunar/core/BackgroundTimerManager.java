@@ -27,12 +27,6 @@ public class BackgroundTimerManager extends TimerManagerImp implements IDestroya
         this.handlerThread = handlerThread;
     }
 
-    public void waitUntilTimersFinished() throws InterruptedException
-    {
-        quit();
-        join();
-    }
-
     public void quit()
     {
         handlerThread.getLooper().quit();
@@ -46,6 +40,7 @@ public class BackgroundTimerManager extends TimerManagerImp implements IDestroya
     @Override
     public void Destroy()
     {
+        super.Destroy();
         quit();
     }
 }

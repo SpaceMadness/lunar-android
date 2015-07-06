@@ -6,6 +6,8 @@ import com.spacemadness.lunar.core.NotificationCenterImp;
 import com.spacemadness.lunar.core.NotificationDelegate;
 import com.spacemadness.lunar.core.NotificationObject;
 
+import junit.framework.AssertionFailedError;
+
 public class MockNotificationCenter extends NotificationCenterImp
 {
     public static final NotificationCenter Null = new NotificationCenter()
@@ -58,6 +60,6 @@ public class MockNotificationCenter extends NotificationCenterImp
 
     public void waitUntilNotificationsDispatched() throws InterruptedException
     {
-        timerManager.sleep();
+        timerManager.waitUntilTimersFinished();
     }
 }

@@ -156,6 +156,11 @@ public class Timer extends ObjectsPoolEntry<Timer>
         }
     }
 
+    void onRemoved()
+    {
+        notifyRemoved();
+    }
+
     protected TimerListener getListener()
     {
         return listener;
@@ -236,7 +241,6 @@ public class Timer extends ObjectsPoolEntry<Timer>
     ////////////////////////////////////////////////////////////////
     // Object pool
 
-
     @Override
     protected void OnRecycleObject()
     {
@@ -316,6 +320,14 @@ public class Timer extends ObjectsPoolEntry<Timer>
         if (listener != null)
         {
             listener.onTimerFinished(this);
+        }
+    }
+
+    private void notifyRemoved()
+    {
+        if (listener != null)
+        {
+            listener.onTimerRemoved(this);
         }
     }
 
