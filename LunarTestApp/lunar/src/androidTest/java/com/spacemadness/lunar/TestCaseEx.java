@@ -127,6 +127,19 @@ public class TestCaseEx extends AndroidTestCase
     }
 
     //////////////////////////////////////////////////////////////////////////////
+    // Helpers
+
+    protected void waitUntilNotificationsDispatched() throws InterruptedException
+    {
+        MockRuntimePlatform.waitUntilNotificationsDispatched();
+    }
+
+    protected void waitUntilTimersDispatched() throws InterruptedException
+    {
+        MockRuntimePlatform.waitUntilTimersDispatched();
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
     // Results
 
     protected void clearResult()

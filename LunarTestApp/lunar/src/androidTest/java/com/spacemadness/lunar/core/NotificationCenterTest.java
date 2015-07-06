@@ -25,7 +25,7 @@ public class NotificationCenterTest extends TestCase
 
         notificationCenter.Post(sender, "foo");
 
-        notificationCenter.dispatch();
+        notificationCenter.waitUntilNotificationsDispatched();
         assertCallbacks(notificationDelegate1, notificationDelegate2, notificationDelegate3);
     }
 
@@ -55,7 +55,7 @@ public class NotificationCenterTest extends TestCase
                 "key3", "value3"
         );
 
-        notificationCenter.dispatch();
+        notificationCenter.waitUntilNotificationsDispatched();
         assertCallbacks(notificationDelegate1, notificationDelegate2, notificationDelegate3);
 
         assertSame(sender, notificationDelegate1.getSender());
@@ -83,25 +83,25 @@ public class NotificationCenterTest extends TestCase
         notificationCenter.Register("foo", notificationDelegate3);
 
         notificationCenter.Post(sender, "foo");
-        notificationCenter.dispatch();
+        notificationCenter.waitUntilNotificationsDispatched();
         assertCallbacks(notificationDelegate1, notificationDelegate2, notificationDelegate3);
 
         notificationCenter.Unregister("foo", notificationDelegate2);
 
         notificationCenter.Post(sender, "foo");
-        notificationCenter.dispatch();
+        notificationCenter.waitUntilNotificationsDispatched();
         assertCallbacks(notificationDelegate1, notificationDelegate3);
 
         notificationCenter.Unregister("foo", notificationDelegate1);
 
         notificationCenter.Post(sender, "foo");
-        notificationCenter.dispatch();
+        notificationCenter.waitUntilNotificationsDispatched();
         assertCallbacks(notificationDelegate3);
 
         notificationCenter.Unregister("foo", notificationDelegate3);
 
         notificationCenter.Post(sender, "foo");
-        notificationCenter.dispatch();
+        notificationCenter.waitUntilNotificationsDispatched();
         assertCallbacks();
     }
 
@@ -118,14 +118,14 @@ public class NotificationCenterTest extends TestCase
         notificationCenter.UnregisterAll(notificationDelegate1);
 
         notificationCenter.Post(sender, "foo1");
-        notificationCenter.dispatch();
+        notificationCenter.waitUntilNotificationsDispatched();
         assertCallbacks(notificationDelegate2);
 
         notificationCenter.Post(sender, "foo2");
-        notificationCenter.dispatch();
+        notificationCenter.waitUntilNotificationsDispatched();
 
         notificationCenter.Post(sender, "foo3");
-        notificationCenter.dispatch();
+        notificationCenter.waitUntilNotificationsDispatched();
         assertCallbacks(notificationDelegate3);
     }
 
@@ -148,12 +148,12 @@ public class NotificationCenterTest extends TestCase
         notificationCenter.Register("foo", notificationDelegate2);
 
         notificationCenter.Post(sender, "foo");
-        notificationCenter.dispatch();
+        notificationCenter.waitUntilNotificationsDispatched();
 
         assertCallbacks(notificationDelegate1, listener, notificationDelegate2);
 
         notificationCenter.Post(sender, "foo");
-        notificationCenter.dispatch();
+        notificationCenter.waitUntilNotificationsDispatched();
         assertCallbacks(notificationDelegate1, notificationDelegate2);
     }
 
@@ -176,11 +176,11 @@ public class NotificationCenterTest extends TestCase
         notificationCenter.Register("foo", notificationDelegate2);
 
         notificationCenter.Post(sender, "foo");
-        notificationCenter.dispatch();
+        notificationCenter.waitUntilNotificationsDispatched();
         assertCallbacks(notificationDelegate1, listener);
 
         notificationCenter.Post(sender, "foo");
-        notificationCenter.dispatch();
+        notificationCenter.waitUntilNotificationsDispatched();
         assertCallbacks(notificationDelegate1, listener);
     }
 
@@ -193,11 +193,11 @@ public class NotificationCenterTest extends TestCase
         notificationCenter.Register("foo", notificationDelegate3);
 
         notificationCenter.Post(sender, "foo");
-        notificationCenter.dispatch();
+        notificationCenter.waitUntilNotificationsDispatched();
         assertEquals(1, notificationCenter.getNotificationPoolSize());
 
         notificationCenter.Post(sender, "foo");
-        notificationCenter.dispatch();
+        notificationCenter.waitUntilNotificationsDispatched();
         assertEquals(1, notificationCenter.getNotificationPoolSize());
     }
 

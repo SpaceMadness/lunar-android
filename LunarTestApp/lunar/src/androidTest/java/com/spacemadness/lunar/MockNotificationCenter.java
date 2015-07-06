@@ -1,6 +1,5 @@
 package com.spacemadness.lunar;
 
-import com.spacemadness.lunar.core.BackgroundTimerManager;
 import com.spacemadness.lunar.core.MockTimerManager;
 import com.spacemadness.lunar.core.NotificationCenter;
 import com.spacemadness.lunar.core.NotificationCenterImp;
@@ -57,13 +56,8 @@ public class MockNotificationCenter extends NotificationCenterImp
         timerManager = (MockTimerManager) getTimerManager();
     }
 
-    public void dispatch() throws InterruptedException
-    {
-        timerManager.sleep();
-    }
-
     public void waitUntilNotificationsDispatched() throws InterruptedException
     {
-        timerManager.waitUntilTimersFinished();
+        timerManager.sleep();
     }
 }

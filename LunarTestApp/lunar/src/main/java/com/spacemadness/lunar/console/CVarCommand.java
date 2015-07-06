@@ -1,6 +1,7 @@
 package com.spacemadness.lunar.console;
 
 import com.spacemadness.lunar.ColorCode;
+import com.spacemadness.lunar.utils.ObjectUtils;
 import com.spacemadness.lunar.utils.StringUtils;
 
 public class CVarCommand extends CCommand
@@ -187,7 +188,7 @@ public class CVarCommand extends CCommand
 
     public void SetValue(String value)
     {
-        if (cvar.Value() != value)
+        if (!ObjectUtils.areEqual(cvar.Value(), value))
         {
             cvar.Value(value);
             OnValueChanged();
