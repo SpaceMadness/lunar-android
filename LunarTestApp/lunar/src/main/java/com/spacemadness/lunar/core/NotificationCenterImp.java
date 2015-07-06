@@ -150,12 +150,12 @@ public class NotificationCenterImp extends NotificationCenter
     //////////////////////////////////////////////////////////////////////////////
     // Getters/Setters
 
-    TimerManager getTimerManager()
+    protected TimerManager getTimerManager()
     {
         return timerManager;
     }
 
-    int getNotificationPoolSize()
+    protected int getNotificationPoolSize()
     {
         return notificationPool.size();
     }

@@ -1,11 +1,11 @@
 package com.spacemadness.lunar.core;
 
-import junit.framework.TestCase;
+import com.spacemadness.lunar.TestCaseEx;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class TimerManagerTest extends TestCase
+public class TimerManagerTest extends TestCaseEx
 {
     private List<Runnable> callbacks = new ArrayList<Runnable>();
     private MockTimerManager timerManager;
@@ -439,7 +439,7 @@ public class TimerManagerTest extends TestCase
     protected void setUp() throws Exception
     {
         super.setUp();
-        timerManager = MockTimerManager.create();
+        timerManager = new MockTimerManager();
     }
 
     @Override

@@ -147,6 +147,11 @@ public class TimerManagerImp extends TimerManager
         }
     }
 
+    protected Handler getHandler()
+    {
+        return handler;
+    }
+
     boolean containsTimer(Runnable target)
     {
         return findTimer(target) != null;

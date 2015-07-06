@@ -6,9 +6,6 @@ import com.spacemadness.lunar.utils.ClassUtils;
 import com.spacemadness.lunar.utils.ClassUtilsEx;
 import com.spacemadness.lunar.utils.StringUtils;
 
-/**
- * Created by weee on 6/10/15.
- */
 public class CCommandTestCase extends TestCaseEx implements ICCommandDelegate
 {
     private CommandProcessor m_commandProcessor;

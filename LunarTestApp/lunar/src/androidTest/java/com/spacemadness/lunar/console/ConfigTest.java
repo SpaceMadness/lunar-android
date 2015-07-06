@@ -1,5 +1,9 @@
 package com.spacemadness.lunar.console;
 
+import com.spacemadness.lunar.AppTerminal;
+
+import java.io.File;
+
 public class ConfigTest extends CCommandTestCase
 {
     public void testWriteDefaultConfig()
@@ -13,5 +17,10 @@ public class ConfigTest extends CCommandTestCase
         execute("int 30");
         execute("float 6.28");
         execute("string 'Some other string'");
+
+        File configsDir = AppTerminal.getConfigsDir();
+        File config = new File(configsDir, "default.cfg");
+
+        assertTrue(config.exists());
     }
 }

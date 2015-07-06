@@ -1,5 +1,6 @@
 package com.spacemadness.lunar.core;
 
+import com.spacemadness.lunar.MockNotificationCenter;
 import com.spacemadness.lunar.utils.StringUtils;
 
 import junit.framework.TestCase;
@@ -214,7 +215,7 @@ public class NotificationCenterTest extends TestCase
     {
         super.tearDown();
 
-        notificationCenter.waitUntilNotificationsFinished();
+        notificationCenter.waitUntilNotificationsDispatched();
     }
 
     private MockNotificationListener notificationDelegate1 = new MockNotificationListener("1");
@@ -237,30 +238,6 @@ public class NotificationCenterTest extends TestCase
         assertTrue(message, message.length() == 0);
 
         callbacks.clear();
-    }
-
-    private class MockNotificationCenter extends NotificationCenterImp
-    {
-        public MockNotificationCenter()
-        {
-            super(MockTimerManager.create());
-        }
-
-        public void dispatch() throws InterruptedException
-        {
-            getTimerManager().sleep();
-        }
-
-        public void waitUntilNotificationsFinished() throws InterruptedException
-        {
-            getTimerManager().waitUntilTimersFinished();
-        }
-
-        @Override
-        MockTimerManager getTimerManager()
-        {
-            return (MockTimerManager) super.getTimerManager();
-        }
     }
 
     private class MockNotificationListener implements NotificationDelegate

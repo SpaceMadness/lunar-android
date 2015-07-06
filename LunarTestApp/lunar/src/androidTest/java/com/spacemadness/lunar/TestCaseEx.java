@@ -1,5 +1,6 @@
 package com.spacemadness.lunar;
 
+import android.content.Context;
 import android.test.AndroidTestCase;
 
 import com.spacemadness.lunar.console.AppTerminalImp;
@@ -13,6 +14,9 @@ public class TestCaseEx extends AndroidTestCase
 {
     private List<String> result;
 
+    //////////////////////////////////////////////////////////////////////////////
+    // Lifecycle
+
     @Override
     protected void setUp() throws Exception
     {
@@ -21,7 +25,9 @@ public class TestCaseEx extends AndroidTestCase
         AppTerminal.initialize(getContext());
 
         AppTerminal instance = AppTerminal.getInstance();
-        ClassUtilsEx.setField(AppTerminalImp.class, instance, "runtimePlatform", createRuntimePlatform());
+        ClassUtilsEx.setField(AppTerminalImp.class, instance, "runtimePlatform", createRuntimePlatform(getContext()));
+
+        MockRuntimePlatform.deleteConfigsDir();
 
         result = new ArrayList<>();
     }
@@ -31,8 +37,12 @@ public class TestCaseEx extends AndroidTestCase
     {
         super.tearDown();
 
+        MockRuntimePlatform.deleteConfigsDir();
         AppTerminal.destroy();
     }
+
+    //////////////////////////////////////////////////////////////////////////////
+    // Assert helpers
 
     protected void assertResult(String... expected)
     {
@@ -108,10 +118,16 @@ public class TestCaseEx extends AndroidTestCase
         }
     }
 
-    protected TestingRuntimePlatform createRuntimePlatform()
+    //////////////////////////////////////////////////////////////////////////////
+    // Inheritance
+
+    protected MockRuntimePlatform createRuntimePlatform(Context context)
     {
-        return new TestingRuntimePlatform();
+        return new MockRuntimePlatform(context);
     }
+
+    //////////////////////////////////////////////////////////////////////////////
+    // Results
 
     protected void clearResult()
     {

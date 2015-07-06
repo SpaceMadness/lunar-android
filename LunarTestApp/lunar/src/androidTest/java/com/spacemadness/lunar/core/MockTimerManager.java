@@ -1,27 +1,47 @@
 package com.spacemadness.lunar.core;
 
-import android.os.HandlerThread;
-
-public class MockTimerManager extends TimerManagerImp
+public class MockTimerManager extends TimerManager
 {
-    private final HandlerThread handlerThread;
+    public final static TimerManager Null = new TimerManager()
+    {
+        @Override
+        public Timer ScheduleOnce(Runnable target, long delayMillis)
+        {
+            return null;
+        }
+
+        @Override
+        public Timer Schedule(Runnable target, long delayMillis)
+        {
+            return null;
+        }
+
+        @Override
+        public Timer Cancel(Runnable target)
+        {
+            return null;
+        }
+
+        @Override
+        public void cancelAll()
+        {
+        }
+
+        @Override
+        public void Destroy()
+        {
+        }
+    };
+
+    private final BackgroundTimerManager backgroundTimerManager;
     private boolean waitFlag;
 
-    private MockTimerManager(HandlerThread handlerThread)
-    {
-        super(handlerThread.getLooper());
-        this.handlerThread = handlerThread;
-    }
-
-    public static MockTimerManager create()
+    public MockTimerManager()
     {
         Timer.drainPool();
         Timer.instanceCount = 0;
 
-        HandlerThread handlerThread = new HandlerThread("HandlerThread");
-        handlerThread.start();
-
-        return new MockTimerManager(handlerThread);
+        backgroundTimerManager = BackgroundTimerManager.create();
     }
 
     public void sleep() throws InterruptedException
@@ -34,7 +54,7 @@ public class MockTimerManager extends TimerManagerImp
         final Object lock = new Object();
         waitFlag = true;
 
-        handler.postDelayed(new Runnable()
+        backgroundTimerManager.getHandler().postDelayed(new Runnable()
         {
             @Override
             public void run()
@@ -58,7 +78,42 @@ public class MockTimerManager extends TimerManagerImp
 
     public void waitUntilTimersFinished() throws InterruptedException
     {
-        handlerThread.getLooper().quit();
-        handlerThread.join();
+        backgroundTimerManager.waitUntilTimersFinished();
+    }
+
+    @Override
+    public Timer ScheduleOnce(Runnable target, long delayMillis)
+    {
+        return backgroundTimerManager.ScheduleOnce(target, delayMillis);
+    }
+
+    @Override
+    public Timer Schedule(Runnable target, long delayMillis)
+    {
+        return backgroundTimerManager.Schedule(target, delayMillis);
+    }
+
+    @Override
+    public Timer Cancel(Runnable target)
+    {
+        return backgroundTimerManager.Cancel(target);
+    }
+
+    @Override
+    public void cancelAll()
+    {
+        backgroundTimerManager.cancelAll();
+    }
+
+    @Override
+    public void Destroy()
+    {
+        backgroundTimerManager.Destroy();
+        Timer.drainPool();
+    }
+
+    public int getTimersCount()
+    {
+        return backgroundTimerManager.getTimersCount();
     }
 }

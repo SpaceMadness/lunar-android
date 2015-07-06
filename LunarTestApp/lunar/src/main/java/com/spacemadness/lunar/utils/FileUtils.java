@@ -27,6 +27,34 @@ import java.util.List;
 
 public class FileUtils
 {
+    public static boolean delete(File file)
+    {
+        if (file == null)
+        {
+            throw new NullPointerException("File is null");
+        }
+
+        boolean deleted = false;
+
+        if (file.isDirectory())
+        {
+            File[] files = file.listFiles();
+            if (files != null)
+            {
+                for (File f : files)
+                {
+                    deleted |= delete(f);
+                }
+            }
+        }
+        else
+        {
+            deleted |= file.delete();
+        }
+
+        return deleted;
+    }
+
     public static List<String> Read(String path) throws IOException
     {
         return Read(path, DEFAULT_FILTER);
