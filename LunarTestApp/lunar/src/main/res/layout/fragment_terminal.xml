@@ -66,12 +66,16 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
+        <ImageButton
+            style="@style/GlyphButtonStyle"
+            android:src="@drawable/ic_history_black_24dp"/>
+
         <com.spacemadness.lunar.console.CommandEditText
             android:id="@+id/edit_text_command_line"
-            android:hint="Enter Command"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"/>
+            android:layout_weight="1"
+            android:hint="Enter Command"/>
 
     </LinearLayout>
 
