@@ -1359,6 +1359,19 @@ public abstract class CCommand implements Comparable<CCommand>
         return ColorCode.TableCommand;
     }
 
+    public void setParentCommand(CCommand parent)
+    {
+        if (parent != null)
+        {
+            IsManualMode = parent.IsManualMode;
+            Delegate(parent.Delegate());
+        }
+        else
+        {
+            Clear();
+        }
+    }
+
     //////////////////////////////////////////////////////////////////////////////
     // Comparable
 

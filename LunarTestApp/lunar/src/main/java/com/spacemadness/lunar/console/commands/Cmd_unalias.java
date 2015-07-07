@@ -28,7 +28,6 @@ public class Cmd_unalias extends CCommand
     {
         if (CRegistery.RemoveAlias(name))
         {
-            
             PostNotification(
                 CCommandNotifications.CAliasesChanged,
                 CCommandNotifications.KeyName, name,

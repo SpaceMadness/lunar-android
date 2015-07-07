@@ -5,6 +5,7 @@ import android.content.Context;
 import com.spacemadness.lunar.AppTerminal;
 import com.spacemadness.lunar.DefaultRuntimePlatform;
 import com.spacemadness.lunar.RuntimePlatform;
+import com.spacemadness.lunar.RuntimePlatformFactory;
 import com.spacemadness.lunar.core.NotificationCenter;
 import com.spacemadness.lunar.core.TimerManager;
 import com.spacemadness.lunar.debug.Log;
@@ -13,6 +14,15 @@ import java.io.File;
 
 public class AppTerminalImp extends AppTerminal
 {
+    private static final RuntimePlatformFactory runtimePlatformFactory = new RuntimePlatformFactory()
+    {
+        @Override
+        public RuntimePlatform createRuntimePlatform(Context context)
+        {
+            return new DefaultRuntimePlatform(context);
+        }
+    };
+
     private final RuntimePlatform runtimePlatform;
 
     public AppTerminalImp(Context context)
@@ -22,7 +32,7 @@ public class AppTerminalImp extends AppTerminal
             throw new NullPointerException("Context is null");
         }
 
-        runtimePlatform = new DefaultRuntimePlatform(context.getApplicationContext());
+        runtimePlatform = runtimePlatformFactory.createRuntimePlatform(context.getApplicationContext());
     }
 
     @Override

@@ -36,8 +36,14 @@ public abstract class RuntimePlatform implements IDestroyable
     @Override
     public void Destroy()
     {
-        timerManager.Destroy();
-        backgroundTimerManager.Destroy();
+        if (timerManager != null)
+        {
+            timerManager.Destroy();
+        }
+        if (backgroundTimerManager != null)
+        {
+            backgroundTimerManager.Destroy();
+        }
         notificationCenter.Destroy();
         terminal.Destroy();
     }
@@ -113,7 +119,7 @@ public abstract class RuntimePlatform implements IDestroyable
     private Runnable saveConfigRunnable = new Runnable() // TODO: lazy initialization
     {
         @Override
-        public void run()
+        public synchronized void run()
         {
             execCommand("writeconfig default.cfg", false);
         }
@@ -121,12 +127,14 @@ public abstract class RuntimePlatform implements IDestroyable
 
     private void scheduleSaveConfig()
     {
-        getTimerManager().ScheduleOnce(saveConfigRunnable);
+        synchronized (saveConfigRunnable)
+        {
+            getTimerManager().ScheduleOnce(saveConfigRunnable);
+        }
     }
 
     //////////////////////////////////////////////////////////////////////////////
     // Getters/Setters
-
 
     public Terminal getTerminal()
     {

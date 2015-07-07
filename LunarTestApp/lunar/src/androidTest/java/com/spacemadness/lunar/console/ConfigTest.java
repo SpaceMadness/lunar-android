@@ -1,10 +1,16 @@
 package com.spacemadness.lunar.console;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.spacemadness.lunar.AppTerminal;
 import com.spacemadness.lunar.MockNotificationCenter;
 import com.spacemadness.lunar.MockRuntimePlatform;
+import com.spacemadness.lunar.console.commands.Cmd_alias;
+import com.spacemadness.lunar.console.commands.Cmd_exec;
+import com.spacemadness.lunar.console.commands.Cmd_reset;
+import com.spacemadness.lunar.console.commands.Cmd_resetAll;
+import com.spacemadness.lunar.console.commands.Cmd_unalias;
 import com.spacemadness.lunar.console.commands.Cmd_writeconfig;
 import com.spacemadness.lunar.core.MockTimerManager;
 import com.spacemadness.lunar.core.NotificationCenter;
@@ -17,7 +23,7 @@ import java.util.List;
 
 public class ConfigTest extends CCommandTestCase
 {
-    public void testWriteConfig() throws Exception
+    public void testWriteConfigCvars() throws Exception
     {
         new CVar("bool", true);
         new CVar("int", 10);
@@ -29,46 +35,15 @@ public class ConfigTest extends CCommandTestCase
         execute("float 6.28");
         execute("string 'Some other string'");
 
-        Thread.sleep(100); // give a chance for dispatcher to kick in
-
-        waitUntilNotificationsDispatched(); // wait until notifications are dispatched
-        waitUntilTimersDispatched(); // wait until config written
-
-        File configsDir = AppTerminal.getConfigsDir();
-        File config = new File(configsDir, "default.cfg");
-
-        assertTrue(config.exists());
-
-        List<String> expected = ArrayUtils.toList(
-            "bool 0",
-            "float 6.28",
-            "int 30",
-            "string \"Some other string\""
+        assertConfig(
+                "bool 0",
+                "float 6.28",
+                "int 30",
+                "string \"Some other string\""
         );
-        List<String> actual = FileUtils.Read(config, new FileUtils.ReadFilter()
-        {
-            @Override
-            public boolean accept(String line)
-            {
-                String trimmed = line.trim();
-                if (trimmed.length() == 0)
-                {
-                    return false;
-                }
-
-                if (trimmed.startsWith("//"))
-                {
-                    return false;
-                }
-
-                return true;
-            }
-        });
-
-        assertEquals(expected, actual);
     }
 
-    public void testWriteConfigWithDefaultValues() throws Exception
+    public void testWriteConfigCvarsWithDefaultValues() throws Exception
     {
         new CVar("bool1", true);
         new CVar("bool2", true);
@@ -88,43 +63,133 @@ public class ConfigTest extends CCommandTestCase
         execute("string1 'Some other string'");
         execute("string2 'Some string'");
 
-        Thread.sleep(100); // give a chance for dispatcher to kick in
-
-        waitUntilNotificationsDispatched(); // wait until notifications are dispatched
-        waitUntilTimersDispatched(); // wait until config written
-
-        File configsDir = AppTerminal.getConfigsDir();
-        File config = new File(configsDir, "default.cfg");
-
-        assertTrue(config.exists());
-
-        List<String> expected = ArrayUtils.toList(
+        assertConfig(
                 "bool1 0",
                 "float1 6.28",
                 "int1 30",
                 "string1 \"Some other string\""
         );
-        List<String> actual = FileUtils.Read(config, new FileUtils.ReadFilter()
-        {
-            @Override
-            public boolean accept(String line)
-            {
-                String trimmed = line.trim();
-                if (trimmed.length() == 0)
-                {
-                    return false;
-                }
+    }
 
-                if (trimmed.startsWith("//"))
-                {
-                    return false;
-                }
+    public void testWriteConfigCvarsReset() throws Exception
+    {
+        new CVar("bool", true);
+        new CVar("int", 10);
+        new CVar("float", 3.14f);
+        new CVar("string", "Some string");
 
-                return true;
-            }
-        });
+        execute("bool 0");
+        execute("int 30");
+        execute("float 6.28");
+        execute("string 'Some other string'");
 
-        assertEquals(expected, actual);
+        waitUntilConfigIsSaved();
+
+        // reset boolean
+        execute("reset bool");
+
+        assertConfig(
+                "float 6.28",
+                "int 30",
+                "string \"Some other string\""
+        );
+
+        // reset float
+        execute("reset float");
+
+        assertConfig(
+                "int 30",
+                "string \"Some other string\""
+        );
+
+        // reset int
+        execute("reset int");
+
+        assertConfig(
+                "string \"Some other string\""
+        );
+
+        // reset string
+        execute("reset string");
+
+        assertConfig();
+    }
+
+    public void testWriteConfigCvarsResetAll() throws Exception
+    {
+        new CVar("bool", true);
+        new CVar("int", 10);
+        new CVar("float", 3.14f);
+        new CVar("string", "Some string");
+
+        execute("bool 0");
+        execute("int 30");
+        execute("float 6.28");
+        execute("string 'Some other string'");
+
+        waitUntilConfigIsSaved();
+
+        execute("resetAll"); // reset all variables
+
+        waitUntilConfigIsSaved();
+
+        assertConfig();
+    }
+
+    public void testReadConfigCvars() throws Exception
+    {
+        CVar boolVar = new CVar("bool", true);
+        CVar intVar = new CVar("int", 10);
+        CVar floatVar = new CVar("float", 3.14f);
+        CVar stringVar = new CVar("string", "Some string");
+
+        execConfig(
+                "bool 0",
+                "int 30",
+                "float 6.28",
+                "string 'Some other string'"
+        );
+
+        assertEquals(false, boolVar.BoolValue());
+        assertEquals(30, intVar.IntValue());
+        assertEquals(6.28f, floatVar.FloatValue());
+        assertEquals("Some other string", stringVar.Value());
+    }
+
+    public void testWriteConfigAliases() throws Exception
+    {
+        execute("alias alias1 command1");
+        execute("alias alias2 command2");
+        execute("alias alias3 command3");
+
+        assertConfig(
+                "alias alias1 command1",
+                "alias alias2 command2",
+                "alias alias3 command3"
+        );
+    }
+
+    public void testWriteConfigAliasesRemove() throws Exception
+    {
+        execute("alias alias1 command1");
+        execute("alias alias2 command2");
+        execute("alias alias3 command3");
+
+        waitUntilConfigIsSaved();
+
+        execute("unalias alias1");
+        assertConfig(
+                "alias alias2 command2",
+                "alias alias3 command3"
+        );
+
+        execute("unalias alias2");
+        assertConfig(
+                "alias alias3 command3"
+        );
+
+        execute("unalias alias3");
+        assertConfig();
     }
 
     @Override
@@ -132,7 +197,15 @@ public class ConfigTest extends CCommandTestCase
     {
         super.runSetup();
 
-        RegisterCommands(Cmd_writeconfig.class);
+        RegisterCommands
+        (
+            Cmd_alias.class,
+            Cmd_exec.class,
+            Cmd_reset.class,
+            Cmd_resetAll.class,
+            Cmd_unalias.class,
+            Cmd_writeconfig.class
+        );
     }
 
     @Override
@@ -152,5 +225,66 @@ public class ConfigTest extends CCommandTestCase
                 return new MockTimerManager();
             }
         };
+    }
+
+    private void assertConfig(String... expected) throws Exception
+    {
+        assertEquals(ArrayUtils.toList(expected), readConfig());
+    }
+
+    private void execConfig(String... lines) throws Exception
+    {
+        File configFile = getConfigFile();
+        File configsDir = configFile.getParentFile();
+        if (!configsDir.exists())
+        {
+            boolean succeed = configsDir.mkdirs();
+            assertTrue(succeed);
+        }
+
+        FileUtils.Write(configFile, ArrayUtils.toList(lines));
+
+        execute("exec default.cfg");
+    }
+
+    private List<String> readConfig() throws Exception
+    {
+        waitUntilConfigIsSaved();
+
+        File configFile = getConfigFile();
+        assertTrue(configFile.exists());
+
+        return FileUtils.Read(configFile, new FileUtils.ReadFilter()
+        {
+            @Override
+            public boolean accept(String line)
+            {
+                String trimmed = line.trim();
+                if (trimmed.length() == 0)
+                {
+                    return false;
+                }
+
+                if (trimmed.startsWith("//"))
+                {
+                    return false;
+                }
+
+                return true;
+            }
+        });
+    }
+
+    private void waitUntilConfigIsSaved() throws InterruptedException
+    {
+        waitUntilNotificationsDispatched(); // wait until notifications are dispatched
+        waitUntilTimersDispatched(); // wait until config written
+    }
+
+    @NonNull
+    private File getConfigFile()
+    {
+        File configsDir = AppTerminal.getConfigsDir();
+        return new File(configsDir, "default.cfg");
     }
 }

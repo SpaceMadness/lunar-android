@@ -22,10 +22,17 @@ public class TestCaseEx extends AndroidTestCase
     {
         super.setUp();
 
-        AppTerminal.initialize(getContext());
+        ClassUtilsEx.setField(Config.class, null, "isTesting", true);
+        ClassUtilsEx.setField(AppTerminalImp.class, null, "runtimePlatformFactory", new RuntimePlatformFactory()
+        {
+            @Override
+            public RuntimePlatform createRuntimePlatform(Context context)
+            {
+                return TestCaseEx.this.createRuntimePlatform(getContext());
+            }
+        });
 
-        AppTerminal instance = AppTerminal.getInstance();
-        ClassUtilsEx.setField(AppTerminalImp.class, instance, "runtimePlatform", createRuntimePlatform(getContext()));
+        AppTerminal.initialize(getContext());
 
         MockRuntimePlatform.deleteConfigsDir();
 

@@ -50,6 +50,7 @@ public class Cmd_writeconfig extends CCommand
             ListAliases(lines);
 
             FileUtils.Write(configFile, lines);
+
             return true;
         }
         catch (IOException e)

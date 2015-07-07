@@ -3,6 +3,7 @@ package com.spacemadness.lunar;
 import android.content.Context;
 import android.os.Looper;
 
+import com.spacemadness.lunar.console.CRegistery;
 import com.spacemadness.lunar.core.BackgroundTimerManager;
 import com.spacemadness.lunar.core.NotificationCenter;
 import com.spacemadness.lunar.core.NotificationCenterImp;
@@ -26,6 +27,17 @@ public class DefaultRuntimePlatform extends RuntimePlatform
         }
 
         contextRef = new WeakReference<>(context);
+
+        CRegistery.ResolveCommands();
+
+        getTimerManager().ScheduleOnce(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                execCommand("exec default.cfg", false);
+            }
+        });
     }
 
     @Override

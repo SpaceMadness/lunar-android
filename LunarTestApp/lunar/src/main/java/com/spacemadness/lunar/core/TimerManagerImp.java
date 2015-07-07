@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.spacemadness.lunar.debug.Assert;
+import com.spacemadness.lunar.debug.Log;
 import com.spacemadness.lunar.utils.FastConcurrentList;
 import com.spacemadness.lunar.utils.FastList;
 
@@ -127,7 +128,7 @@ public class TimerManagerImp extends TimerManager
             Assert.IsTrue(timers.Count() > 0);
 
             timers.RemoveItem(timer);
-            timer.onRemoved();
+            timerRemoved(timer);
             timer.Recycle();
         }
     }
@@ -148,6 +149,124 @@ public class TimerManagerImp extends TimerManager
         }
     }
 
+    //////////////////////////////////////////////////////////////////////////////
+    // Timer notifications
+
+    void timerScheduled(Timer timer)
+    {
+        TimerListener listener = getListener();
+        if (listener != null)
+        {
+            try
+            {
+                listener.onTimerScheduled(this, timer);
+            }
+            catch (Exception e)
+            {
+                Log.logException(e, "Exception while notifying timer delegate: 'onTimerScheduled'");
+            }
+        }
+    }
+
+    void timerFired(Timer timer)
+    {
+        TimerListener listener = getListener();
+        if (listener != null)
+        {
+            try
+            {
+                listener.onTimerFired(this, timer);
+            }
+            catch (Exception e)
+            {
+                Log.logException(e, "Exception while notifying timer delegate: 'onTimerFired'");
+            }
+        }
+    }
+
+    void timerCancelled(Timer timer)
+    {
+        TimerListener listener = getListener();
+        if (listener != null)
+        {
+            try
+            {
+                listener.onTimerCancelled(this, timer);
+            }
+            catch (Exception e)
+            {
+                Log.logException(e, "Exception while notifying timer delegate: 'onTimerCancelled'");
+            }
+        }
+    }
+
+    void timerFinished(Timer timer)
+    {
+        TimerListener listener = getListener();
+        if (listener != null)
+        {
+            try
+            {
+                listener.onTimerFinished(this, timer);
+            }
+            catch (Exception e)
+            {
+                Log.logException(e, "Exception while notifying timer delegate: 'onTimerFinished'");
+            }
+        }
+    }
+
+    void timerRemoved(Timer timer)
+    {
+        TimerListener listener = getListener();
+        if (listener != null)
+        {
+            try
+            {
+                listener.onTimerRemoved(this, timer);
+            }
+            catch (Exception e)
+            {
+                Log.logException(e, "Exception while notifying timer delegate: 'onTimerRemoved'");
+            }
+        }
+    }
+
+    void timerSuspended(Timer timer)
+    {
+        TimerListener listener = getListener();
+        if (listener != null)
+        {
+            try
+            {
+                listener.onTimerSuspended(this, timer);
+            }
+            catch (Exception e)
+            {
+                Log.logException(e, "Exception while notifying timer delegate: 'onTimerSuspended'");
+            }
+        }
+    }
+
+    void timerResumed(Timer timer)
+    {
+        TimerListener listener = getListener();
+        if (listener != null)
+        {
+            try
+            {
+                listener.onTimerResumed(this, timer);
+            }
+            catch (Exception e)
+            {
+                Log.logException(e, "Exception while notifying timer delegate: 'onTimerResumed'");
+            }
+        }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    // Getters/Setters
+
     protected Handler getHandler()
     {
         return handler;
@@ -155,9 +274,6 @@ public class TimerManagerImp extends TimerManager
 
     public int getTimersCount()
     {
-        synchronized (timers)
-        {
-            return timers.Count();
-        }
+        return timers.Count();
     }
 }

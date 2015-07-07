@@ -1,5 +1,6 @@
 package com.spacemadness.lunar.console;
 
+import com.spacemadness.lunar.core.Each;
 import com.spacemadness.lunar.debug.Log;
 import com.spacemadness.lunar.utils.ClassUtils;
 import com.spacemadness.lunar.utils.StringUtils;
@@ -68,6 +69,19 @@ public class CRegistery
     {
         m_commands.clear();
         m_commandsLookup.clear();
+    }
+
+    public static void iterateCommands(Each<CCommand> each)
+    {
+        if (each == null)
+        {
+            throw new NullPointerException("Each is null");
+        }
+
+        for (CCommand command : m_commands)
+        {
+            each.onElement(command);
+        }
     }
 
     public static List<CCommand> ListCommands()

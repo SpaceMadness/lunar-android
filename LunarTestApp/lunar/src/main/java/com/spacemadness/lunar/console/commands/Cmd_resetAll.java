@@ -22,30 +22,36 @@ import com.spacemadness.lunar.console.CVar;
 import com.spacemadness.lunar.console.CVarCommand;
 import com.spacemadness.lunar.console.annotations.Arg;
 import com.spacemadness.lunar.console.annotations.Command;
+import com.spacemadness.lunar.core.Each;
 import com.spacemadness.lunar.utils.ClassUtils;
 import com.spacemadness.lunar.utils.StringUtils;
 
 import java.util.List;
 
-@Command(Name="cvar_restart", Description="Resets all cvars to their default values.")
-public class Cmd_cvar_restart extends CCommand
+@Command(Name="resetAll", Description="Resets all cvars to their default values.")
+public class Cmd_resetAll extends CCommand
 {
     void execute()
     {
         execute(null);
     }
 
-    void execute(@Arg("prefix") String prefix)
+    void execute(@Arg("prefix") final String prefix)
     {
-        List<CCommand> cmds = CRegistery.ListCommands(prefix);
-        for (CCommand cmd : cmds)
+        CRegistery.iterateCommands(new Each<CCommand>()
         {
-            CVarCommand cvarCmd = ClassUtils.as(cmd, CVarCommand.class);
-            if (cvarCmd != null)
+            @Override
+            public void onElement(CCommand cmd)
             {
-                cvarCmd.SetDefault();
+                CVarCommand cvarCmd = ClassUtils.as(cmd, CVarCommand.class);
+                if (cvarCmd != null && (prefix == null || StringUtils.StartsWithIgnoreCase(cvarCmd.Name, prefix)))
+                {
+                    cvarCmd.setParentCommand(Cmd_resetAll.this);
+                    cvarCmd.SetDefault();
+                    cvarCmd.setParentCommand(null);
+                }
             }
-        }
+        });
     }
 
     @Override

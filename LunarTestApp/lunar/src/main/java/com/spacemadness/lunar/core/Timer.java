@@ -23,8 +23,6 @@ public class Timer extends ObjectsPoolEntry<Timer>
     private boolean ticksWhenSuspended;
     private boolean firesWhenSuspended;
 
-    private TimerListener listener;
-
     Runnable target;
 
     TimerManagerImp manager;
@@ -156,21 +154,6 @@ public class Timer extends ObjectsPoolEntry<Timer>
         }
     }
 
-    void onRemoved()
-    {
-        notifyRemoved();
-    }
-
-    protected TimerListener getListener()
-    {
-        return listener;
-    }
-
-    protected void setListener(TimerListener listener)
-    {
-        this.listener = listener;
-    }
-
     public boolean isSuspended()
     {
         return suspended;
@@ -247,7 +230,6 @@ public class Timer extends ObjectsPoolEntry<Timer>
         // wrapperRunnable = null; keep the wrapper runnable
         manager                   = null;
         target                    = null;
-        listener                  = null;
 
         scheduled                 = false;
         firstTimeSchedule         = false;
@@ -293,57 +275,31 @@ public class Timer extends ObjectsPoolEntry<Timer>
 
     private void notifyScheduled()
     {
-        if (listener != null)
-        {
-            listener.onTimerScheduled(this);
-        }
+        manager.timerScheduled(this);
     }
 
     private void notifyFired()
     {
-        if (listener != null)
-        {
-            listener.onTimerFired(this);
-        }
+        manager.timerFired(this);
     }
 
     private void notifyCancelled()
     {
-        if (listener != null)
-        {
-            listener.onTimerCancelled(this);
-        }
+        manager.timerCancelled(this);
     }
 
     private void notifyFinished()
     {
-        if (listener != null)
-        {
-            listener.onTimerFinished(this);
-        }
-    }
-
-    private void notifyRemoved()
-    {
-        if (listener != null)
-        {
-            listener.onTimerRemoved(this);
-        }
+        manager.timerFinished(this);
     }
 
     private void notifySuspended()
     {
-        if (listener != null)
-        {
-            listener.onTimerSuspended(this);
-        }
+        manager.timerSuspended(this);
     }
 
     private void notifyResumed()
     {
-        if (listener != null)
-        {
-            listener.onTimerResumed(this);
-        }
+        manager.timerResumed(this);
     }
 }

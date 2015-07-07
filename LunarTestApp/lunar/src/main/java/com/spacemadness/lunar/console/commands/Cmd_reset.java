@@ -22,8 +22,11 @@ public class Cmd_reset extends CCommand
             PrintError("Can't find cvar: '%s'", name);
             return false;
         }
-        
+
+        cmd.setParentCommand(this);
         cmd.SetDefault();
+        cmd.setParentCommand(null);
+
         return true;
     }
 

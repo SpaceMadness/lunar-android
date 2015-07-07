@@ -36,6 +36,8 @@ public class MockTimerManager extends TimerManager
     };
 
     private final BackgroundTimerManager backgroundTimerManager;
+    private final Object timerWaitLock = new Object();
+
     private boolean waitFlag;
 
     public MockTimerManager()
@@ -44,6 +46,47 @@ public class MockTimerManager extends TimerManager
         Timer.instanceCount = 0;
 
         backgroundTimerManager = BackgroundTimerManager.create();
+        backgroundTimerManager.setListener(new TimerListener()
+        {
+            @Override
+            public void onTimerScheduled(TimerManager manager, Timer timer)
+            {
+            }
+
+            @Override
+            public void onTimerFired(TimerManager manager, Timer timer)
+            {
+            }
+
+            @Override
+            public void onTimerCancelled(TimerManager manager, Timer timer)
+            {
+            }
+
+            @Override
+            public void onTimerFinished(TimerManager manager, Timer timer)
+            {
+            }
+
+            @Override
+            public void onTimerRemoved(TimerManager manager, Timer timer)
+            {
+                synchronized (timerWaitLock)
+                {
+                    timerWaitLock.notifyAll();
+                }
+            }
+
+            @Override
+            public void onTimerSuspended(TimerManager manager, Timer timer)
+            {
+            }
+
+            @Override
+            public void onTimerResumed(TimerManager manager, Timer timer)
+            {
+            }
+        });
     }
 
     public void sleep() throws InterruptedException
@@ -125,9 +168,12 @@ public class MockTimerManager extends TimerManager
 
     public void waitUntilTimersFinished() throws InterruptedException
     {
-        while (getTimersCount() > 0)
+        synchronized (timerWaitLock)
         {
-            Thread.sleep(100); // FIXME: replace with wait-notify approach
+            while (getTimersCount() > 0)
+            {
+                timerWaitLock.wait();
+            }
         }
     }
 
