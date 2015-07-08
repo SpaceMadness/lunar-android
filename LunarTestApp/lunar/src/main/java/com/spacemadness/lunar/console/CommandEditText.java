@@ -7,17 +7,16 @@ import android.text.InputType;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
-import android.widget.EditText;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 
-/**
- * Created by alementuev on 6/16/15.
- */
-public class CommandEditText extends EditText
+import com.spacemadness.lunar.utils.NotImplementedException;
+
+public class CommandEditText extends AutoCompleteTextView
 {
     private CommandHistory history;
     private OnCommandRunListener commandListener;
-    private String lastUserInput;
 
     public CommandEditText(Context context)
     {
@@ -66,7 +65,6 @@ public class CommandEditText extends EditText
                         pushHistory(commandLine);
                         notifyListener(commandLine);
                         setCommandLine("");
-                        resetHistory();
                     }
 
                     return true;
@@ -75,6 +73,28 @@ public class CommandEditText extends EditText
                 return false;
             }
         });
+
+        String[] commands = {
+            "alias",
+            "aliaslist",
+            "cat",
+            "clear",
+            "cmdlist",
+            "cvarlist",
+            "echo",
+            "exec",
+            "man",
+            "reset",
+            "resetAll",
+            "toggle",
+            "unalias",
+            "writeconfig"
+        };
+
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(context,
+                android.R.layout.simple_spinner_dropdown_item, commands);
+        this.setAdapter(adapter);
+        this.setThreshold(0);
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -91,62 +111,9 @@ public class CommandEditText extends EditText
     //////////////////////////////////////////////////////////////////////////////
     // History
 
-    public boolean historyPrev()
-    {
-        if (lastUserInput == null)
-        {
-            lastUserInput = getCommandLine();
-        }
-
-        String commandLine = getHistoryPrev();
-        if (commandLine != null)
-        {
-            setCommandLine(commandLine);
-            return true;
-        }
-
-        return false;
-    }
-
-    public boolean historyNext()
-    {
-        String commandLine = getHistoryNext();
-        if (commandLine != null)
-        {
-            setCommandLine(commandLine);
-            return true;
-        }
-
-        if (lastUserInput != null)
-        {
-            setCommandLine(lastUserInput);
-            resetHistory();
-
-            return true;
-        }
-
-        return false;
-    }
-
     private void pushHistory(String commandLine)
     {
         history.Push(commandLine);
-    }
-
-    private String getHistoryPrev()
-    {
-        return history.Prev();
-    }
-
-    private String getHistoryNext()
-    {
-        return history.Next();
-    }
-
-    private void resetHistory()
-    {
-        history.Reset();
-        lastUserInput = null;
     }
 
     //////////////////////////////////////////////////////////////////////////////
@@ -154,13 +121,12 @@ public class CommandEditText extends EditText
 
     public void autocomplete()
     {
-
+        throw new NotImplementedException();
     }
 
     public void clear()
     {
         setCommandLine("");
-        resetHistory();
     }
 
     //////////////////////////////////////////////////////////////////////////////

@@ -2,9 +2,6 @@ package com.spacemadness.lunar.utils;
 
 import java.lang.reflect.Array;
 
-/**
- * Created by alementuev on 6/16/15.
- */
 public class CycleArray<E>
 {
     private final Class<? extends E> componentType;
@@ -140,6 +137,20 @@ public class CycleArray<E>
         {
             throw new NotImplementedException();
         }
+    }
+
+    public boolean contains(Object element)
+    {
+        for (int i = headIndex; i < length; ++i)
+        {
+            int arrayIndex = ToArrayIndex(i);
+            if (ObjectUtils.areEqual(internalArray[arrayIndex], element))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public int HeadIndex()

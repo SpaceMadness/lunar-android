@@ -2,73 +2,47 @@ package com.spacemadness.lunar.console;
 
 import com.spacemadness.lunar.utils.CycleArray;
 
-/**
- * Created by alementuev on 6/16/15.
- */
+import java.util.ArrayList;
+import java.util.List;
+
 public class CommandHistory
 {
-    private CycleArray<String> m_entries;
-    private int m_currentIndex;
+    private CycleArray<String> entries;
 
     public CommandHistory(int capacity)
     {
-        m_entries = new CycleArray<String>(String.class, capacity);
-        m_currentIndex = -1;
-    }
-
-    public String get(int index)
-    {
-        int entryIndex = m_entries.HeadIndex() + index;
-        return m_entries.get(entryIndex);
+        entries = new CycleArray<>(String.class, capacity);
     }
 
     public void Push(String line)
     {
-        if (m_entries.Length() == 0 || m_entries.get(m_entries.Length() - 1) != line)
+        if (!entries.contains(line))
         {
-            m_entries.Add(line);
+            entries.Add(line);
         }
-
-        Reset();
-    }
-
-    public void Reset()
-    {
-        m_currentIndex = m_entries.Length();
-    }
-
-    public String Next()
-    {
-        int nextIndex = m_currentIndex + 1;
-        if (nextIndex < m_entries.Length())
-        {
-            m_currentIndex = nextIndex;
-            return m_entries.get(m_currentIndex);
-        }
-
-        return null;
-    }
-
-    public String Prev()
-    {
-        int prevIndex = m_currentIndex - 1;
-        if (prevIndex >= m_entries.HeadIndex())
-        {
-            m_currentIndex = prevIndex;
-            return m_entries.get(m_currentIndex);
-        }
-
-        return null;
     }
 
     public void Clear()
     {
-        m_currentIndex = -1;
-        m_entries.Clear();
+        entries.Clear();
+    }
+
+    public List<String> list()
+    {
+        return list(new ArrayList<String>());
+    }
+
+    public List<String> list(List<String> outList)
+    {
+        for (int i = entries.HeadIndex(); i < entries.Length(); ++i)
+        {
+            outList.add(entries.get(i));
+        }
+        return outList;
     }
 
     public int Count()
     {
-        return m_entries.RealLength();
+        return entries.RealLength();
     }
 }

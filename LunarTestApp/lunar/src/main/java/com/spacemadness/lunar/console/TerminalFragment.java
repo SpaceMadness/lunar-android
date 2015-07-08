@@ -45,44 +45,6 @@ public class TerminalFragment extends Fragment implements CommandEditText.OnComm
         final CommandEditText commandEditText = (CommandEditText) view.findViewById(R.id.edit_text_command_line);
         commandEditText.setCommandListener(this);
 
-        setClickListener(view, R.id.button_up, new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                commandEditText.historyPrev();
-            }
-        });
-        setClickListener(view, R.id.button_down, new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                commandEditText.historyNext();
-            }
-        });
-        setClickListener(view, R.id.button_left, new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-            }
-        });
-        setClickListener(view, R.id.button_right, new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-            }
-        });
-        setClickListener(view, R.id.button_clear, new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                commandEditText.clear();
-            }
-        });
         setClickListener(view, R.id.button_tab, new View.OnClickListener()
         {
             private long lastTabClick;

@@ -16,56 +16,6 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/button_up"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="▲"/>
-
-        <Button
-            android:id="@+id/button_down"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="▼"/>
-
-        <Button
-            android:id="@+id/button_left"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="◀"/>
-
-        <Button
-            android:id="@+id/button_right"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="▶"/>
-
-        <Button
-            android:id="@+id/button_clear"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Clear"/>
-
-        <Button
-            android:id="@+id/button_tab"
-            style="?android:attr/buttonStyleSmall"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Tab"/>
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
         <ImageButton
             style="@style/GlyphButtonStyle"
             android:src="@drawable/ic_history_black_24dp"/>
@@ -76,6 +26,11 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:hint="Enter Command"/>
+
+        <ImageButton
+            style="@style/GlyphButtonStyle"
+            android:id="@+id/button_tab"
+            android:src="@drawable/ic_keyboard_tab_black_24dp"/>
 
     </LinearLayout>
 

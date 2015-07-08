@@ -446,6 +446,48 @@ public class CycleArrayTest extends TestCase
         assertEquals(5, array.RealLength());
     }
 
+    public void testContains() throws Exception
+    {
+        CycleArray<String> array = new CycleArray<String>(String.class, 3);
+        array.Add("1");
+        array.Add("2");
+        array.Add("3");
+
+        assertTrue(array.contains("1"));
+        assertTrue(array.contains("2"));
+        assertTrue(array.contains("3"));
+
+        array.Add("4");
+        assertFalse(array.contains("1"));
+        assertTrue(array.contains("2"));
+        assertTrue(array.contains("3"));
+        assertTrue(array.contains("4"));
+
+        array.Add("5");
+        assertFalse(array.contains("1"));
+        assertFalse(array.contains("2"));
+        assertTrue(array.contains("3"));
+        assertTrue(array.contains("4"));
+        assertTrue(array.contains("5"));
+
+        array.Add("6");
+        assertFalse(array.contains("1"));
+        assertFalse(array.contains("2"));
+        assertFalse(array.contains("3"));
+        assertTrue(array.contains("4"));
+        assertTrue(array.contains("5"));
+        assertTrue(array.contains("6"));
+
+        array.Add("7");
+        assertFalse(array.contains("1"));
+        assertFalse(array.contains("2"));
+        assertFalse(array.contains("3"));
+        assertFalse(array.contains("4"));
+        assertTrue(array.contains("5"));
+        assertTrue(array.contains("6"));
+        assertTrue(array.contains("7"));
+    }
+
     private <T> void AssertArray(CycleArray<T> actual, T... expected)
     {
         assertEquals(expected.length, actual.RealLength());
