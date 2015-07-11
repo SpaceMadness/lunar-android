@@ -46,6 +46,12 @@ public class Terminal implements TerminalAdapter.DataSource, ICCommandDelegate, 
         notifyEntryAdded(entry);
     }
 
+    public void Add(TerminalEntry entry)
+    {
+        entries.add(entry);
+        notifyEntryAdded(entry);
+    }
+
     //////////////////////////////////////////////////////////////////////////////
     // Auto complete
 
@@ -183,6 +189,12 @@ public class Terminal implements TerminalAdapter.DataSource, ICCommandDelegate, 
     public void LogTerminal(Throwable e, String message)
     {
         Add(e, message);
+    }
+
+    @Override
+    public void LogTerminal(TerminalEntry e)
+    {
+        Add(e);
     }
 
     @Override

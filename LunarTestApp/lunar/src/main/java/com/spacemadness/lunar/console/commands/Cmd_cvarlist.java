@@ -9,6 +9,7 @@ import com.spacemadness.lunar.console.CommandListOptions;
 import com.spacemadness.lunar.console.annotations.Arg;
 import com.spacemadness.lunar.console.annotations.Command;
 import com.spacemadness.lunar.console.annotations.CommandOption;
+import com.spacemadness.lunar.console.entries.TerminalCVarEntry;
 
 import java.util.List;
 
@@ -58,25 +59,35 @@ public class Cmd_cvarlist extends CCommand
             }
             else
             {
-                StringBuilder result = new StringBuilder();
-                for (int i = 0; i < vars.size(); ++i)
+                if (Config.isUI)
                 {
-                    CVar cvar = vars.get(i);
-                    result.append(TryFormat("  %s %s", C(cvar.Name(), ColorCode.TableVar), Arg(cvar.Value())));
-                    
-                    // TODO: better color highlight
-                    if (!cvar.IsDefault())
+                    for (CVar cvar : vars)
                     {
-                        result.append(TryFormat(" %s %s", C("default", ColorCode.TableVar), cvar.DefaultValue()));
-                    }
-                    
-                    if (i < vars.size() - 1)
-                    {
-                        result.append('\n');
+                        Print(new TerminalCVarEntry(cvar));
                     }
                 }
-                
-                Print(result.toString());
+                else
+                {
+                    StringBuilder result = new StringBuilder();
+                    for (int i = 0; i < vars.size(); ++i)
+                    {
+                        CVar cvar = vars.get(i);
+                        result.append(TryFormat("  %s %s", C(cvar.Name(), ColorCode.TableVar), Arg(cvar.Value())));
+
+                        // TODO: better color highlight
+                        if (!cvar.IsDefault())
+                        {
+                            result.append(TryFormat(" %s %s", C("default", ColorCode.TableVar), cvar.DefaultValue()));
+                        }
+
+                        if (i < vars.size() - 1)
+                        {
+                            result.append('\n');
+                        }
+                    }
+
+                    Print(result.toString());
+                }
             }
         }
         

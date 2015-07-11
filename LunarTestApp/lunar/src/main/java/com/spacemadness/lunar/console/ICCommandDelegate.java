@@ -5,6 +5,7 @@ public interface ICCommandDelegate
     void LogTerminal(String message);
     void LogTerminal(String[] table);
     void LogTerminal(Throwable e, String message);
+    void LogTerminal(TerminalEntry entry);
 
     boolean ExecuteCommandLine(String commandLine, boolean manual);
 

@@ -29,6 +29,16 @@ public class TerminalEntries
         return addEntry(new TerminalExceptionEntry(e, message));
     }
 
+    public TerminalEntry add(TerminalEntry entry)
+    {
+        if (entry == null)
+        {
+            throw new NullPointerException("Entry is null");
+        }
+
+        return addEntry(entry);
+    }
+
     private TerminalEntry addEntry(TerminalEntry entry)
     {
         entries.Add(entry);

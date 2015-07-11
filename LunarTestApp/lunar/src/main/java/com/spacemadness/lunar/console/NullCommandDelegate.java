@@ -27,7 +27,7 @@ public class NullCommandDelegate implements ICCommandDelegate
     }
 
     @Override
-    public void add(@NonNull TerminalEntry entry)
+    public void LogTerminal(TerminalEntry entry)
     {
     }
 

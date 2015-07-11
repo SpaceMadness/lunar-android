@@ -751,7 +751,7 @@ public class CommandAutoCompleteTest extends TestCaseEx
         }
 
         @Override
-        public void add(@NonNull TerminalEntry entry)
+        public void LogTerminal(TerminalEntry entry)
         {
             throw new NotImplementedException();
         }

@@ -77,7 +77,7 @@ public class CCommandTestCase extends TestCaseEx implements ICCommandDelegate
     }
 
     @Override
-    public void add(@NonNull TerminalEntry entry)
+    public void LogTerminal(TerminalEntry entry)
     {
         throw new NotImplementedException();
     }
