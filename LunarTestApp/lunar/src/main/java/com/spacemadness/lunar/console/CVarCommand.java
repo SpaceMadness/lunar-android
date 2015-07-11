@@ -1,6 +1,8 @@
 package com.spacemadness.lunar.console;
 
 import com.spacemadness.lunar.ColorCode;
+import com.spacemadness.lunar.Config;
+import com.spacemadness.lunar.console.entries.TerminalCVarEntry;
 import com.spacemadness.lunar.utils.ObjectUtils;
 import com.spacemadness.lunar.utils.StringUtils;
 
@@ -22,7 +24,14 @@ public class CVarCommand extends CCommand
     {
         if (args.length == 0)
         {
-            PrintIndent("%s is:\"%s\" default:\"%s\"", StringUtils.C(cvar.Name(), ColorCode.TableVar), cvar.Value(), cvar.DefaultValue());
+            if (Config.isUI)
+            {
+                Print(new TerminalCVarEntry(cvar));
+            }
+            else
+            {
+                PrintIndent("%s is:\"%s\" default:\"%s\"", StringUtils.C(cvar.Name(), ColorCode.TableVar), cvar.Value(), cvar.DefaultValue());
+            }
             return false;
         }
 

@@ -1,9 +1,12 @@
 package com.spacemadness.lunar.console;
 
+import android.support.annotation.NonNull;
+
 import com.spacemadness.lunar.Config;
 import com.spacemadness.lunar.TestCaseEx;
 import com.spacemadness.lunar.utils.ClassUtils;
 import com.spacemadness.lunar.utils.ClassUtilsEx;
+import com.spacemadness.lunar.utils.NotImplementedException;
 import com.spacemadness.lunar.utils.StringUtils;
 
 public class CCommandTestCase extends TestCaseEx implements ICCommandDelegate
@@ -71,6 +74,12 @@ public class CCommandTestCase extends TestCaseEx implements ICCommandDelegate
     public void LogTerminal(Throwable e, String message)
     {
         throw new Error(message, e);
+    }
+
+    @Override
+    public void add(@NonNull TerminalEntry entry)
+    {
+        throw new NotImplementedException();
     }
 
     @Override

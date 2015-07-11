@@ -1,5 +1,7 @@
 package com.spacemadness.lunar.console;
 
+import android.support.annotation.NonNull;
+
 /**
  * Created by alementuev on 6/1/15.
  */
@@ -21,6 +23,11 @@ public class NullCommandDelegate implements ICCommandDelegate
 
     @Override
     public void LogTerminal(Throwable e, String message)
+    {
+    }
+
+    @Override
+    public void add(@NonNull TerminalEntry entry)
     {
     }
 

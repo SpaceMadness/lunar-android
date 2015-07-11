@@ -1099,6 +1099,11 @@ public abstract class CCommand implements Comparable<CCommand>
         PrintUsage(false);
     }
 
+    public void Print(TerminalEntry e)
+    {
+        m_delegate.add(e);
+    }
+
     /// <summary>
     /// Prints command's usage.
     /// </summary>

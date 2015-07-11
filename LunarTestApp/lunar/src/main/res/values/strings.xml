@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Lunar</string>
+    <string name="terminal_cvar_view_button_reset">Reset</string>
 </resources>

@@ -23,6 +23,7 @@ public class TestCaseEx extends AndroidTestCase
         super.setUp();
 
         ClassUtilsEx.setField(Config.class, null, "isTesting", true);
+        ClassUtilsEx.setField(Config.class, null, "isUI", false);
         ClassUtilsEx.setField(AppTerminalImp.class, null, "runtimePlatformFactory", new RuntimePlatformFactory()
         {
             @Override

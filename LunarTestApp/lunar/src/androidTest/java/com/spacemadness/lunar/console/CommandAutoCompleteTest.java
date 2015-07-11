@@ -1,5 +1,7 @@
 package com.spacemadness.lunar.console;
 
+import android.support.annotation.NonNull;
+
 import com.spacemadness.lunar.TestCaseEx;
 import com.spacemadness.lunar.console.annotations.CommandOption;
 import com.spacemadness.lunar.debug.Assert;
@@ -744,6 +746,12 @@ public class CommandAutoCompleteTest extends TestCaseEx
 
         @Override
         public void LogTerminal(Throwable e, String message)
+        {
+            throw new NotImplementedException();
+        }
+
+        @Override
+        public void add(@NonNull TerminalEntry entry)
         {
             throw new NotImplementedException();
         }
