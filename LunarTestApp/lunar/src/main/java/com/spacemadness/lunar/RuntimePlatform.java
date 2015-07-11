@@ -15,6 +15,10 @@ import static com.spacemadness.lunar.console.CCommandNotifications.*;
 
 public abstract class RuntimePlatform implements IDestroyable
 {
+    private static final String DIR_FILES = "com.spacemadness.lunar";
+    private static final String DIR_CACHE = "com.spacemadness.lunar";
+    private static final String DIR_CONFIGS = "configs";
+
     private final Terminal terminal;
     private final NotificationCenter notificationCenter;
 
@@ -103,7 +107,9 @@ public abstract class RuntimePlatform implements IDestroyable
 
     protected abstract NotificationCenter createNotificationCenter();
 
-    protected abstract File createConfigsDirFile();
+    protected abstract File getFilesDir();
+
+    protected abstract File getCacheDir();
 
     //////////////////////////////////////////////////////////////////////////////
     // Terminal
@@ -131,6 +137,19 @@ public abstract class RuntimePlatform implements IDestroyable
         {
             getTimerManager().ScheduleOnce(saveConfigRunnable);
         }
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    // Helpers
+
+    protected File createConfigsDirFile()
+    {
+        return new File(getLibraryFilesDir(), DIR_CONFIGS);
+    }
+
+    protected File getLibraryFilesDir()
+    {
+        return new File(getFilesDir(), DIR_FILES);
     }
 
     //////////////////////////////////////////////////////////////////////////////

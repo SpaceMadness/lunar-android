@@ -1,6 +1,7 @@
 package com.spacemadness.lunar.console;
 
 import com.spacemadness.lunar.core.Each;
+import com.spacemadness.lunar.core.EachIndex;
 import com.spacemadness.lunar.debug.Log;
 import com.spacemadness.lunar.utils.ClassUtils;
 import com.spacemadness.lunar.utils.StringUtils;
@@ -84,6 +85,20 @@ public class CRegistery
         }
     }
 
+    public static void iterateCommands(EachIndex<CCommand> each)
+    {
+        if (each == null)
+        {
+            throw new NullPointerException("Each is null");
+        }
+
+        int index = 0;
+        for (CCommand command : m_commands)
+        {
+            each.onElement(command, index++);
+        }
+    }
+
     public static List<CCommand> ListCommands()
     {
         return ListCommands((String) null);
@@ -157,6 +172,11 @@ public class CRegistery
         }
 
         return prefix == null || StringUtils.StartsWithIgnoreCase(cmd.Name, prefix);
+    }
+
+    public static int getCommandsCount()
+    {
+        return m_commands.size();
     }
 
     private static boolean AddCommand(CCommand cmd)

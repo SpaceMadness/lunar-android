@@ -1,12 +1,21 @@
 package com.spacemadness.lunar.console;
 
+import android.annotation.TargetApi;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupMenu;
+
+import com.spacemadness.lunar.utils.RuntimeUtils;
+
+import java.util.List;
 
 import spacemadness.com.lunar.R;
 
@@ -45,22 +54,55 @@ public class TerminalFragment extends Fragment implements CommandEditText.OnComm
         final CommandEditText commandEditText = (CommandEditText) view.findViewById(R.id.edit_text_command_line);
         commandEditText.setCommandListener(this);
 
-        setClickListener(view, R.id.button_tab, new View.OnClickListener()
+        setClickListener(view, R.id.button_history, new View.OnClickListener()
         {
-            private long lastTabClick;
-
             @Override
             public void onClick(View v)
             {
-                String newText = terminal.DoAutoComplete(commandEditText.getCommandLine(), isDoubleTab());
-                commandEditText.setCommandLine(newText);
-
-                lastTabClick = System.currentTimeMillis();
+                commandEditText.prevHistory();
             }
+        });
 
-            private boolean isDoubleTab()
+        if (RuntimeUtils.isAndroidVersionAvailable(Build.VERSION_CODES.HONEYCOMB))
+        {
+            setLongClickListener(view, R.id.button_history, new View.OnLongClickListener()
             {
-                return System.currentTimeMillis() - lastTabClick < 1000;
+                @TargetApi(Build.VERSION_CODES.HONEYCOMB)
+                @Override
+                public boolean onLongClick(View v)
+                {
+                    PopupMenu popupMenu = new PopupMenu(getActivity(), v);
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener()
+                    {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item)
+                        {
+                            commandEditText.setCommandLine(item.getTitle().toString());
+                            return true;
+                        }
+                    });
+
+                    Menu m = popupMenu.getMenu();
+
+                    List<String> history = commandEditText.listHistory();
+                    for (String cmd : history)
+                    {
+                        m.add(cmd);
+                    }
+
+                    popupMenu.show();
+
+                    return true;
+                }
+            });
+        }
+
+        setClickListener(view, R.id.button_clear, new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                commandEditText.clear();
             }
         });
     }
@@ -90,5 +132,10 @@ public class TerminalFragment extends Fragment implements CommandEditText.OnComm
     private void setClickListener(View view, int id, View.OnClickListener listener)
     {
         view.findViewById(id).setOnClickListener(listener);
+    }
+
+    private void setLongClickListener(View view, int id, View.OnLongClickListener listener)
+    {
+        view.findViewById(id).setOnLongClickListener(listener);
     }
 }

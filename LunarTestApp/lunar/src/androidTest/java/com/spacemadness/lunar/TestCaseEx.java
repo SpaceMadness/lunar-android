@@ -58,12 +58,12 @@ public class TestCaseEx extends AndroidTestCase
 
     protected void assertResult(List<String> actual, String... expected)
     {
-        assertEquals("Expected: " + StringUtils.Join(expected) +
+        assertEquals("\nExpected: " + StringUtils.Join(expected) +
                         "\nActual: " + StringUtils.Join(actual), expected.length, actual.size());
 
         for (int i = 0; i < expected.length; ++i)
         {
-            assertEquals("Expected: " + StringUtils.Join(expected) +
+            assertEquals("\nExpected: " + StringUtils.Join(expected) +
                             "\nActual: " + StringUtils.Join(actual),
                     expected[i], actual.get(i));
         }
@@ -71,13 +71,13 @@ public class TestCaseEx extends AndroidTestCase
 
     protected void assertResult(String[] actual, String... expected)
     {
-        assertEquals("Expected: " + StringUtils.Join(expected) +
+        assertEquals("\nExpected: " + StringUtils.Join(expected) +
                         "\nActual: " + StringUtils.Join(actual),
                 expected.length, actual.length);
 
         for (int i = 0; i < expected.length; ++i)
         {
-            assertEquals("Expected: " + StringUtils.Join(expected) +
+            assertEquals("\nExpected: " + StringUtils.Join(expected) +
                             "\nActual: " + StringUtils.Join(actual),
                     expected[i], actual[i]);
         }
@@ -85,13 +85,13 @@ public class TestCaseEx extends AndroidTestCase
 
     protected void assertResult(int[] actual, int... expected)
     {
-        assertEquals("Expected: " + StringUtils.Join(expected) +
+        assertEquals("\nExpected: " + StringUtils.Join(expected) +
                         "\nActual: " + StringUtils.Join(actual),
                 expected.length, actual.length);
 
         for (int i = 0; i < expected.length; ++i)
         {
-            assertEquals("Expected: " + StringUtils.Join(expected) +
+            assertEquals("\nExpected: " + StringUtils.Join(expected) +
                             "\nActual: " + StringUtils.Join(actual),
                     expected[i], actual[i]);
         }
@@ -99,13 +99,13 @@ public class TestCaseEx extends AndroidTestCase
 
     protected void assertResult(float[] actual, float... expected)
     {
-        assertEquals("Expected: " + StringUtils.Join(expected) +
+        assertEquals("\nExpected: " + StringUtils.Join(expected) +
                         "\nActual: " + StringUtils.Join(actual),
                 expected.length, actual.length);
 
         for (int i = 0; i < expected.length; ++i)
         {
-            assertEquals("Expected: " + StringUtils.Join(expected) +
+            assertEquals("\nExpected: " + StringUtils.Join(expected) +
                             "\nActual: " + StringUtils.Join(actual),
                     expected[i], actual[i]);
         }
@@ -113,13 +113,13 @@ public class TestCaseEx extends AndroidTestCase
 
     protected void assertResult(boolean[] actual, boolean... expected)
     {
-        assertEquals("Expected: " + StringUtils.Join(expected) +
+        assertEquals("\nExpected: " + StringUtils.Join(expected) +
                         "\nActual: " + StringUtils.Join(actual),
                 expected.length, actual.length);
 
         for (int i = 0; i < expected.length; ++i)
         {
-            assertEquals("Expected: " + StringUtils.Join(expected) +
+            assertEquals("\nExpected: " + StringUtils.Join(expected) +
                             "\nActual: " + StringUtils.Join(actual),
                     expected[i], actual[i]);
         }

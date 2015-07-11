@@ -4,6 +4,8 @@ import com.spacemadness.lunar.TestCaseEx;
 
 import java.util.List;
 
+import static com.spacemadness.lunar.console.CommandTokenizer.OPTION_IGNORE_MISSING_QUOTES;
+
 public class CommandTokenizerTest extends TestCaseEx
 {
     //////////////////////////////////////////////////////////////////////////////
@@ -77,10 +79,34 @@ public class CommandTokenizerTest extends TestCaseEx
     }
 
     //////////////////////////////////////////////////////////////////////////////
+    // Incomplete commands
+
+    public void testMissingQuotes()
+    {
+        String str = "\"one and a half two three";
+
+        List<String> tokens = Tokenize(str, OPTION_IGNORE_MISSING_QUOTES);
+        assertResult(tokens, "one and a half two three");
+
+        str = "one \"two and a half three";
+        tokens = Tokenize(str, OPTION_IGNORE_MISSING_QUOTES);
+        assertResult(tokens, "one", "two and a half three");
+
+        str = "one two \"three and a half";
+        tokens = Tokenize(str, OPTION_IGNORE_MISSING_QUOTES);
+        assertResult(tokens, "one", "two", "three and a half");
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
     // Helpers
 
     private static List<String> Tokenize(String str)
     {
         return CommandTokenizer.Tokenize(str);
+    }
+
+    private static List<String> Tokenize(String str, int options)
+    {
+        return CommandTokenizer.Tokenize(str, options);
     }
 }

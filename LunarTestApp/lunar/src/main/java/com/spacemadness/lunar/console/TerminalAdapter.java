@@ -1,5 +1,6 @@
 package com.spacemadness.lunar.console;
 
+import android.content.res.Resources;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -74,5 +75,20 @@ public class TerminalAdapter extends RecyclerView.Adapter<TerminalAdapter.ViewHo
         }
 
         public abstract void onBindViewHolder(T entry);
+
+        protected Resources getResources()
+        {
+            return itemView.getContext().getResources();
+        }
+
+        protected String getString(int id)
+        {
+            return getResources().getString(id);
+        }
+
+        protected int getColor(int id)
+        {
+            return getResources().getColor(id);
+        }
     }
 }

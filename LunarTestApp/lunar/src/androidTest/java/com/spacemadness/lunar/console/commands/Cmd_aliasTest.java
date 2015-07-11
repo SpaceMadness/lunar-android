@@ -90,10 +90,8 @@ public class Cmd_aliasTest extends CCommandTestCase
     {
         super.runSetup();
 
-        RegisterCommands(
-            Cmd_alias.class,
-            Cmd_unalias.class
-        );
+        registerCommand(Cmd_alias.class);
+        registerCommand(Cmd_unalias.class);
 
         CRegistery.Register(new echo());
     }

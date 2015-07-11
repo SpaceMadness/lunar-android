@@ -57,9 +57,15 @@ public class MockRuntimePlatform extends RuntimePlatform implements IDestroyable
     }
 
     @Override
-    protected File createConfigsDirFile()
+    protected File getFilesDir()
     {
-        return new File(context.getCacheDir(), "configs");
+        return context.getFilesDir();
+    }
+
+    @Override
+    protected File getCacheDir()
+    {
+        return context.getCacheDir();
     }
 
     //////////////////////////////////////////////////////////////////////////////

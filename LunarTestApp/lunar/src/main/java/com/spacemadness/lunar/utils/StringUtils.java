@@ -615,6 +615,20 @@ public class StringUtils
     }
 
     //////////////////////////////////////////////////////////////////////////////
+    // Replace with suggested
+
+    public static String replaceWithSuggested(String line, String suggested)
+    {
+        int index = line.lastIndexOf(" ");
+        if (index != -1)
+        {
+            return line.substring(0, index + 1) + suggested;
+        }
+
+        return suggested;
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
     // String representation
 
     public static String ToString(boolean value)

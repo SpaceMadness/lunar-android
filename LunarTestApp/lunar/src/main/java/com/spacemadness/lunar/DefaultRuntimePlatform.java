@@ -15,8 +15,6 @@ import java.lang.ref.WeakReference;
 
 public class DefaultRuntimePlatform extends RuntimePlatform
 {
-    private static final String CONFIGS_DIR_NAME = "com.spacemadness.lunar.Configs";
-
     private final WeakReference<Context> contextRef;
 
     public DefaultRuntimePlatform(Context context)
@@ -59,10 +57,15 @@ public class DefaultRuntimePlatform extends RuntimePlatform
     }
 
     @Override
-    protected File createConfigsDirFile()
+    protected File getFilesDir()
     {
-        File filesDir = getExistingContext().getFilesDir();
-        return new File(filesDir, CONFIGS_DIR_NAME);
+        return getExistingContext().getFilesDir();
+    }
+
+    @Override
+    protected File getCacheDir()
+    {
+        return getExistingContext().getCacheDir();
     }
 
     //////////////////////////////////////////////////////////////////////////////

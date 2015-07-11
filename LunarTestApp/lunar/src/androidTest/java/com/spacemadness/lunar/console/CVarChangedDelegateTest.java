@@ -276,6 +276,6 @@ public class CVarChangedDelegateTest extends CCommandTestCase
     {
         super.runSetup();
 
-        RegisterCommands(Cmd_reset.class);
+        registerCommand(Cmd_reset.class);
     }
 }

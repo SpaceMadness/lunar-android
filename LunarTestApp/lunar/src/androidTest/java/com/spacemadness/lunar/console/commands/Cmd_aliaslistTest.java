@@ -47,10 +47,8 @@ public class Cmd_aliaslistTest extends CCommandTestCase
 
         this.IsTrackTerminalLog = true;
 
-        RegisterCommands(
-            Cmd_alias.class,
-            Cmd_aliaslist.class
-        );
+        registerCommand(Cmd_alias.class, true);
+        registerCommand(Cmd_aliaslist.class, true);
 
         execute("alias cmd_alias1 cmdlist");
         execute("alias cmd_alias12 cmdlist");

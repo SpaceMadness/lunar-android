@@ -125,9 +125,7 @@ public class Cmd_cvarlistTest extends CCommandTestCase
 
         this.IsTrackTerminalLog = true;
 
-        RegisterCommands(
-            Cmd_cvarlist.class
-        );
+        registerCommand(Cmd_cvarlist.class);
 
         new CVar("cvar_normal_1",  "value_normal_1");
         new CVar("cvar_normal_12", "value_normal_12");

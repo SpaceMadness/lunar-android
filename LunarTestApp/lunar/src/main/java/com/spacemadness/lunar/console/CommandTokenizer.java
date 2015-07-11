@@ -3,23 +3,32 @@ package com.spacemadness.lunar.console;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by alementuev on 5/29/15.
- */
 class CommandTokenizer
 {
+    public static final int OPTION_IGNORE_MISSING_QUOTES = 1;
+
     private static final char DoubleQuote  = '"';
     private static final char SingleQuote  = '\'';
     private static final char EscapeSymbol = '\\';
 
     public static List<String> Tokenize(String str)
     {
-        List<String> list = new ArrayList<String>();
-        Tokenize(str, list);
+        return Tokenize(str, 0);
+    }
+
+    public static List<String> Tokenize(String str, int options)
+    {
+        List<String> list = new ArrayList<>();
+        Tokenize(str, list, options);
         return list;
     }
 
     public static void Tokenize(String str, List<String> tokens)
+    {
+        Tokenize(str, tokens, 0);
+    }
+
+    public static void Tokenize(String str, List<String> tokens, int options)
     {
         StringBuilder tokenBuffer = new StringBuilder();
 
@@ -132,12 +141,12 @@ class CommandTokenizer
             }
         }
 
-        if (insideDoubleQuotes)
+        if (insideDoubleQuotes && !hasOption(options, OPTION_IGNORE_MISSING_QUOTES))
         {
             throw new TokenizeException("Missing closing double quote: " + str);
         }
 
-        if (insideSingleQuotes)
+        if (insideSingleQuotes && !hasOption(options, OPTION_IGNORE_MISSING_QUOTES))
         {
             throw new TokenizeException("Missing closing single quote: " + str);
         }
@@ -157,5 +166,10 @@ class CommandTokenizer
             list.add(buffer.toString());
             buffer.setLength(0);
         }
+    }
+
+    private static boolean hasOption(int options, int option)
+    {
+        return (options & option) != 0;
     }
 }

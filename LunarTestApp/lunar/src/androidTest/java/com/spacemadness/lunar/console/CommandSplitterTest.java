@@ -4,6 +4,8 @@ import com.spacemadness.lunar.TestCaseEx;
 
 import java.util.List;
 
+import static com.spacemadness.lunar.console.CommandSplitter.OPTION_IGNORE_MISSING_QUOTES;
+
 public class CommandSplitterTest extends TestCaseEx
 {
     //////////////////////////////////////////////////////////////////////////////
@@ -33,10 +35,22 @@ public class CommandSplitterTest extends TestCaseEx
         assertResult(commands, "test --arg1 \"argument && quotes\"");
     }
 
+    public void testSingleCommandWithArgsAndQuotesSplitMissingQuotes()
+    {
+        List<String> commands = CommandSplitter.Split("test --arg1 \"argument && quotes", OPTION_IGNORE_MISSING_QUOTES);
+        assertResult(commands, "test --arg1 \"argument && quotes");
+    }
+
     public void testSingleCommandWithArgsAndSingleQuotesSplit()
     {
         List<String> commands = CommandSplitter.Split("test --arg1 'argument && quotes'");
         assertResult(commands, "test --arg1 'argument && quotes'");
+    }
+
+    public void testSingleCommandWithArgsAndSingleQuotesSplitMissingQuotes()
+    {
+        List<String> commands = CommandSplitter.Split("test --arg1 'argument && quotes", OPTION_IGNORE_MISSING_QUOTES);
+        assertResult(commands, "test --arg1 'argument && quotes");
     }
 
     public void testSingleCommandWithArgsQuotesAndInnerQuotesSplit()
@@ -49,6 +63,12 @@ public class CommandSplitterTest extends TestCaseEx
     {
         List<String> commands = CommandSplitter.Split("test --arg1 'argument \"&&\" quotes'");
         assertResult(commands, "test --arg1 'argument \"&&\" quotes'");
+    }
+
+    public void testSingleCommandWithArgsSingleQuotesAndInnerQuotesSplitMissingQuotes()
+    {
+        List<String> commands = CommandSplitter.Split("test --arg1 'argument \"&&\" quotes", OPTION_IGNORE_MISSING_QUOTES);
+        assertResult(commands, "test --arg1 'argument \"&&\" quotes");
     }
 
     public void testSingleCommandWithArgsQuotesAndInnerSingleQuotesSplit()
@@ -88,6 +108,12 @@ public class CommandSplitterTest extends TestCaseEx
     {
         List<String> commands = CommandSplitter.Split("test1 --arg1 'a1 && a2' && test2 --arg2 'b1 && b2'");
         assertResult(commands, "test1 --arg1 'a1 && a2'", "test2 --arg2 'b1 && b2'");
+    }
+
+    public void testMultipleCommandsWithArgsAndSingleQuotesSplitMissingQuote()
+    {
+        List<String> commands = CommandSplitter.Split("test1 --arg1 'a1 && a2' && test2 --arg2 'b1 && b2", OPTION_IGNORE_MISSING_QUOTES);
+        assertResult(commands, "test1 --arg1 'a1 && a2'", "test2 --arg2 'b1 && b2");
     }
 
     public void testMultipleCommandsWithArgsQuotesAndInnerQuotesSplit()

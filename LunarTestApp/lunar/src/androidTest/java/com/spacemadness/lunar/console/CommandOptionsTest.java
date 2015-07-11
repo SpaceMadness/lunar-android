@@ -8,8 +8,8 @@ import java.util.List;
 
 public class CommandOptionsTest extends CCommandTestCase
 {
-	//////////////////////////////////////////////////////////////////////////////
-	// List options
+    //////////////////////////////////////////////////////////////////////////////
+    // List options
 
     public void testListOptions()
     {
@@ -316,6 +316,49 @@ public class CommandOptionsTest extends CCommandTestCase
         delegateCalled.value = false;
         cmd.ExecuteTokens(argsList);
         assertTrue(delegateCalled.value);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    // Find options
+
+    public void testFindNonAmbiguousOption1()
+    {
+        CCommand cmd = new cmd_test_list();
+        assertNull(cmd.FindNonAmbiguousOption("op1", false));
+    }
+
+    public void testFindNonAmbiguousOption2()
+    {
+        CCommand cmd = new cmd_test_list();
+        assertNull(cmd.FindNonAmbiguousOption("op12", false));
+    }
+
+    public void testFindNonAmbiguousOption3()
+    {
+        CCommand cmd = new cmd_test_list();
+        CCommand.Option opt = cmd.FindNonAmbiguousOption("op123", false);
+
+        assertEquals("op123", opt.Name);
+    }
+
+    public void testFindNonAmbiguousShortOption1()
+    {
+        CCommand cmd = new cmd_test_list();
+        assertNull(cmd.FindNonAmbiguousOption("o1", true));
+    }
+
+    public void testFindNonAmbiguousShortOption2()
+    {
+        CCommand cmd = new cmd_test_list();
+        assertNull(cmd.FindNonAmbiguousOption("o12", true));
+    }
+
+    public void testFindNonAmbiguousShortOption3()
+    {
+        CCommand cmd = new cmd_test_list();
+        CCommand.Option opt = cmd.FindNonAmbiguousOption("o123", true);
+
+        assertEquals("o123", opt.ShortName);
     }
 
     //////////////////////////////////////////////////////////////////////////////

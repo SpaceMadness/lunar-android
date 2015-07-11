@@ -1,15 +1,16 @@
-package com.spacemadness.lunar.console;
+package com.spacemadness.lunar.console.entries;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.spacemadness.lunar.console.TerminalAdapter;
+import com.spacemadness.lunar.console.TerminalEntry;
+import com.spacemadness.lunar.console.ViewHolderBuilder;
+
 import spacemadness.com.lunar.R;
 
-/**
- * Created by alementuev on 6/22/15.
- */
 public class TerminalTableEntry extends TerminalEntry
 {
     static

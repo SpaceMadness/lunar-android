@@ -20,12 +20,11 @@ public class MainActivity extends ActionBarActivity
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        StringUtils.colorsDisabled = true; // FIXME: remove
+        AppTerminal.initialize(this);
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        StringUtils.colorsDisabled = true; // FIXME: remove
-
-        AppTerminal.initialize(this);
     }
 
     @Override

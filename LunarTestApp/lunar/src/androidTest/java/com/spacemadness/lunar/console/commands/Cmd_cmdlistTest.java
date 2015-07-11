@@ -134,12 +134,10 @@ public class Cmd_cmdlistTest extends CCommandTestCase
 
         this.IsTrackTerminalLog = true;
 
-        RegisterCommands(
-            Cmd_cmdlist.class,
-            Cmd_cvarlist.class,
-            Cmd_alias.class,
-            Cmd_aliaslist.class
-        );
+        registerCommand(Cmd_cmdlist.class);
+        registerCommand(Cmd_cvarlist.class);
+        registerCommand(Cmd_alias.class);
+        registerCommand(Cmd_aliaslist.class);
 
         RegisterCommands(
             new cmd_hidden("hidden_cmd"),

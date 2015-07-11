@@ -710,6 +710,52 @@ public class StringUtilsTest extends TestCase
     }
 
     //////////////////////////////////////////////////////////////////////////////
+    // Suggested replace
+
+    public void testSuggestedReplaceSingleWord()
+    {
+        String line;
+        String suggested = "cmd";
+
+        line = "";
+        assertEquals(suggested, StringUtils.replaceWithSuggested(line, suggested));
+
+        line = "c";
+        assertEquals(suggested, StringUtils.replaceWithSuggested(line, suggested));
+
+        line = "cm";
+        assertEquals(suggested, StringUtils.replaceWithSuggested(line, suggested));
+
+        line = "cmd";
+        assertEquals(suggested, StringUtils.replaceWithSuggested(line, suggested));
+    }
+
+    public void testSuggestedReplaceMultipleWords()
+    {
+        String line;
+        String expected = "cmd --opt";
+        String suggested = "--opt";
+
+        line = "cmd ";
+        assertEquals(expected, StringUtils.replaceWithSuggested(line, suggested));
+
+        line = "cmd -";
+        assertEquals(expected, StringUtils.replaceWithSuggested(line, suggested));
+
+        line = "cmd --";
+        assertEquals(expected, StringUtils.replaceWithSuggested(line, suggested));
+
+        line = "cmd --o";
+        assertEquals(expected, StringUtils.replaceWithSuggested(line, suggested));
+
+        line = "cmd --op";
+        assertEquals(expected, StringUtils.replaceWithSuggested(line, suggested));
+
+        line = "cmd --opt";
+        assertEquals(expected, StringUtils.replaceWithSuggested(line, suggested));
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
     // Null and empty
 
     public void testIsNullOrEmpty()

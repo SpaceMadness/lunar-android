@@ -88,28 +88,30 @@ public class CCommandTestCase extends TestCaseEx implements ICCommandDelegate
     //////////////////////////////////////////////////////////////////////////////
     // Helpers
 
-    protected void RegisterCommands(Class<? extends CCommand>... classes)
+    protected void registerCommand(Class<? extends CCommand> cls)
     {
-        for (Class<? extends CCommand> cls : classes)
+        registerCommand(cls, true);
+    }
+
+    protected void registerCommand(Class<? extends CCommand> cls, boolean hidden)
+    {
+        CCommand command = ClassUtils.tryNewInstance(cls);
+        if (command == null)
         {
-            CCommand command = ClassUtils.tryNewInstance(cls);
-            if (command == null)
-            {
-                throw new IllegalArgumentException("Can't create class instance: " + cls.getName());
-            }
-
-            String commandName = cls.getSimpleName();
-            if (commandName.startsWith("Cmd_"))
-            {
-                commandName = commandName.substring("Cmd_".length());
-            }
-
-            command.Name = commandName;
-            command.IsHidden(true);
-            RuntimeResolver.ResolveOptions(command);
-
-            CRegistery.Register(command);
+            throw new IllegalArgumentException("Can't create class instance: " + cls.getName());
         }
+
+        String commandName = cls.getSimpleName();
+        if (commandName.startsWith("Cmd_"))
+        {
+            commandName = commandName.substring("Cmd_".length());
+        }
+
+        command.Name = commandName;
+        command.IsHidden(hidden);
+        RuntimeResolver.ResolveOptions(command);
+
+        CRegistery.Register(command);
     }
 
     protected void RegisterCommands(CCommand... commands)

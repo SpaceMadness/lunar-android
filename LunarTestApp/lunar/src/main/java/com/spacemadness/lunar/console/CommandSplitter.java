@@ -3,11 +3,10 @@ package com.spacemadness.lunar.console;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by alementuev on 5/29/15.
- */
 class CommandSplitter
 {
+    public static final int OPTION_IGNORE_MISSING_QUOTES = 1;
+
     private static final char Space        = ' ';
     private static final char DoubleQuote  = '"';
     private static final char SingleQuote  = '\'';
@@ -15,12 +14,22 @@ class CommandSplitter
 
     public static List<String> Split(String str)
     {
-        List<String> list = new ArrayList<String>();
-        Split(str, list);
+        return Split(str, 0);
+    }
+
+    public static List<String> Split(String str, int options)
+    {
+        List<String> list = new ArrayList<>();
+        Split(str, list, options);
         return list;
     }
 
     public static void Split(String str, List<String> list)
+    {
+        Split(str, list, 0);
+    }
+
+    public static void Split(String str, List<String> list, int options)
     {
         StringBuilder commandBuffer = new StringBuilder();
 
@@ -38,7 +47,7 @@ class CommandSplitter
             {
                 if (!insideDoubleQuotes && !insideSingleQuotes)
                 {
-                    AddCommand(commandBuffer, list);
+                    addCommand(commandBuffer, list);
                     ++i; // skip second separator's char
                 }
                 else
@@ -77,23 +86,23 @@ class CommandSplitter
             }
         }
 
-        if (insideDoubleQuotes)
+        if (insideDoubleQuotes && !hasOption(options, OPTION_IGNORE_MISSING_QUOTES))
         {
             throw new TokenizeException("Missing closing double quote");
         }
 
-        if (insideSingleQuotes)
+        if (insideSingleQuotes && !hasOption(options, OPTION_IGNORE_MISSING_QUOTES))
         {
             throw new TokenizeException("Missing closing single quote");
         }
 
         if (commandBuffer.length() > 0)
         {
-            AddCommand(commandBuffer, list);
+            addCommand(commandBuffer, list);
         }
     }
 
-    private static void AddCommand(StringBuilder buffer, List<String> list)
+    private static void addCommand(StringBuilder buffer, List<String> list)
     {
         String command = buffer.toString().trim();
         if (command.length() == 0)
@@ -103,5 +112,10 @@ class CommandSplitter
 
         list.add(command);
         buffer.setLength(0);
+    }
+
+    private static boolean hasOption(int options, int option)
+    {
+        return (options & option) != 0;
     }
 }

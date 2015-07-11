@@ -388,6 +388,8 @@ public abstract class CCommand implements Comparable<CCommand>
 
                     throw new CCommandParseException("'%s' is an invalid value for the option '%s'", value, opt.Name);
                 }
+
+                return true;
             }
 
             return false;
@@ -566,7 +568,7 @@ public abstract class CCommand implements Comparable<CCommand>
         }
     };
 
-    private Option FindOption(String name)
+    Option FindOption(String name)
     {
         if (name.length() == 0)
         {
@@ -574,6 +576,43 @@ public abstract class CCommand implements Comparable<CCommand>
         }
 
         return m_optionsLookup != null ? m_optionsLookup.get(name) : null;
+    }
+
+    Option FindNonAmbiguousOption(String name, boolean useShort)
+    {
+        if (name.length() == 0)
+        {
+            return null;
+        }
+
+        if (m_options != null)
+        {
+            Option targetOpt = null;
+            for (Option opt : m_options)
+            {
+                String optName = useShort ? opt.ShortName : opt.Name;
+                if (optName == null)
+                {
+                    continue;
+                }
+
+                if (targetOpt == null)
+                {
+                    if (optName.equalsIgnoreCase(name))
+                    {
+                        targetOpt = opt;
+                    }
+                }
+                else if (StringUtils.StartsWithIgnoreCase(optName, name))
+                {
+                    return null;
+                }
+            }
+
+            return targetOpt;
+        }
+
+        return null;
     }
 
     private void ResetOptions()
@@ -1302,7 +1341,7 @@ public abstract class CCommand implements Comparable<CCommand>
         return m_values;
     }
 
-    public void Values(String[] values) // FIXME
+    public void Values(String... values) // FIXME
     {
         m_values = values;
     }
@@ -1432,7 +1471,12 @@ public abstract class CCommand implements Comparable<CCommand>
                 {
                     return StringUtils.IsNumeric(value); // but can be a negative number
                 }
-                return true;
+                if (value.equals("&&") || value.equals("||"))
+                {
+                    return false;
+                }
+
+                return value.length() > 0; // can't be empty
             }
 
             if (int.class.equals(type))

@@ -1,5 +1,8 @@
 package com.spacemadness.lunar.console;
 
+import com.spacemadness.lunar.console.entries.TerminalExceptionEntry;
+import com.spacemadness.lunar.console.entries.TerminalTableEntry;
+import com.spacemadness.lunar.console.entries.TerminalTextEntry;
 import com.spacemadness.lunar.utils.CycleArray;
 
 public class TerminalEntries
@@ -8,19 +11,26 @@ public class TerminalEntries
 
     public TerminalEntries(int capacity)
     {
-        entries = new CycleArray<TerminalEntry>(TerminalEntry.class, capacity);
+        entries = new CycleArray<>(TerminalEntry.class, capacity);
     }
 
     public TerminalEntry add(String line)
     {
-        TerminalEntry entry = new TerminalTextEntry(line);
-        entries.Add(entry);
-        return entry;
+        return addEntry(new TerminalTextEntry(line));
     }
 
     public TerminalEntry add(String[] lines)
     {
-        TerminalEntry entry = new TerminalTableEntry(lines);
+        return addEntry(new TerminalTableEntry(lines));
+    }
+
+    public TerminalEntry add(Throwable e, String message)
+    {
+        return addEntry(new TerminalExceptionEntry(e, message));
+    }
+
+    private TerminalEntry addEntry(TerminalEntry entry)
+    {
         entries.Add(entry);
         return entry;
     }

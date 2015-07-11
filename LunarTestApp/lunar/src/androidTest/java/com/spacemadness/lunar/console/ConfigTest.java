@@ -197,15 +197,12 @@ public class ConfigTest extends CCommandTestCase
     {
         super.runSetup();
 
-        RegisterCommands
-        (
-            Cmd_alias.class,
-            Cmd_exec.class,
-            Cmd_reset.class,
-            Cmd_resetAll.class,
-            Cmd_unalias.class,
-            Cmd_writeconfig.class
-        );
+        registerCommand(Cmd_alias.class);
+        registerCommand(Cmd_exec.class);
+        registerCommand(Cmd_reset.class);
+        registerCommand(Cmd_resetAll.class);
+        registerCommand(Cmd_unalias.class);
+        registerCommand(Cmd_writeconfig.class);
     }
 
     @Override
