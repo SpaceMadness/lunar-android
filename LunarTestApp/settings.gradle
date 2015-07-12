@@ -1,1 +1,1 @@
-include ':app', ':lunar'
+include ':app', ':lunar-core'
