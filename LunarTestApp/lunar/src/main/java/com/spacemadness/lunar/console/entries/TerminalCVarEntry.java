@@ -13,12 +13,12 @@ import com.spacemadness.lunar.console.CVar;
 import com.spacemadness.lunar.console.TerminalAdapter;
 import com.spacemadness.lunar.console.TerminalEntry;
 import com.spacemadness.lunar.console.ViewHolderBuilder;
-import com.spacemadness.lunar.utils.DialogHelper;
 import com.spacemadness.lunar.utils.StringUtils;
 
 import spacemadness.com.lunar.R;
 
-import static com.spacemadness.lunar.utils.DialogHelper.*;
+import static com.spacemadness.lunar.utils.DialogHelper.DialogButton;
+import static com.spacemadness.lunar.utils.DialogHelper.showDialog;
 
 public class TerminalCVarEntry extends TerminalEntry
 {
