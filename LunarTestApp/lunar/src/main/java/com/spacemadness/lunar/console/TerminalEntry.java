@@ -2,7 +2,10 @@ package com.spacemadness.lunar.console;
 
 import android.util.SparseArray;
 
-public abstract class TerminalEntry
+import com.spacemadness.lunar.core.IDestroyable;
+import com.spacemadness.lunar.debug.Log;
+
+public abstract class TerminalEntry implements IDestroyable
 {
     private static SparseArray<ViewHolderBuilder> lookup = new SparseArray<>();
 
@@ -43,6 +46,26 @@ public abstract class TerminalEntry
     static ViewHolderBuilder findBuilder(int type)
     {
         return lookup.get(type);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    // Destroyable
+
+    @Override
+    public final void Destroy()
+    {
+        try
+        {
+            onEntryDestroy();
+        }
+        catch (Exception e)
+        {
+            Log.logException(e, "Exception while destroying terminal entry");
+        }
+    }
+
+    protected void onEntryDestroy()
+    {
     }
 
     //////////////////////////////////////////////////////////////////////////////

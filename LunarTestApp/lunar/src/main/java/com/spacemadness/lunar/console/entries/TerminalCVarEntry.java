@@ -44,6 +44,12 @@ public class TerminalCVarEntry extends TerminalEntry
         this.cvar = cvar;
     }
 
+    @Override
+    protected void onEntryDestroy()
+    {
+
+    }
+
     public CVar getCvar()
     {
         return cvar;
@@ -71,11 +77,12 @@ public class TerminalCVarEntry extends TerminalEntry
         public void onBindViewHolder(TerminalCVarEntry entry)
         {
             final CVar cvar = entry.getCvar();
+            final boolean modified = !cvar.IsDefault();
 
             // reset-to-default button
-            if (!cvar.IsDefault())
+            if (modified)
             {
-                resetButton.setEnabled(true);
+                resetButton.setClickable(true);
                 resetButton.setOnClickListener(new View.OnClickListener()
                 {
                     @Override
@@ -91,9 +98,12 @@ public class TerminalCVarEntry extends TerminalEntry
 
             // value
             valueEditText.setText(cvar.Value());
-            if (!cvar.IsDefault())
+
+            // set bold if modified
+            if (modified)
             {
-                valueEditText.setTypeface(null, Typeface.BOLD);
+                valueEditText.setTypeface(valueEditText.getTypeface(), Typeface.BOLD);
+                nameTextView.setTypeface(nameTextView.getTypeface(), Typeface.BOLD);
             }
         }
     }

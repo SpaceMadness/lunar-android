@@ -6,17 +6,20 @@
 
     <TextView
         android:id="@+id/terminal_cvar_view_text_view_name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
+        android:layout_weight="2"
         android:typeface="monospace"/>
 
     <EditText
+        style="@android:style/TextAppearance.Small"
         android:id="@+id/terminal_cvar_view_edit_text_value"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:layout_weight="1"/>
+        android:layout_weight="5"
+        android:typeface="monospace"/>
 
     <ImageButton
         style="@style/GlyphButtonStyle"
@@ -24,7 +27,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
-        android:enabled="false"
+        android:clickable="false"
         android:src="@drawable/ic_settings_backup_restore_black_24dp"/>
 
 </LinearLayout>

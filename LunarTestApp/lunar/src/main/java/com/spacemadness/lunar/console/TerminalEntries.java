@@ -41,7 +41,12 @@ public class TerminalEntries
 
     private TerminalEntry addEntry(TerminalEntry entry)
     {
-        entries.Add(entry);
+        TerminalEntry removedEntry = entries.Add(entry);
+        if (removedEntry != null)
+        {
+            removedEntry.Destroy();
+        }
+
         return entry;
     }
 
