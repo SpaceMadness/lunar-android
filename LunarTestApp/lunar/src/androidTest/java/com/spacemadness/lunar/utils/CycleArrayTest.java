@@ -9,7 +9,7 @@ public class CycleArrayTest extends TestCase
 {
     public void testAddElements()
     {
-        CycleArray<String> array = new CycleArray<String>(String.class, 3);
+        CycleArray<String> array = new CycleArray<>(String.class, 3);
         array.Add("1");
 
         assertEquals(3, array.Capacity());
@@ -20,7 +20,7 @@ public class CycleArrayTest extends TestCase
 
     public void testAddElements2()
     {
-        CycleArray<String> array = new CycleArray<String>(String.class, 3);
+        CycleArray<String> array = new CycleArray<>(String.class, 3);
         array.Add("1");
         array.Add("2");
 
@@ -32,7 +32,7 @@ public class CycleArrayTest extends TestCase
 
     public void testAddElements3()
     {
-        CycleArray<String> array = new CycleArray<String>(String.class, 3);
+        CycleArray<String> array = new CycleArray<>(String.class, 3);
         array.Add("1");
         array.Add("2");
         array.Add("3");
@@ -45,7 +45,7 @@ public class CycleArrayTest extends TestCase
 
     public void testAddElements4()
     {
-        CycleArray<String> array = new CycleArray<String>(String.class, 3);
+        CycleArray<String> array = new CycleArray<>(String.class, 3);
         array.Add("1");
         array.Add("2");
         array.Add("3");
@@ -59,7 +59,7 @@ public class CycleArrayTest extends TestCase
 
     public void testAddElements5()
     {
-        CycleArray<String> array = new CycleArray<String>(String.class, 3);
+        CycleArray<String> array = new CycleArray<>(String.class, 3);
         array.Add("1");
         array.Add("2");
         array.Add("3");
@@ -74,7 +74,7 @@ public class CycleArrayTest extends TestCase
 
     public void testAddElements6()
     {
-        CycleArray<String> array = new CycleArray<String>(String.class, 3);
+        CycleArray<String> array = new CycleArray<>(String.class, 3);
         array.Add("1");
         array.Add("2");
         array.Add("3");
@@ -90,7 +90,7 @@ public class CycleArrayTest extends TestCase
 
     public void testAddElements7()
     {
-        CycleArray<String> array = new CycleArray<String>(String.class, 3);
+        CycleArray<String> array = new CycleArray<>(String.class, 3);
         array.Add("1");
         array.Add("2");
         array.Add("3");
@@ -107,7 +107,7 @@ public class CycleArrayTest extends TestCase
 
     public void testAddElements8()
     {
-        CycleArray<String> array = new CycleArray<String>(String.class, 3);
+        CycleArray<String> array = new CycleArray<>(String.class, 3);
         array.Add("1");
         array.Add("2");
         array.Add("3");
@@ -125,7 +125,7 @@ public class CycleArrayTest extends TestCase
 
     public void testAddElements9()
     {
-        CycleArray<String> array = new CycleArray<String>(String.class, 3);
+        CycleArray<String> array = new CycleArray<>(String.class, 3);
         array.Add("1");
         array.Add("2");
         array.Add("3");
@@ -144,7 +144,7 @@ public class CycleArrayTest extends TestCase
 
     public void testGrowCapacity()
     {
-        CycleArray<String> array = new CycleArray<String>(String.class, 5);
+        CycleArray<String> array = new CycleArray<>(String.class, 5);
         array.Add("1");
         array.Add("2");
         array.Add("3");
@@ -159,7 +159,7 @@ public class CycleArrayTest extends TestCase
 
     public void testGrowCapacityForAFullArray()
     {
-        CycleArray<String> array = new CycleArray<String>(String.class, 5);
+        CycleArray<String> array = new CycleArray<>(String.class, 5);
         array.Add("1");
         array.Add("2");
         array.Add("3");
@@ -176,7 +176,7 @@ public class CycleArrayTest extends TestCase
 
     public void testGrowCapacityForOverflowedArrayWithOneExtraElement()
     {
-        CycleArray<String> array = new CycleArray<String>(String.class, 3);
+        CycleArray<String> array = new CycleArray<>(String.class, 3);
         array.Add("1");
         array.Add("2");
         array.Add("3");
@@ -192,7 +192,7 @@ public class CycleArrayTest extends TestCase
 
     public void testGrowCapacityForOverflowedArrayWithTwoExtraElements()
     {
-        CycleArray<String> array = new CycleArray<String>(String.class, 3);
+        CycleArray<String> array = new CycleArray<>(String.class, 3);
         array.Add("1");
         array.Add("2");
         array.Add("3");
@@ -209,7 +209,7 @@ public class CycleArrayTest extends TestCase
 
     public void testGrowCapacityForOverflowedArrayWithThreeExtraElements()
     {
-        CycleArray<String> array = new CycleArray<String>(String.class, 3);
+        CycleArray<String> array = new CycleArray<>(String.class, 3);
         array.Add("1");
         array.Add("2");
         array.Add("3");
@@ -227,7 +227,7 @@ public class CycleArrayTest extends TestCase
 
     public void testGrowCapacityForOverflowedArrayWithFourExtraElements()
     {
-        CycleArray<String> array = new CycleArray<String>(String.class, 3);
+        CycleArray<String> array = new CycleArray<>(String.class, 3);
         array.Add("1");
         array.Add("2");
         array.Add("3");
@@ -246,7 +246,7 @@ public class CycleArrayTest extends TestCase
 
     public void testGrowCapacityAndAddMoreElements()
     {
-        CycleArray<String> array = new CycleArray<String>(String.class, 3);
+        CycleArray<String> array = new CycleArray<>(String.class, 3);
         array.Add("1");
         array.Add("2");
         array.Add("3");
@@ -272,7 +272,7 @@ public class CycleArrayTest extends TestCase
 
     public void testGrowCapacityBiggerArray()
     {
-        CycleArray<String> array = new CycleArray<String>(String.class, 7);
+        CycleArray<String> array = new CycleArray<>(String.class, 7);
         for (int i = 1; i <= 7; ++i)
         {
             array.Add(Integer.toString(i));
@@ -292,7 +292,7 @@ public class CycleArrayTest extends TestCase
 
     public void testGrowCapacityAndOverflowMultipleTimes()
     {
-        CycleArray<String> array = new CycleArray<String>(String.class, 3);
+        CycleArray<String> array = new CycleArray<>(String.class, 3);
         for (int i = 0; i < 10; ++i)
         {
             array.Add(Integer.toString(i + 1));
@@ -312,7 +312,7 @@ public class CycleArrayTest extends TestCase
 
     public void testTrimLength()
     {
-        CycleArray<String> array = new CycleArray<String>(String.class, 5);
+        CycleArray<String> array = new CycleArray<>(String.class, 5);
         array.Add("1");
         array.Add("2");
         array.Add("3");
@@ -380,7 +380,7 @@ public class CycleArrayTest extends TestCase
 
     public void testTrimHeadIndex()
     {
-        CycleArray<String> array = new CycleArray<String>(String.class, 5);
+        CycleArray<String> array = new CycleArray<>(String.class, 5);
         array.Add("1");
         array.Add("2");
         array.Add("3");
@@ -448,7 +448,7 @@ public class CycleArrayTest extends TestCase
 
     public void testContains() throws Exception
     {
-        CycleArray<String> array = new CycleArray<String>(String.class, 3);
+        CycleArray<String> array = new CycleArray<>(String.class, 3);
         array.Add("1");
         array.Add("2");
         array.Add("3");
@@ -486,6 +486,23 @@ public class CycleArrayTest extends TestCase
         assertTrue(array.contains("5"));
         assertTrue(array.contains("6"));
         assertTrue(array.contains("7"));
+    }
+
+    public void testRemovedItem() throws Exception
+    {
+        CycleArray<String> array = new CycleArray<>(String.class, 3);
+
+        assertNull(array.Add("1"));
+        assertNull(array.Add("2"));
+        assertNull(array.Add("3"));
+
+        assertEquals("1", array.Add("4"));
+        assertEquals("2", array.Add("5"));
+        assertEquals("3", array.Add("6"));
+
+        assertEquals("4", array.Add("7"));
+        assertEquals("5", array.Add("8"));
+        assertEquals("6", array.Add("9"));
     }
 
     private <T> void AssertArray(CycleArray<T> actual, T... expected)

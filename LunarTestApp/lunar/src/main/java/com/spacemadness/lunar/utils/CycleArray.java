@@ -19,16 +19,20 @@ public class CycleArray<E>
         this.internalArray = (E[]) Array.newInstance(componentType, capacity);
     }
 
-    public void Add(E e)
+    public E Add(E e)
     {
         int arrayIndex = ToArrayIndex(length);
+        E oldItem = internalArray[arrayIndex];
         internalArray[arrayIndex] = e;
         ++length;
 
-        if (length - headIndex > internalArray.length)
+        if (length - headIndex > internalArray.length) // array "overflows"
         {
             ++headIndex;
+            return oldItem;
         }
+
+        return null; // no items were destroyed
     }
 
     public void Clear()
