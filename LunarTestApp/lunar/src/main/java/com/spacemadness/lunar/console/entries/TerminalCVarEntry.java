@@ -1,5 +1,6 @@
 package com.spacemadness.lunar.console.entries;
 
+import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,9 +13,12 @@ import com.spacemadness.lunar.console.CVar;
 import com.spacemadness.lunar.console.TerminalAdapter;
 import com.spacemadness.lunar.console.TerminalEntry;
 import com.spacemadness.lunar.console.ViewHolderBuilder;
+import com.spacemadness.lunar.utils.DialogHelper;
 import com.spacemadness.lunar.utils.StringUtils;
 
 import spacemadness.com.lunar.R;
+
+import static com.spacemadness.lunar.utils.DialogHelper.*;
 
 public class TerminalCVarEntry extends TerminalEntry
 {
@@ -80,15 +84,23 @@ public class TerminalCVarEntry extends TerminalEntry
             final boolean modified = !cvar.IsDefault();
 
             // reset-to-default button
+            resetButton.setVisibility(modified ? View.VISIBLE : View.INVISIBLE);
             if (modified)
             {
-                resetButton.setClickable(true);
                 resetButton.setOnClickListener(new View.OnClickListener()
                 {
                     @Override
                     public void onClick(View v)
                     {
-                        cvar.IsDefault(true);
+                        showDialog(v.getContext(), "Reset value?", new DialogButton("Yes")
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                cvar.IsDefault(true);
+                            }
+                        },
+                        "No");
                     }
                 });
             }
