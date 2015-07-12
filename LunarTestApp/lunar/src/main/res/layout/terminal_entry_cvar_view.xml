@@ -4,20 +4,12 @@
               android:layout_height="wrap_content"
               android:orientation="horizontal">
 
-    <Button
-        style="?android:attr/buttonStyleSmall"
-        android:id="@+id/terminal_cvar_view_button_reset"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:enabled="false"
-        android:text="@string/terminal_cvar_view_button_reset"/>
-
     <TextView
         android:id="@+id/terminal_cvar_view_text_view_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"/>
+        android:layout_gravity="center_vertical"
+        android:typeface="monospace"/>
 
     <EditText
         android:id="@+id/terminal_cvar_view_edit_text_value"
@@ -25,5 +17,14 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
         android:layout_weight="1"/>
+
+    <ImageButton
+        style="@style/GlyphButtonStyle"
+        android:id="@+id/terminal_cvar_view_button_reset"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:enabled="false"
+        android:src="@drawable/ic_settings_backup_restore_black_24dp"/>
 
 </LinearLayout>

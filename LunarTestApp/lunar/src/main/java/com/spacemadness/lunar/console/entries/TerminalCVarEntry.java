@@ -4,14 +4,15 @@ import android.graphics.Typeface;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.spacemadness.lunar.console.CVar;
 import com.spacemadness.lunar.console.TerminalAdapter;
 import com.spacemadness.lunar.console.TerminalEntry;
 import com.spacemadness.lunar.console.ViewHolderBuilder;
+import com.spacemadness.lunar.utils.StringUtils;
 
 import spacemadness.com.lunar.R;
 
@@ -53,7 +54,7 @@ public class TerminalCVarEntry extends TerminalEntry
 
     private static class ViewHolder extends TerminalAdapter.ViewHolder<TerminalCVarEntry>
     {
-        private final Button resetButton;
+        private final ImageButton resetButton;
         private final TextView nameTextView;
         private final EditText valueEditText;
 
@@ -61,7 +62,7 @@ public class TerminalCVarEntry extends TerminalEntry
         {
             super(itemView);
 
-            resetButton = (Button) itemView.findViewById(R.id.terminal_cvar_view_button_reset);
+            resetButton = (ImageButton) itemView.findViewById(R.id.terminal_cvar_view_button_reset);
             nameTextView = (TextView) itemView.findViewById(R.id.terminal_cvar_view_text_view_name);
             valueEditText = (EditText) itemView.findViewById(R.id.terminal_cvar_view_edit_text_value);
         }
@@ -86,7 +87,7 @@ public class TerminalCVarEntry extends TerminalEntry
             }
 
             // name
-            nameTextView.setText(cvar.Name());
+            nameTextView.setText(StringUtils.indent(cvar.Name()));
 
             // value
             valueEditText.setText(cvar.Value());

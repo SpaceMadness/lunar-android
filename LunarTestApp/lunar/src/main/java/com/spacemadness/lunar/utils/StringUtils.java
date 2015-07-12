@@ -429,6 +429,14 @@ public class StringUtils
     }
 
     //////////////////////////////////////////////////////////////////////////////
+    // Decorations
+
+    public static String indent(String str)
+    {
+        return "  " + nullOrNonEmpty(str);
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
 
     private static final String Quote = "\"";
     private static final String SingleQuote = "'";
