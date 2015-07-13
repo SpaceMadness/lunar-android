@@ -249,6 +249,11 @@ class CommandAutocompletion
 
                     return opt.Values;
                 }
+
+                if (iter.hasNext())
+                {
+                    return EMPTY_SUGGESTIONS; // don't suggest option value
+                }
             }
 
             return singleSuggestion(getSuggestedOption(opt, useShort)); // suggest option`s name

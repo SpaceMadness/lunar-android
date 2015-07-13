@@ -180,6 +180,11 @@ public class CommandAutocompletionTest extends CCommandTestCase
 
     public void testOptionsSuggestionFiltered4()
     {
+        assertSuggestions("test2 --boolOpt ¶");
+    }
+
+    public void testOptionsSuggestionFiltered5()
+    {
         assertSuggestions("test1 --boolOpt123¶");
     }
 
