@@ -14,7 +14,7 @@ import java.util.List;
 
 import static com.spacemadness.lunar.console.CCommand.Option;
 
-class CommandAutocompletion
+public class CommandAutocompletion
 {
     private static final String[] EMPTY_SUGGESTIONS = new String[0];
     private static final String[] SINGLE_SUGGESTION = new String[1];

@@ -3,6 +3,7 @@ package com.spacemadness.lunar.console.commands;
 import com.spacemadness.lunar.console.CCommand;
 import com.spacemadness.lunar.console.CCommandTestCase;
 import com.spacemadness.lunar.console.CRegistery;
+import com.spacemadness.lunar.console.CommandAutocompletion;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -80,6 +81,33 @@ public class Cmd_aliasTest extends CCommandTestCase
                 "echo 'alias 2'",
                 "echo \"alias 3\""
         );
+    }
+
+    //////////////////////////////////////////////////////////////////////////////
+    // Auto complete
+
+    public void testUnaliasAutocomplete()
+    {
+        execute("alias alias1 'echo 1'");
+        execute("alias alias12 'echo 12'");
+        execute("alias alias2 'echo 2'");
+
+        assertSuggestions("unalias ¶",
+            "alias1", //
+            "alias12",//
+            "alias2" //
+        );
+
+        assertSuggestions("unalias alias1¶",
+                "alias1", //
+                "alias12" //
+        );
+
+        assertSuggestions("unalias alias12¶",
+                "alias12" //
+        );
+
+        assertSuggestions("unalias alias123¶");
     }
 
     //////////////////////////////////////////////////////////////////////////////

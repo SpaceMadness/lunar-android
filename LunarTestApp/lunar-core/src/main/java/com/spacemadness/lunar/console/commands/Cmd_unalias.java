@@ -40,7 +40,7 @@ public class Cmd_unalias extends CCommand
     }
 
     @Override
-    protected String[] AutoCompleteArgs(String commandLine, String token) // TODO: unit testing
+    protected String[] AutoCompleteArgs(String commandLine, String token)
     {
         List<CAliasCommand> aliases = CRegistery.ListAliases(token);
         String[] names = new String[aliases.size()];

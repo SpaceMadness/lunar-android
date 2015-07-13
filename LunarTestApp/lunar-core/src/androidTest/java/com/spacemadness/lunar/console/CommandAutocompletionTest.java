@@ -271,17 +271,6 @@ public class CommandAutocompletionTest extends CCommandTestCase
         super.tearDown();
     }
 
-    //////////////////////////////////////////////////////////////////////////////
-    // Helpers
-
-    private void assertSuggestions(String line, String... expected)
-    {
-        int index = line.indexOf('¶');
-        assertTrue(index != -1);
-
-        String[] actual = CommandAutocompletion.getSuggestions(line.replace("¶", ""), index);
-        assertResult(actual, expected);
-    }
 
     //////////////////////////////////////////////////////////////////////////////
     // Custom commands

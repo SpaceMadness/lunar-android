@@ -141,6 +141,15 @@ public class CCommandTestCase extends TestCaseEx implements ICCommandDelegate
         return m_commandProcessor.TryExecute(commandLine, true);
     }
 
+    protected void assertSuggestions(String line, String... expected)
+    {
+        int index = line.indexOf('¶');
+        assertTrue(index != -1);
+
+        String[] actual = CommandAutocompletion.getSuggestions(line.replace("¶", ""), index);
+        assertResult(actual, expected);
+    }
+
     protected void AddResult(String format, Object... args)
     {
         getResultList().add(StringUtils.RemoveRichTextTags(String.format(format, args)));
