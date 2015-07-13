@@ -131,7 +131,17 @@ public class CommandEditText extends AutoCompleteTextView
 
     private File getHistoryFile()
     {
-        return new File(getContext().getFilesDir(), ".history");  // FIXME: resolve file name
+        return getHistoryFile(getContext());
+    }
+
+    private static File getHistoryFile(Context context)
+    {
+        return new File(context.getFilesDir(), ".history");  // FIXME: resolve file name
+    }
+
+    public static boolean clearHistory(Context context)
+    {
+        return getHistoryFile(context).delete();
     }
 
     //////////////////////////////////////////////////////////////////////////////
