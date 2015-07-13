@@ -39,14 +39,17 @@ public class Cmd_alias extends CCommand
         );
     }
     
-    public static void ListAliasesConfig(List<String> lines)
+    public static String[] ListAliasesConfig()
     {
         List<CAliasCommand> aliases = CRegistery.ListAliases();
-        
+
+        String[] entries = new String[aliases.size()];
         for (int i = 0; i < aliases.size(); ++i)
         {
-            lines.add(ToString(aliases.get(i)));
+            entries[i] = ToString(aliases.get(i));
         }
+
+        return entries;
     }
     
     private static String ToString(CAliasCommand cmd)

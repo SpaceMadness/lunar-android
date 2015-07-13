@@ -35,19 +35,21 @@ import java.util.List;
 @Command(Name="writeconfig", Description="Writes a config file.")
 public class Cmd_writeconfig extends CCommand
 {
+    private static final String[] EMPTY = new String[0];
+
     boolean execute(@Arg("filename") String filename)
     {
         try
         {
             File configFile = CCommandHelper.getConfigFile(filename, true);
 
-            List<String> lines = new ArrayList<String>();
+            List<String> lines = new ArrayList<>();
 
             // cvars
-            ListCvars(lines);
+            addEntries(lines, listCvars(), "cvars");
 
             // aliases
-            ListAliases(lines);
+            addEntries(lines, listAliases(), "aliases");
 
             FileUtils.Write(configFile, lines);
 
@@ -62,8 +64,25 @@ public class Cmd_writeconfig extends CCommand
             return false;
         }
     }
+
+    private static void addEntries(List<String> list, String[] entries, String group)
+    {
+        if (entries.length > 0)
+        {
+            if (list.size() > 0)
+            {
+                list.add(""); // add empty line
+            }
+
+            list.add("// " + group);
+            for (String entry : entries)
+            {
+                list.add(entry);
+            }
+        }
+    }
     
-    private static void ListCvars(List<String> lines)
+    private static String[] listCvars()
     {
         List<CVar> cvars = CRegistery.ListVars(new ListCommandsFilter<CVarCommand>()
         {
@@ -72,29 +91,31 @@ public class Cmd_writeconfig extends CCommand
                 return !command.IsDefault() && !command.HasFlag(CFlags.NoArchive);
             }
         });
-        
-        if (cvars.size() > 0)
+
+        if (cvars.isEmpty())
         {
-            lines.add("// cvars");
+            return EMPTY;
         }
 
+        String[] entries = new String[cvars.size()];
+        int index = 0;
         for (CVar var : cvars)
         {
             if (var.Value() != null)
             {
-                lines.add(String.format("%s %s", var.Name(), StringUtils.Arg(var.Value())));
+                entries[index++] = String.format("%s %s", var.Name(), StringUtils.Arg(var.Value()));
             }
             else
             {
-                lines.add("null " + var.Name());
+                entries[index++] = "null " + var.Name();
             }
         }
+
+        return entries;
     }
     
-    private static void ListAliases(List<String> lines)
+    private static String[] listAliases()
     {
-        lines.add("");
-        lines.add("// aliases");
-        Cmd_alias.ListAliasesConfig(lines);
+        return Cmd_alias.ListAliasesConfig();
     }
 }
