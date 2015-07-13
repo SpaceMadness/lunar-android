@@ -29,8 +29,11 @@ public class Cmd_toggle extends CCommand
             PrintError("Can't toggle non-int value");
             return false;
         }
-        
+
+        cmd.setParentCommand(this);
         cmd.SetValue(cmd.BoolValue() ? 0 : 1);
+        cmd.setParentCommand(null);
+
         return true;
     }
 
