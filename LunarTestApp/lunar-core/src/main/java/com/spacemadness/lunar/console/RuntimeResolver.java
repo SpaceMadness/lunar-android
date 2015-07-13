@@ -86,7 +86,7 @@ class RuntimeResolver // TODO: remove this class
                         list.add(command);
                     }
                 }
-                catch (Exception e)
+                catch (Throwable e)
                 {
                     e.printStackTrace(); // TODO: better error handling
                 }

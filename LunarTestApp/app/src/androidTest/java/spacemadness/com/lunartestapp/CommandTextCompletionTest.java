@@ -31,24 +31,46 @@ public class CommandTextCompletionTest
     public ActivityTestRule<MainActivity> activityRule = new ActivityTestRule<>(MainActivity.class);
 
     @Test
-    public void testHistoryButton()
+    public void testCommandCompletion()
     {
         // Type "t" to trigger command suggestion
         typeCommandText("t");
 
-        // Check that suggestion is displayed
+        // 'test' command should be suggested
         checkPopupItemDisplayed("test");
 
         // Select the suggestion
         selectPopupItem("test");
 
-        // Command should be filled in
+        // Check command line
         checkCommandText("test");
+    }
 
-        // Show options autocompletion
-        typeCommandText(" -");
+    @Test
+    public void testCommandArgCompletion()
+    {
+        // Type "t" to trigger command suggestion
+        typeCommandText("test ");
 
-        // Check short options suggested
+        // Check options suggestion
+        checkPopupItemDisplayed("arg1");
+        checkPopupItemDisplayed("arg2");
+        checkPopupItemDisplayed("arg3");
+
+        // Select the suggestion
+        selectPopupItem("arg2");
+
+        // Check command line
+        checkCommandText("test arg2");
+    }
+
+    @Test
+    public void testCommandBooleanOptionCompletion()
+    {
+        // Show options
+        typeCommandText("test -");
+
+        // Check options suggestion
         checkPopupItemDisplayed("-o1");
         checkPopupItemDisplayed("-o2");
         checkPopupItemDisplayed("-o3");
@@ -56,28 +78,51 @@ public class CommandTextCompletionTest
         // Select option
         selectPopupItem("-o1");
 
-        // Check new text
+        // Check command line
         checkCommandText("test -o1");
+    }
+
+    @Test
+    public void testCommandBooleanOptionAndArgsCompletion()
+    {
+        // Show options
+        typeCommandText("test -o1 ");
+
+        // Check options suggestion
+        checkPopupItemDisplayed("arg1");
+        checkPopupItemDisplayed("arg2");
+        checkPopupItemDisplayed("arg3");
+
+        // Select option
+        selectPopupItem("arg2");
+
+        // Check command line
+        checkCommandText("test -o1 arg2");
+    }
+
+    @Test
+    public void testCommandOptionWithValuesCompletion()
+    {
+        // Show options
+        typeCommandText("test -o3 ");
+
+        // Check options suggestion
+        checkPopupItemDisplayed("val1");
+        checkPopupItemDisplayed("val2");
+        checkPopupItemDisplayed("val3");
     }
 
     @Before
     public void setup()
     {
         CommandEditText.clearHistory(getActivity());
-    }
-
-    private void executeCommands(String... commands)
-    {
-        for (String command : commands)
-        {
-            executeCommand(command);
-        }
+        sleep(250); // give activity a chance to start
     }
 
     private void typeCommandText(String text)
     {
         onView(withId(R.id.edit_text_command_line))
-                .perform(typeText(text), ViewActions.closeSoftKeyboard());
+                .perform(typeText(text));
 
         sleep(500);
     }
@@ -86,15 +131,6 @@ public class CommandTextCompletionTest
     {
         onView(withId(R.id.edit_text_command_line))
                 .check(matches(withText(text)));
-    }
-
-    private void executeCommand(String command)
-    {
-        onView(withId(R.id.edit_text_command_line)).
-                perform(typeText(command), // type command
-                        pressImeActionButton(), // hit "Run"
-                        ViewActions.closeSoftKeyboard() // close
-                );
     }
 
     private void checkPopupItemDisplayed(String text)
