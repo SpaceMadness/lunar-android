@@ -15,11 +15,14 @@
 
 package com.spacemadness.lunar.console.commands;
 
+import com.spacemadness.lunar.console.CAliasCommand;
 import com.spacemadness.lunar.console.CCommand;
 import com.spacemadness.lunar.console.CCommandNotifications;
 import com.spacemadness.lunar.console.CRegistery;
 import com.spacemadness.lunar.console.annotations.Arg;
 import com.spacemadness.lunar.console.annotations.Command;
+
+import java.util.List;
 
 @Command(Name="unalias", Description="Remove an alias name for command(s)")
 public class Cmd_unalias extends CCommand
@@ -34,5 +37,19 @@ public class Cmd_unalias extends CCommand
                 CCommandNotifications.KeyManualMode, this.IsManualMode
             );
         }
+    }
+
+    @Override
+    protected String[] AutoCompleteArgs(String commandLine, String token) // TODO: unit testing
+    {
+        List<CAliasCommand> aliases = CRegistery.ListAliases(token);
+        String[] names = new String[aliases.size()];
+        int index = 0;
+        for (CAliasCommand alias : aliases)
+        {
+            names[index++] = alias.Name;
+        }
+
+        return names;
     }
 }
