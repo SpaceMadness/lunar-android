@@ -1,4 +1,4 @@
-package com.spacemadness.lunar.console;
+package com.spacemadness.lunar.ui;
 
 import android.annotation.TargetApi;
 import android.content.Context;
@@ -8,12 +8,12 @@ import android.text.InputType;
 import android.text.Selection;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
-import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 
+import com.spacemadness.lunar.console.CommandAutocompleteAdapter;
+import com.spacemadness.lunar.console.CommandHistory;
 import com.spacemadness.lunar.core.Dispatch;
 import com.spacemadness.lunar.debug.Log;
 import com.spacemadness.lunar.utils.FileUtils;

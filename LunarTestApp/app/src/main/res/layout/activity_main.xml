@@ -6,7 +6,7 @@
              tools:context=".MainActivity">
 
     <fragment
-        android:name="com.spacemadness.lunar.console.TerminalFragment"
+        android:name="com.spacemadness.lunar.ui.TerminalFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout="@layout/fragment_terminal"/>

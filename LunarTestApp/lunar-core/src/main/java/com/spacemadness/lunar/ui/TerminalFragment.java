@@ -1,4 +1,4 @@
-package com.spacemadness.lunar.console;
+package com.spacemadness.lunar.ui;
 
 import android.annotation.TargetApi;
 import android.os.Build;
@@ -13,6 +13,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupMenu;
 
+import com.spacemadness.lunar.console.Terminal;
+import com.spacemadness.lunar.console.TerminalAdapter;
+import com.spacemadness.lunar.console.TerminalEntry;
 import com.spacemadness.lunar.utils.RuntimeUtils;
 
 import java.util.List;
