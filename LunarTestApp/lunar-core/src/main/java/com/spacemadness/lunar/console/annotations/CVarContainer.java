@@ -5,14 +5,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@Target(ElementType.FIELD)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface CommandOption
+public @interface CVarContainer
 {
-    String Name() default "";
-    String ShortName() default "";
-    String Description() default "";
-    String Values() default "";
-
-    boolean Required() default false;
 }

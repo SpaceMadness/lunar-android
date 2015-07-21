@@ -26,7 +26,7 @@ public class DefaultRuntimePlatform extends RuntimePlatform
 
         contextRef = new WeakReference<>(context);
 
-        CRegistery.ResolveCommands();
+        CRegistery.resolveElements();
 
         getTimerManager().ScheduleOnce(new Runnable()
         {

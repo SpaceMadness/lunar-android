@@ -62,8 +62,7 @@ public class Cmd_aliasTest extends CCommandTestCase
         execute("alias a2 \"echo 'alias 2'\"");
         execute("alias a3 \"echo \\\"alias 3\\\"\"");
 
-        List<String> lines = new ArrayList<String>();
-        Cmd_alias.ListAliasesConfig(lines);
+        String[] lines = Cmd_alias.ListAliasesConfig();
 
         runSetup(); // reset everything
 

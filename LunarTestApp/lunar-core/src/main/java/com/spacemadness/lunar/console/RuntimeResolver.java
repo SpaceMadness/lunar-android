@@ -1,5 +1,6 @@
 package com.spacemadness.lunar.console;
 
+import com.spacemadness.lunar.console.annotations.CVarContainer;
 import com.spacemadness.lunar.console.annotations.Command;
 import com.spacemadness.lunar.console.annotations.CommandOption;
 import com.spacemadness.lunar.utils.ArrayUtils;
@@ -19,13 +20,8 @@ import static com.spacemadness.lunar.utils.ClassUtils.tryNewInstance;
 import static com.spacemadness.lunar.utils.StringUtils.IsNullOrEmpty;
 import static com.spacemadness.lunar.utils.StringUtils.nullOrNonEmpty;
 
-/**
- * Created by alementuev on 5/28/15.
- */
 class RuntimeResolver // TODO: remove this class
 {
-    private static final String TAG = PathClassLoader.class.getSimpleName();
-
     private static final FieldFilter OPTIONS_FIELD_FILTER = new FieldFilter()
     {
         @Override
@@ -47,11 +43,11 @@ class RuntimeResolver // TODO: remove this class
         }
     };
 
-    public static List<CCommand> ResolveCommands()
+    public static Result resolve()
     {
         try
         {
-            return ResolveCommandsGuarded();
+            return resolveGuarded();
         }
         catch (Exception e)
         {
@@ -61,9 +57,9 @@ class RuntimeResolver // TODO: remove this class
         return null;
     }
 
-    public static List<CCommand> ResolveCommandsGuarded() throws Exception
+    public static Result resolveGuarded() throws Exception
     {
-        final List<CCommand> list = new ArrayList<CCommand>();
+        final Result result = new Result();
 
         ClassUtils.listClassesName(new ClassUtils.Map<String>()
         {
@@ -80,10 +76,15 @@ class RuntimeResolver // TODO: remove this class
                 try
                 {
                     Class<?> aClass = Class.forName(className, false, classLoader);
-                    CCommand command = process(aClass);
-                    if (command != null)
+
+                    CCommand command;
+                    if ((command = tryResolveCommand(aClass)) != null)
                     {
-                        list.add(command);
+                        result.addCommand(command);
+                    }
+                    else if (isCVarContainer(aClass))
+                    {
+                        result.AddContainer(aClass);
                     }
                 }
                 catch (Throwable e)
@@ -93,10 +94,10 @@ class RuntimeResolver // TODO: remove this class
             }
         });
 
-        return list;
+        return result;
     }
 
-    private static CCommand process(Class<?> aClass) throws IllegalAccessException
+    private static CCommand tryResolveCommand(Class<?> aClass) throws IllegalAccessException
     {
         Command annotation = aClass.getAnnotation(Command.class);
         if (annotation == null)
@@ -123,6 +124,11 @@ class RuntimeResolver // TODO: remove this class
         ResolveOptions(command);
 
         return command;
+    }
+
+    private static boolean isCVarContainer(Class<?> aClass)
+    {
+        return aClass.getAnnotation(CVarContainer.class) != null;
     }
 
     static void ResolveOptions(CCommand command)
@@ -192,5 +198,39 @@ class RuntimeResolver // TODO: remove this class
         }
 
         return value;
+    }
+
+    public static class Result
+    {
+        private List<CCommand> commands;
+        private List<Class<?>> cvarContainersClasses;
+
+        public Result()
+        {
+            commands = new ArrayList<>();
+        }
+
+        public void addCommand(CCommand cmd)
+        {
+            commands.add(cmd);
+        }
+
+        public void AddContainer(Class<?> cls)
+        {
+            if (cvarContainersClasses == null)
+                cvarContainersClasses = new ArrayList<>();
+
+            cvarContainersClasses.add(cls);
+        }
+
+        public List<CCommand> getCommands()
+        {
+            return commands;
+        }
+
+        public List<Class<?>> getCvarContainersClasses()
+        {
+            return cvarContainersClasses;
+        }
     }
 }

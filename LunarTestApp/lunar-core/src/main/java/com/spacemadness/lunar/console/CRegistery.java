@@ -11,9 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by alementuev on 5/29/15.
- */
 public class CRegistery
 {
     private static Map<String, CCommand> m_commandsLookup = new HashMap<String, CCommand>(); // FIXME: rename
@@ -22,13 +19,34 @@ public class CRegistery
     //////////////////////////////////////////////////////////////////////////////
     // Commands resolver
 
-    public static void ResolveCommands()
+    public static void resolveElements()
     {
-        List<CCommand> commands = RuntimeResolver.ResolveCommands();
-        for (int i = 0; i < commands.size(); ++i)
+        RuntimeResolver.Result result = RuntimeResolver.resolve();
+
+        // register commands first (avoid 'missing' commands in config variables' listeners)
+        List<CCommand> commands = result.getCommands();
+        for (CCommand cmd : commands)
         {
-            Log.d("Resolve command: " + commands.get(i).Name);
-            Register(commands.get(i));
+            Register(cmd);
+            Log.d("Registered command: " + cmd.Name);
+        }
+
+        // register config variables
+        List<Class<?>> containerClasses = result.getCvarContainersClasses();
+        if (containerClasses != null)
+        {
+            for (Class<?> containerClass : containerClasses)
+            {
+                try
+                {
+                    Class.forName(containerClass.getName()); // force class static initialization
+                    Log.d("Loaded cvar container: " + containerClass.getName());
+                }
+                catch (Exception e)
+                {
+                    Log.e("Can't load cvar container class: " + containerClass.getName());
+                }
+            }
         }
     }
 
